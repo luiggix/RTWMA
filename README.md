@@ -1,5 +1,5 @@
 
-Repositorio del proyecto "Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno"
+Proyecto: **Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno**
 
 * **benchmarks**. Contiene ejemplos desarrollados por todo el grupo de trabajo en diferentes subdirectorios y ramas:
 	- **GWF**. Flujo (GWF).
