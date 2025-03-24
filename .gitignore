@@ -129,7 +129,8 @@ dmypy.json
 .pyre/
 
 # No subir los ejecutables de Linux por que son mayores a 100MB
-bin/linux/
+bin/linux/mf6
+bin/linux/libmf6.so
 
 # Archivos MacOS
 .DS_Store
