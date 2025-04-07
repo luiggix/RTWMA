@@ -1,5 +1,5 @@
 
-Ejemplos de simulación de **flujo** y **transporte** usando **GWF-DFC**.
+Ejemplos de simulación de flujo (**GWF**, **DFC**) y transporte (**GWT**, **DFC**).
 
 * Nombre_del_archivo
 
