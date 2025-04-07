@@ -135,3 +135,6 @@ bin/linux/libmf6.so
 # Archivos MacOS
 .DS_Store
 
+# Archivos de salida de MODFLOW 6
+output/
+
