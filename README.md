@@ -28,3 +28,9 @@ Proyecto: **Soluciones basadas en la naturaleza a la contaminación del agua sub
 * Luis M. de la Cruz Salas (Admin).
 * Víctor Leonardo Teja Juárez.
 * Norberto Vera Guzmán.
+
+# Enlaces a otros repositorios.
+
+* REMIX: https://github.com/jordipg10/REMIX.git
+
+* Interfaz de REMIX: https://github.com/jordipg10/interfaz_remix.git
