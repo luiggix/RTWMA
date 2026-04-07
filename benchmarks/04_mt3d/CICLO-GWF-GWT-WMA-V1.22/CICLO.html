@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Ciclo_GWF_GWT_WMA</title>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+
+body {
+font-family: Arial;
+margin: 30px;
+}
+
+h1 {
+color:#17397f;
+}
+
+.item-indice {
+font-size:20px;
+margin:10px 0;
+cursor:pointer;
+color:#0044cc;
+font-weight:bold;
+}
+
+.contenido {
+display:none;
+margin:15px 0 25px 20px;
+padding:15px;
+border-left:4px solid #0044cc;
+background:#f5f7ff;
+line-height:1.6;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Ciclo_GWF_GWT_WMA</h1>
+
+<hr>
+
+
+<div class="item-indice" data-sec="sec0">
+1. Resumen
+</div>
+
+<div id="sec0" class="contenido">
+<p></p>
+</div>
+
+<div class="item-indice" data-sec="sec1">
+2. Qué hice?
+</div>
+
+<div id="sec1" class="contenido">
+<p>Estando en el directorio "/clone/<br>cd RTWMA<br>git init<br>git status<br>git log<br>fatal: your current branch 'master' does not have any commits yet<br>git config --global user.name “nrbrtvr”<br>git config --global user.email “nrbrtvr@gmail.com"<br>git checkout -b mt3d<br>git clone git@github.com:luiggix/RTWMA.git<br>cd RTWMA<br>cd benchmarks<br>cd 04_mt3d<br>Copiamos a 04_mt3d el directorio<br>CICLO-GWF-GWT-WMA-V1.22<br>Estando en main dí:<br> git commit -m " Copiamos GWF-GWT-WMA yeso"<br>Quise quitarlo con:<br>git reset --soft HEAD~1</p>
+</div>
+
+<div class="item-indice" data-sec="sec2">
+3. Quise ver todas las ramas
+</div>
+
+<div id="sec2" class="contenido">
+<p>git branch -a<br>Cree una rama local mt3d<br>git checkout -b mt3d</p>
+</div>
+
+<div class="item-indice" data-sec="sec3">
+4. Actualizar repositorio
+</div>
+
+<div id="sec3" class="contenido">
+<p>Estando en el directorio "/clone/RTWMA/RTWMA/benchmarks/04_mt3d"<br>git add . <br>git commit -m " Agregué CICLO-GWF-GWT-WMA-V1.22"<br>git push<br>fatal: The current branch mt3d has no upstream branch.</p><p>Y no pude subir los cambios</p>
+</div>
+
+<div class="item-indice" data-sec="sec4">
+5. Insertando imágenes
+</div>
+
+<div id="sec4" class="contenido">
+<p><img src="imagenes/imag2.png" width="600"></p>
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+document.querySelectorAll(".item-indice").forEach(function(el) {
+
+var id = el.dataset.sec;
+
+el.addEventListener("click", function() {
+document.getElementById(id).style.display = "block";
+});
+
+el.addEventListener("dblclick", function() {
+document.getElementById(id).style.display = "none";
+});
+
+});
+
+document.querySelectorAll(".contenido").forEach(function(el) {
+
+el.addEventListener("dblclick", function() {
+this.style.display = "none";
+});
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

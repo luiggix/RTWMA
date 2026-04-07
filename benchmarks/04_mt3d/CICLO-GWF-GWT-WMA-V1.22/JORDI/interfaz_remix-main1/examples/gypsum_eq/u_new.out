@@ -1,0 +1,10 @@
+ Component concentrations after solving reactive mixing iteration (rows: components, columns: target waters in the domain):
+
+      1.00000E+00    1.00000E+00
+      2.76536E-04    4.43718E-05
+
+ Concentrations of variable activity species after solving reactive mixing iteration (rows: species, columns: target waters in the domain):
+
+      1.00003E+00    1.00003E+00
+      2.76536E-04    4.43718E-05
+      3.29371E-05    3.29371E-05
