@@ -1,0 +1,5 @@
+! (true: homogeneous property, false: heterogeneous property)
+.true. 0.0			! recarga/descarga/evaporacion uniforme
+.true. 0.5			! porosity
+.true. 2.5			! dispersion
+.true. 5.0 			! flux

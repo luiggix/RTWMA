@@ -1,0 +1,5 @@
+2			! Scheme (1: CFD, 2: IFD, 3: Upwind)
+0			! Targets flag (0: cells, 1: interfaces)
+1.0			! Domain measure
+10			! Number of targets
+0			! Adaptive refinement (0: NO, 1: YES)

@@ -1,0 +1,182 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|c:\\users\\leo_teja\\documents\\github\\ejemplo_yeso\\tr_1d_oper\\main.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:main.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\1d_rt\\read_discretisation.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:1d_rt\\read_discretisation.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chemistry_lagr_m.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\chemistry_lagr_m.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\initialise_chemistry.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\initialise_chemistry.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\read_chemistry.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry_cheproo.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\read_chemistry_cheproo.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chem_system_mod.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\chem_system_mod.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chem_system_cheproo.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:chemistry\\read_chem_system_cheproo.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\transport\\read_transport_data_wma.f90||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{39CA3266-8350-42A1-A71A-671C7F4DDA49}|TR_1D_oper.vfproj|solutionrelative:transport\\read_transport_data_wma.f90||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\main.f90",
+              "RelativeDocumentMoniker": "main.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\main.f90",
+              "RelativeToolTip": "main.f90",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAAAFYAAAAIAQAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:32:01.263Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "chem_system_mod.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chem_system_mod.f90",
+              "RelativeDocumentMoniker": "chemistry\\chem_system_mod.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chem_system_mod.f90",
+              "RelativeToolTip": "chemistry\\chem_system_mod.f90",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAMwGQAAAA3AAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:46:17.829Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "read_chemistry_CHEPROO.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry_CHEPROO.f90",
+              "RelativeDocumentMoniker": "chemistry\\read_chemistry_CHEPROO.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry_CHEPROO.f90",
+              "RelativeToolTip": "chemistry\\read_chemistry_CHEPROO.f90",
+              "ViewState": "AgIAACYAAAAAAAAAAAArwDQAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:45:16.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "read_chemistry.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry.f90",
+              "RelativeDocumentMoniker": "chemistry\\read_chemistry.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chemistry.f90",
+              "RelativeToolTip": "chemistry\\read_chemistry.f90",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAARAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:44:26.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "initialise_chemistry.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\initialise_chemistry.f90",
+              "RelativeDocumentMoniker": "chemistry\\initialise_chemistry.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\initialise_chemistry.f90",
+              "RelativeToolTip": "chemistry\\initialise_chemistry.f90",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAArAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:41:41.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "chemistry_Lagr_m.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chemistry_Lagr_m.f90",
+              "RelativeDocumentMoniker": "chemistry\\chemistry_Lagr_m.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\chemistry_Lagr_m.f90",
+              "RelativeToolTip": "chemistry\\chemistry_Lagr_m.f90",
+              "ViewState": "AgIAAI4BAAAAAAAAAAAMwCoBAAAmAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:41:38.881Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "read_transport_data_WMA.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\transport\\read_transport_data_WMA.f90",
+              "RelativeDocumentMoniker": "transport\\read_transport_data_WMA.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\transport\\read_transport_data_WMA.f90",
+              "RelativeToolTip": "transport\\read_transport_data_WMA.f90",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAAAAAAAiAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:41:20.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "read_discretisation.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\1D_RT\\read_discretisation.f90",
+              "RelativeDocumentMoniker": "1D_RT\\read_discretisation.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\1D_RT\\read_discretisation.f90",
+              "RelativeToolTip": "1D_RT\\read_discretisation.f90",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAgwBgAAAAAAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:41:07.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "read_chem_system_CHEPROO.f90",
+              "DocumentMoniker": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chem_system_CHEPROO.f90",
+              "RelativeDocumentMoniker": "chemistry\\read_chem_system_CHEPROO.f90",
+              "ToolTip": "C:\\Users\\leo_teja\\Documents\\GitHub\\EJEMPLO_YESO\\TR_1D_oper\\chemistry\\read_chem_system_CHEPROO.f90",
+              "RelativeToolTip": "chemistry\\read_chem_system_CHEPROO.f90",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAjAAAAAAAAAA==",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACMSURBVDhPxZJBDsQgCEU/sytHM57Cg/UUpEfDpbPSgjVtmc28lZKfJwSptYYOEY2zRVXPkIG3DWQFtdZlEAAO3ucSkparIOfsQgAgIjGBiLggTAdJi6t/3O0FB\u002B9DxswUFsyEBUmLGyMs6DAzISKYX\u002B68FnTmNYcFM/8XLH/iEyIytnAR2OAdS8EvfAEh4EkdDLYrMwAAAABJRU5ErkJgggAAAAAAAAAAAA==",
+              "WhenOpened": "2024-09-08T15:46:56.563Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

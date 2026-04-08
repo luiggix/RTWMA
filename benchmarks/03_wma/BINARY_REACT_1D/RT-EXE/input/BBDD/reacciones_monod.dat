@@ -1,0 +1,79 @@
+ 'aerobic oxidation'
+0 '*' 0.0								! number of inhibitors, inhibitors (name + stoich. coeff. + inhibition constant)
+1 'o2(aq)' 1.0e+00							! number of TEAs, TEAs (name + stoich. coeff. + half-saturation constant)
+4 'o2(aq)' -1.0  'ch2o(aq)' -1.0 'hco3-' 1.0 'h+' 1.0 1.0e+00		! number of species, species (name + stoich. coeff.), rate constant
+'*'
+'denitrification'
+1 'o2(aq)' 1.0e+00
+1 'no3-' 1.0e+00
+6 'no3-' -0.8  'ch2o(aq)' -1.0 'hco3-' 1.0 'n2(aq)' 0.4 'h2o' 0.4 'h+' 0.2 1.0e+00
+'*'
+'Mn reduction (review)'
+2 'o2' 1.0e-04 'no3-' 1.0e-04
+'mno2(s)' 1.0e-04
+6 'mno2(s)' -2.0  'ch2o' -1.0 'h+' -3.0 'hco3-' 1.0 'mn+2' 2.0 'h2o' 2.0 1.0e-01
+'*'
+'ferric reduction (review)'
+3 'o2' 1.0e-04 'no3-' 1.0e-04 'mno2(s)' 1.0e-04
+'fe(oh)3(s)' 1.0e-04
+6 'h+' -7.0 'fe(oh)3(s)' -4.0 'ch2o' -1.0 'hco3-' 1.0 'fe+2' 4.0 'h2o' 10.0 1.0e-01
+'*'
+'iron reduction (PAE)'
+2 'o2' 1.0e-04 'no3-' 1.0e-04
+'fe3' 1.0e-04
+6 'h+' -7.0 'fe(oh)3' -4.0 'ch2o' -1.0 'hco3-' 1.0 'fe2+' 4.0 'h2o' 10.0 1.0e-01
+'*'
+'sulfate reduction (review)'
+4 'o2' 1.0e-04 'no3-' 1.0e-04 'mno2(s)' 1.0e-04 'fe(oh)3(s)' 1.0e-04
+'so4-2' 1.0e-04
+5 'h+' -5.0 'so4-2' -0.5 'ch2o' -1.0 'hco3-' 1.0 'h2s' 0.5 1.0e-01
+'*'
+'methane genesis (review)'
+5 'o2' 1.0e-04 'no3-' 1.0e-04 'mno2(s)' 1.0e-04 'fe(oh)3(s)' 1.0e-04 'so4-2' 1.0e-04
+'
+5 'ch2o' -1.0 'h2o' -0.5 'hco3-' 0.5 'ch4' 0.5 'h+' 0.5 1.0e-01
+'*'
+'methanogenesis (PAE)'
+3 'o2' 1.0e-04 'no3-' 1.0e-04 'fe3' 1.0e-04
+'
+5 'ch2o' -1.0 'h2o' -0.5 'hco3-' 0.5 'ch4' 0.5 'h+' 0.5 1.0e-01
+'*'
+'aerobic oxidation of DOC (JW)'
+0 '*' 0.0				! inhibitors, k
+2 'o2' 1.0e-05 'ch2o' 1.0e-03		! electron acceptor, k, electron donor k
+7 'o2' -0.225 'nh4+' -0.005 'ch2o' -0.25 'c5h7o2n' 0.005 'h+' 0.23 'hco3-' 0.225 'h2o' 0.015 0.5
+'*'
+'nitrification (JW)'
+0 '*' 0.0
+2 'o2' 1.0e-05 'nh4+' 1.0e-04 
+7 'o2' -0.235 'nh4+' -0.128 'hco3-' -0.015 'c5h7o2n' 0.003 'h+' 0.238 'no3-' 0.125 'h2o' 0.134 0.3
+'*'
+'denitrification 1 (JW)'
+1 'o2' 2.52e-05				
+2 'ch2o' 1.4e-03 'no3-' 5.9e-03		
+7 'ch2o' -0.25 'no3-' -0.24 'c5h7o2n' 0.02 'no2-' 0.22 'hco3-' 0.15 'h+' 0.13 'h2o' 0.04 2.0
+'*'
+'denitrification 2 (JW)'
+1 'o2' 2.52e-05
+2 'ch2o' 1.4e-03 'no2-' 5.9e-03
+7 'ch2o' -0.25 'no2-' -0.26 'h+' -0.11 'c5h7o2n' 0.02 'n2o' 0.12 'hco3-' 0.15 'h2o' 0.16 1.8
+'*'
+'denitrification 3 (JW)'
+1 'o2' 2.52e-05	
+2 'n2o' 1.4e-03 'n2' 5.9e-03
+7 'ch2o' -0.25 'n2o' -0.27 'c5h7o2n' 0.02 'n2' 0.26 'hco3-' 0.15 'h+' 0.15 'h2o' 0.03 0.8
+'*'
+'DNRA (JW)'
+1 'o2' 2.52e-05
+2 'ch2o' 1.0e-05 'no3-' 2.0e-06
+7 'ch2o' -0.25 'no3-' -0.0625 'c5h7o2n' 0.025 'nh4+' 0.0375 'hco3-' 0.125 'h+' 0.025 'h2o' 0.0125 0.0022
+'anammox (JW)'
+1 'o2' 2.52e-05
+2 'nh4+' 2.625e-03 'no2-' 2.5e-06
+8 'nh4+' -0.29 'no2-' -0.3683 'hco3-' -0.029 'h+' -0.0336 'c5h7o2n' 0.0058 'n2' 0.2894 'no3-' 0.0736 'h2o' 0.5911 0.25
+'*'
+'sulfammox (JW)'
+1 'o2' 2.52e-05
+2 'nh4+' 2.625e-03 'so4-2' 1.0e-03
+8 'nh4+' -0.3433 'so4-2' -0.1 'hco3-' -0.05 'h+' 0.0933 'c5h7o2n' 0.01 'n2' 0.1667 'h2s' 0.1 'h2o' 0.53 0.5
+'end'
