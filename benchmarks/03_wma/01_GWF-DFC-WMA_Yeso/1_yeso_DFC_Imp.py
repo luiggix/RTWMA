@@ -6,7 +6,7 @@ import flopy
 import xmf6
 import WMA_1D as WMA
 import resultsFortran as rF 
-line_size = 50
+linea = 50*chr(0x2015)
 
 # --- DEFINICIÓN DE LAS RUTAS ---
 
@@ -32,16 +32,13 @@ tr1d_exe = os.path.join(working_dir, "TR_1D_oper.exe")
 # --- TRANSPORTE REACTIVO ---
 def reactive_transport_wma(tr1d_exe):
     # Ejecución de "TR_1D_oper.exe"
-    print(line_size * chr(0x2015))
-    print("- Ejecutando TR_1D_oper.exe")
-    print(line_size * chr(0x2015))
+    print("\n- Ejecutando TR_1D_oper.exe")
     result = subprocess.run([tr1d_exe], cwd = working_dir, 
                             capture_output = True, text = True)
     
     # Salida de "TR_1D_oper.exe"
     print("Standard Output:", result.stdout)
     print("Standard Error:", result.stderr)
-    print(line_size * chr(0x2015))
 
 # --- DATOS PARA LA SIMULACIÓN ---
 nlay = 1
@@ -66,6 +63,10 @@ phys = dict(
     decay_rate =  0.0,
     dispersion_coefficient = 0.2
 )
+    
+print(linea)
+print("Datos".center(50))
+print(linea)
 xmf6.nice_print(phys, "Parámetros físicos")
 
 # --- SIMULACIÓN DE FLUJO ---
@@ -156,28 +157,33 @@ o_sim = xmf6.common.init_sim(silent = True, **sim_flow)
 o_gwf, packages = xmf6.gwf.set_packages(o_sim, silent = True, **gwf_d)
 
 # --- Escritura de archivos ---
-print(line_size * chr(0x2015))
-print("- Escribiendo archivos de entrada para GWF")
+
+print(linea)
+print("Iniciando GWF".center(50))
+print(linea)
+print("\n- Escribiendo archivos de entrada para GWF")
 o_sim.write_simulation(silent = True)
 
 # --- Ejecución de la simulación ---
-print("- Ejecutando GWF")
+print("\n- Ejecutando GWF y escribiendo archivos")
 o_sim.run_simulation(silent = True)
 
 # --- Recuperamos los resultados de flujo de la simulación ---
 head = xmf6.gwf.get_head(o_gwf)
 qx, qy, qz, n_q = xmf6.gwf.get_specific_discharge(o_gwf, text="DATA-SPDIS")
 
-print(line_size * chr(0x2015))
-print("Descarga específica", qx.shape)
+print("\n- Descarga específica", qx.shape)
 print(qx)
-print("Carga hidráulica", head.shape)
+print("\n- Carga hidráulica", head.shape)
 print(head)
-print(line_size * chr(0x2015))
 
 # --- Recuperamos las coordenadas del dominio
 grid = o_gwf.modelgrid
 x, y, z = grid.xyzcellcenters
+
+print(linea)
+print("Iniciando DFC".center(50))
+print(linea)
 
 tdis = {
         'units': "days",
@@ -187,20 +193,22 @@ tdis = {
 xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
 
 # --- Cálculo de las lambdas ... ---
-print(line_size * chr(0x2015))
-print("- Calculando las 𝜆's")
+print("\n- Discretización con DFC")
+print("\n- Calculando las 𝜆's\n")
 
 lambdas1D, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head[0][0][:], qx[0][0][:])
 print(lambdas1D)
-print(line_size * chr(0x2015))
 
 # --- Almacenamiento de las proporciones de mezcla --- 
-print(f"- Escribiendo las 𝜆's")
+print("\n- Escribiendo las 𝜆's")
 WMA.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
-print(line_size * chr(0x2015))
 
 # --- Cálculo del transporte reactivo
+print(linea)
+print("Iniciando WMA".center(50))
+print(linea)
 reactive_transport_wma(tr1d_exe)
+print(linea)
 
 dummy = input("\n\n Teclear <ENTER> para continuar ...")
 

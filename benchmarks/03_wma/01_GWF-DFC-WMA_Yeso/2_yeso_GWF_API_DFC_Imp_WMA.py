@@ -7,7 +7,7 @@ from modflowapi import ModflowApi
 import xmf6
 import WMA_1D as WMA
 import resultsFortran as rF 
-line_size = 50
+linea = 50*chr(0x2015)
 
 # --- DEFINICIÓN DE LAS RUTAS ---
 
@@ -34,16 +34,13 @@ tr1d_exe = os.path.join(working_dir, "TR_1D_oper.exe")
 # --- TRANSPORTE REACTIVO ---
 def reactive_transport_wma(tr1d_exe):
     # Ejecución de "TR_1D_oper.exe"
-    print(line_size * chr(0x2015))
-    print("- Ejecutando TR_1D_oper.exe")
-    print(line_size * chr(0x2015))
+    print("\n- Ejecutando TR_1D_oper.exe")
     result = subprocess.run([tr1d_exe], cwd = working_dir, 
                             capture_output = True, text = True)
     
     # Output from the program
     print("Standard Output:", result.stdout)
     print("Standard Error:", result.stderr)
-    print(line_size * chr(0x2015))
 
 # --- DATOS PARA LA SIMULACIÓN ---
 nlay = 1
@@ -68,6 +65,10 @@ phys = dict(
     decay_rate =  0.0,
     dispersion_coefficient = 0.2
 )
+    
+print(linea)
+print("Datos".center(50))
+print(linea)
 xmf6.nice_print(phys, "Parámetros físicos")
 
 # --- SIMULACIÓN DE FLUJO ---
@@ -151,28 +152,28 @@ gwf_d = dict(
     }
 )
 
-# --- Inicialización de la simulación ---
-o_sim = xmf6.common.init_sim(silent = True, **sim_flow)
-o_gwf, packages = xmf6.gwf.set_packages(o_sim, silent = True, **gwf_d)
-
-# --- Escritura de archivos ---
-o_sim.write_simulation(silent = True)
-
-# --- EJECUCIÓN CON LA API ---
-linea = 50*chr(0x2015)
-print(linea)
-print("Iniciando GWF con la API")
-print(linea)
-
 xmf6.nice_print(sim_flow["tdis"], "Discretización del tiempo para GWF")
 
+# --- Inicialización de la simulación ---
+o_sim_f = xmf6.common.init_sim(silent = True, **sim_flow)
+o_gwf, packages = xmf6.gwf.set_packages(o_sim_f, silent = True, **gwf_d)
+
+# --- Escritura de archivos ---
+
+print(linea)
+print("Iniciando GWF con la API".center(50))
+print(linea)
+print("\n- Escribiendo archivos de entrada para GWF")
+o_sim_f.write_simulation(silent = True)
+
+# --- EJECUCIÓN CON LA API ---
 # Rutas a la biblioteca compartida y al archivo de configuración
-mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
-print("Shared library:", mf6_dll)
-print("Config file:", mf6_config_file)
+mf6_config_file = os.path.join(o_sim_f.sim_path, 'mfsim.nam')
+print("\n- Shared library:", mf6_dll)
+print("\n- Config file:", mf6_config_file)
 
 # Objeto para acceder a toda la funcionalidad de la API
-mf6 = ModflowApi(mf6_dll, working_directory=o_sim.sim_path)
+mf6 = ModflowApi(mf6_dll, working_directory=o_sim_f.sim_path)
 
 # Inicialización del modelo
 mf6.initialize(mf6_config_file)
@@ -188,28 +189,36 @@ max_iter = mf6.get_value(mf6.get_var_address("MXITER", "SLN_1"))
 grid = o_gwf.modelgrid
 x, y, z = grid.xyzcellcenters
 
-# Ciclo sobre tiempo
+print(f"\n ---> Tiempo actual  = {current_time}")
+print(f" ---> Tiempo total   = {end_time}")
+print(f" ---> Iter (solver) = {max_iter}")
+
 tdis = {
         'units': "days",
         'nper' : 1,
         'perioddata': [(40.0, 40, 1.0)]
 }
-while current_time < end_time:
-    # Obtenemos el paso de tiempo
-    dt = mf6.get_time_step()
-    print("dt:", dt, ", t:", current_time, ", end_t:", end_time, ", max_iter:", max_iter)
 
-    # Preparar el objeto de la API para obtener la solución y
-    # con el paso de tiempo
-    mf6.prepare_time_step(dt)
+print()
+print(linea)
+print("Iniciando ciclo de la API para GWF".center(50))
+print(linea)
+
+while current_time < end_time:
+    # Preparar el paso de tiempo 
+    mf6.prepare_time_step(mf6.get_time_step())
+
+    # Preparar la solución
     mf6.prepare_solve()
-    
+
+    print("\n ---> dt:", mf6.get_time_step(), ", t:", current_time, ", end_t:", end_time)
+
     # Ciclo del algoritmo numérico de solución
     kiter = 0
     while kiter < max_iter:
         print("\nkiter :", kiter)
         
-        # Construye el sistema del problema y lo resuelve
+        # Construir el sistema del problema y lo resolverlo
         has_converged = mf6.solve(1)
         
         if has_converged:
@@ -233,26 +242,41 @@ while current_time < end_time:
         print("model did not converge")
         break
 
-    # Obtenemos la solución obtenida por MF6 
+    # Recuperamos la solución obtenida por MF6 
     # (ojo: necesitamos hacer una copia del arreglo)
     head = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'FLOW')))
     q = mf6.get_value(mf6.get_var_address("SPDIS", "FLOW", "NPF"))
 
+    print("\n- Descarga específica", q[:,0].shape)
+    print(q[:,0])
+    print("\n- Carga hidráulica", head.shape)
+    print(head)
+
+    print()
+    print("Iniciando DFC (dentro del ciclo)".center(50))
+    print(linea)
+    xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
+
     # --- Cálculo de las lambdas ... ---
-    print(line_size * chr(0x2015))
-    print("- Calculando las 𝜆's")
+    print("\n- Discretización con DFC")
+    print("\n- Calculando las 𝜆's\n")
+
     lambdas1D, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head, q[:, 0])
     print(lambdas1D)
-    print(line_size * chr(0x2015))
 
     # --- Almacenamiento de las proporciones de mezcla --- 
-    print(f"- Escribiendo las 𝜆's")
+    print(f"\n - Escribiendo las 𝜆's")
     WMA.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
-    print(line_size * chr(0x2015))
+    print()
 
     # --- Cálculo del transporte reactivo
+    print("Iniciando WMA (dentro del ciclo)".center(50))
+    print(linea)
     reactive_transport_wma(tr1d_exe)
-    
+    print(linea)
+
+    print(f"\n ---> t: {current_time}, end_t: {end_time}\n")
+
 # Finalizamos la simulación completa
 try:
     mf6.finalize()
@@ -261,10 +285,7 @@ except:
     raise RuntimeError
 
 print(linea)
-print("HEAD:\n", head)
-print("Q:\n", q[:,0])
-print(linea)
-print("Finalizando la simulación")
+print("Finalizando el ciclo de la API".center(50))
 print(linea)
 
 dummy = input("\n\n Teclear <ENTER> para continuar ...")
