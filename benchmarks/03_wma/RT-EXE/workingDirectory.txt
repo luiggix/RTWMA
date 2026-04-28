@@ -1,1 +1,1 @@
-C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE
+../RT-EXE

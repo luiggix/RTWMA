@@ -46,7 +46,8 @@ sim_flow = dict(
     # Parámetros de la simulación (flopy.mf6.MFSimulation)
     init = {
         'sim_name' : sim_name,
-        'exe_name' : r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6",
+#        'exe_name' : r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6",
+        'exe_name' : r"../../../bin/macos/mf6",
         'sim_ws' : "output_1"
     },
     

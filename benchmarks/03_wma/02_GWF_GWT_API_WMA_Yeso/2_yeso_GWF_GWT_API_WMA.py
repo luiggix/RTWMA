@@ -4,16 +4,21 @@ import matplotlib.pyplot as plt
 import flopy
 from modflowapi import ModflowApi
 import xmf6
+import WMA_1D as WMA # Calcula las proporciones de mezcla
 linea = 50*chr(0x2015)
 
 # --- DEFINICIÓN DE LAS RUTAS ---
 
 # Ejecutable de Modflow
-mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
-mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
+#mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
+#mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
+
+mf6_exe = r"../../../bin/macosarm/mf6"
+mf6_dll = r"../../../bin/macosarm/libmf6.dylib"
 
 # Directorio de trabajo para WMA
-working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
+#working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
+working_dir = r"../RT-EXE"
 
 # Archivo para almacenar las proporciones de mezcla 
 wma_lambdas_filename = os.path.join(working_dir, 
@@ -371,7 +376,14 @@ while current_time < end_time:
 
     # --- Cálculo del transporte reactivo
 #    reactive_transport_wma(tr1d_exe)
-    
+
+# Probar con 'SPDIS','SLN_1' o  'FLOW'
+component = ['TRANSPORT/ADV','SLN_1']
+for c in component:
+    for label in mf6.get_input_var_names():
+        if c in label:
+            print(label, end = "\n")
+
 # Finalizamos la simulación completa
 try:
     mf6.finalize()
@@ -379,17 +391,38 @@ try:
 except:
     raise RuntimeError
 
-#D = np.identity(ncol) * phys["porosity"]
-#dt = tdis_t['perioddata'][0][0] / tdis_t['perioddata'][0][1]
+# Construcción de las matrices para generar las lambdas
+D = np.identity(ncol) * phys["porosity"]
+dt = tdis_t['perioddata'][0][0] / tdis_t['perioddata'][0][1]
+invA = np.linalg.inv(D/dt-A)
+LAMBDAS_IMP = invA.dot(D/dt)
+QinvA = invA.dot(RHS)
+lambdas1D = LAMBDAS_IMP
 
-#invA = np.linalg.inv(D/dt-A)            
-#LAMBDAS_IMP = invA.dot(D/dt)
+mixingWaters = np.zeros((ncol,ncol+2))
+for j in range(0,ncol):
+    for i in range (0,ncol+2):
+        mixingWaters[j][i] = i+1
+    
+aux = np.linspace(3,ncol+2,ncol)
+aux = aux[:, np.newaxis]
+mixingWaters = np.concatenate((aux,  mixingWaters), axis=1)
+mixingWaters = mixingWaters.astype(np.int32)
+
+WMA.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
 
 print(linea)
-#print(LAMBDAS_IMP)
+print("MATRIZ A")
 print(A)
-#print(D)
-#print(U)
+print(linea)
+print("MATRIZ D")
+print(D)
+print(linea)
+print("LAMBDAS_U")
+print(LAMBDAS_IMP)
+print(linea)
+print("LAMBDAS_INF")
+print(QinvA)
 print(linea)
 print("Finalizando la simulación")
 print(linea)
