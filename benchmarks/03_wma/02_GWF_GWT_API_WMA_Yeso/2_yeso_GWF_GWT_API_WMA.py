@@ -1,24 +1,27 @@
-import os
+import os, sys, subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
 from modflowapi import ModflowApi
 import xmf6
 import WMA_1D as WMA # Calcula las proporciones de mezcla
+import resultsFortran as rF 
 linea = 50*chr(0x2015)
 
 # --- DEFINICIÓN DE LAS RUTAS ---
 
 # Ejecutable de Modflow
-#mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
-#mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
+# WINDOWS
+mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
+mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
 
-mf6_exe = r"../../../bin/macosarm/mf6"
-mf6_dll = r"../../../bin/macosarm/libmf6.dylib"
+# MACOSARM
+#mf6_exe = r"../../../bin/macosarm/mf6"
+#mf6_dll = r"../../../bin/macosarm/libmf6.dylib"
 
 # Directorio de trabajo para WMA
-#working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
-working_dir = r"../RT-EXE"
+working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
+#working_dir = r"../RT-EXE"
 
 # Archivo para almacenar las proporciones de mezcla 
 wma_lambdas_filename = os.path.join(working_dir, 
@@ -36,16 +39,13 @@ tr1d_exe = os.path.join(working_dir, "TR_1D_oper.exe")
 # --- TRANSPORTE REACTIVO ---
 def reactive_transport_wma(tr1d_exe):
     # Ejecución de "TR_1D_oper.exe"
-    print(line_size * chr(0x2015))
-    print("- Ejecutando TR_1D_oper.exe")
-    print(line_size * chr(0x2015))
+    print("\n- Ejecutando TR_1D_oper.exe")
     result = subprocess.run([tr1d_exe], cwd = working_dir, 
                             capture_output = True, text = True)
     
     # Output from the program
     print("Standard Output:", result.stdout)
     print("Standard Error:", result.stderr)
-    print(line_size * chr(0x2015))
 
 # --- DATOS PARA LA SIMULACIÓN ---
 
@@ -426,6 +426,9 @@ print(QinvA)
 print(linea)
 print("Finalizando la simulación")
 print(linea)
+
+# --- Cálculo del transporte reactivo
+reactive_transport_wma(tr1d_exe)
 
 # --- Recuperamos los resultados de flujo de la simulación ---
 # TODO: checar si se puede recuperar la información del objeto o_gwf directamente.
