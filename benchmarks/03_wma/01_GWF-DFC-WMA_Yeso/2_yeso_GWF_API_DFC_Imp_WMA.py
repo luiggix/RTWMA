@@ -246,7 +246,7 @@ while current_time < end_time:
     # (ojo: necesitamos hacer una copia del arreglo)
     head = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'FLOW')))
     q = mf6.get_value(mf6.get_var_address("SPDIS", "FLOW", "NPF"))
-
+    
     print("\n- Descarga específica", q[:,0].shape)
     print(q[:,0])
     print("\n- Carga hidráulica", head.shape)

@@ -196,12 +196,12 @@ xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
 print("\n- Discretización con DFC")
 print("\n- Calculando las 𝜆's\n")
 
-lambdas1D, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head[0][0][:], qx[0][0][:])
-print(lambdas1D)
+mixingRatios, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head[0][0][:], qx[0][0][:])
+print("Mising Ratios", mixingRatios.shape, mixingRatios)
 
 # --- Almacenamiento de las proporciones de mezcla --- 
 print("\n- Escribiendo las 𝜆's")
-WMA.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
+WMA.save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
 
 # --- Cálculo del transporte reactivo
 print(linea)

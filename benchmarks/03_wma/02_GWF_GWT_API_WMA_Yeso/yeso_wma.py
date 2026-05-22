@@ -1,5 +1,55 @@
+import subprocess
+#import resultsFortran as rF 
 import numpy as np
-import os
+linea = 50*chr(0x2015)
+
+def build(dis, tdis, phys, A, RHS, U, wma_lambdas_filename, silent = True):
+
+    print(linea)
+    print("- Iniciando la construcción de las matrices lambda")
+
+    # Construcción de las matrices para generar las lambdas
+    ncol = dis['ncol']
+    D = np.identity(ncol) * phys["porosity"]
+    dt = tdis['perioddata'][0][0] / tdis['perioddata'][0][1]
+    
+    invA = np.linalg.inv(-A) #(D/dt-A)
+    mixingRatios = invA.dot(D/dt)
+    Q = np.zeros(RHS.shape)
+    Q[0] = -(RHS[0] + U[0]*phys["porosity"])
+    QinvA = invA.dot(Q)
+    
+#    print(linea)
+#    print("LAMBDAS", LAMBDAS_IMP.shape, LAMBDAS_IMP)
+#    print("Q", Q.shape, Q)
+#    print("U", U.shape, U)
+#    print("D", D.shape, D)
+#    print("D/dt-A", A.shape, -A)
+#    print("dt", dt)
+#    print(linea)   
+#    dummy = input("[ENTER]")
+    
+    QinvA = QinvA[:, np.newaxis]
+    mixingRatios = np.concatenate((QinvA, mixingRatios), axis=1)
+    mixingRatios = np.concatenate((np.zeros((ncol,1)), mixingRatios), axis=1)
+    mixingRatios = np.concatenate((np.ones((ncol,1))*ncol+2, mixingRatios), axis=1)
+
+    if not silent:
+        print("- Mixing Ratios :", mixingRatios.shape)
+        print(mixingRatios)
+    
+    mixingWaters = np.zeros((ncol,ncol+2))
+    for j in range(0,ncol):
+        for i in range (0,ncol+2):
+            mixingWaters[j][i] = i+1
+    
+    aux = np.linspace(3,ncol+2,ncol)
+    aux = aux[:, np.newaxis]
+    mixingWaters = np.concatenate((aux,  mixingWaters), axis=1)
+    mixingWaters = mixingWaters.astype(np.int32)
+
+    print("\n- Guardando las proporciones de mezcla en el archivo: ")
+    save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
 
 def upwind_1D(i, h, q):
     
@@ -14,9 +64,8 @@ def upwind_1D(i, h, q):
         qx_w=q[i-1]
         
     return (qx_e, qx_w)
-
-####Qué regresará #### Solo las lamdas o toda 
-def mixingRatios1D(phys, grid, tdis, head, qx):
+    
+def build_dfc(phys, grid, tdis, head, qx):
     #
     # --- Renaming variables for local calculations
     #
@@ -148,15 +197,14 @@ def mixingRatios1D(phys, grid, tdis, head, qx):
     LAMBDAS_IMP = invA.dot(D/dt)
     QinvA = invA.dot(Q)
 
-    print("-"*50)
-    print("LAMBDAS", LAMBDAS_IMP.shape, LAMBDAS_IMP)
-    print("Q", Q.shape, Q)
-    print("D", D.shape, D)
-    print("D/dt-A", DDD.shape, DDD)
-    print("dt", dt)
-    print("-"*50)
-    
-    dummy = input("[ENTER]")
+#    print("-"*50)
+#    print("LAMBDAS", LAMBDAS_IMP.shape, LAMBDAS_IMP)
+#    print("Q", Q.shape, Q)
+#    print("D", D.shape, D)
+#    print("D/dt-A", DDD.shape, DDD)
+#    print("dt", dt)
+#    print("-"*50)   
+#    dummy = input("[ENTER]")
     
     for i in range(0, nx):    
         SUM_COMPLEMENT[i] = QinvA[i]+LAMBDAS_IMP[i, :].sum()
@@ -179,8 +227,7 @@ def mixingRatios1D(phys, grid, tdis, head, qx):
     mixingWaters = mixingWaters.astype(np.int32)
     
     return mixingRatios, mixingWaters
-
-
+    
 def save_mixing(wma_filename, mixingRatios, mixingWaters):
 
     header1 = [
@@ -221,4 +268,17 @@ def save_mixing(wma_filename, mixingRatios, mixingWaters):
     
         file.writelines(endfile)
     
-    print(f"Data written to {wma_filename} successfully.")
+    print(f" {wma_filename}")
+    
+def reactive_transport_wma(tr1d_exe, wma_working_dir):
+    # Ejecución de "TR_1D_oper.exe"
+    print(linea)
+    print("\n- Ejecutando TR_1D_oper.exe\n")
+    result = subprocess.run([tr1d_exe], cwd = wma_working_dir, 
+                            capture_output = True, text = True)
+    
+    # Output from the program
+    print("Standard Output:", result.stdout)
+    print("Standard Error:", result.stderr)
+
+    

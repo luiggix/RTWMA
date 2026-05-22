@@ -1,5 +1,6 @@
 import os, sys, subprocess
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import flopy
 from modflowapi import ModflowApi
@@ -226,7 +227,7 @@ mst ={
 
 # Parámetros para ADV (flopy.mf6.ModflowGwtadv)
 adv = {
-    "scheme" : "TVD" #"UPSTREAM"
+    "scheme" : "CENTRAL" #"CENTRAL"# "UPSTREAM" #"TVD" #
 }
 
 # Parámetros para DSP (flopy.mf6.ModflowGwtdsp)
@@ -321,6 +322,7 @@ times = [10.0, 20.0, 30.0, 40.0]
 U = []
 
 # Ciclo sobre tiempo
+end_time = 1 # Usaremos un solo paso de tiempo.
 while current_time < end_time:
     # Obtenemos el paso de tiempo
     dt = mf6.get_time_step()
@@ -333,6 +335,7 @@ while current_time < end_time:
     
     # Ciclo del algoritmo numérico de solución
     kiter = 0
+
     while kiter < max_iter:
 #        print("\nkiter :", kiter)
         
@@ -362,13 +365,18 @@ while current_time < end_time:
 
     # Obtenemos la solución obtenida por MF6 
     # (ojo: necesitamos hacer una copia del arreglo)
-    if current_time in times:
-        U.append(np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'TRANSPORT'))))
+#    if current_time in times:
+#        U.append(np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'TRANSPORT'))))
+    U.append(np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'TRANSPORT'))))
+
 #    q = mf6.get_value(mf6.get_var_address("SPDIS", "FLOW", "NPF"))
 
     A, _, _, _ = xmf6.api.build_mat(mf6)
     RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
 
+#    print("Q", RHS.shape, RHS)
+#    input("[ENTER]")
+    
 #    print(A)
     # --- Cálculo y almacenamiento de las lambdas ... ---
 #    lambdas1D, mixingWaters = WMA.mixingRatios1D(phys, grid, sim_flow["tdis"], head, q[:, 0])
@@ -378,11 +386,11 @@ while current_time < end_time:
 #    reactive_transport_wma(tr1d_exe)
 
 # Probar con 'SPDIS','SLN_1' o  'FLOW'
-component = ['TRANSPORT/ADV','SLN_1']
-for c in component:
-    for label in mf6.get_input_var_names():
-        if c in label:
-            print(label, end = "\n")
+#component = ['TRANSPORT/ADV','SLN_1']
+#for c in component:
+#    for label in mf6.get_input_var_names():
+#        if c in label:
+#            print(label, end = "\n")
 
 # Finalizamos la simulación completa
 try:
@@ -394,38 +402,45 @@ except:
 # Construcción de las matrices para generar las lambdas
 D = np.identity(ncol) * phys["porosity"]
 dt = tdis_t['perioddata'][0][0] / tdis_t['perioddata'][0][1]
-invA = np.linalg.inv(D/dt-A)
-LAMBDAS_IMP = invA.dot(D/dt)
-QinvA = invA.dot(RHS)
-lambdas1D = LAMBDAS_IMP
+
+DDD = A
+invA = np.linalg.inv(-A)#D/dt-A)
+LAMBDAS_IMP = invA.dot(np.identity(ncol))
+Q = np.zeros(RHS.shape)
+Q[0] = -(RHS[0]-U[0][0])
+print(U[0][0]*phys["porosity"], RHS[0])
+QinvA = invA.dot(Q)
+
+print(linea)
+print("LAMBDAS", LAMBDAS_IMP.shape, LAMBDAS_IMP)
+print("Q", Q.shape, Q)
+print("U", U[0].shape, U[0])
+print("D", D.shape, D)
+print("D/dt-A", A.shape, -A)
+print("dt", dt)
+print(linea)
+
+dummy = input("[ENTER]")
+QinvA = QinvA[:, np.newaxis]
+LAMBDAS_IMP = np.concatenate((QinvA, LAMBDAS_IMP), axis=1)
+LAMBDAS_IMP = np.concatenate((np.zeros((ncol,1)), LAMBDAS_IMP), axis=1)
+LAMBDAS_IMP = np.concatenate((np.ones((ncol,1))*ncol+2, LAMBDAS_IMP), axis=1)
+mixingRatios = LAMBDAS_IMP
+print("Mising Ratios", mixingRatios.shape, mixingRatios)
 
 mixingWaters = np.zeros((ncol,ncol+2))
 for j in range(0,ncol):
     for i in range (0,ncol+2):
         mixingWaters[j][i] = i+1
-    
+
 aux = np.linspace(3,ncol+2,ncol)
 aux = aux[:, np.newaxis]
 mixingWaters = np.concatenate((aux,  mixingWaters), axis=1)
 mixingWaters = mixingWaters.astype(np.int32)
 
-WMA.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
+WMA.save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
 
-print(linea)
-print("MATRIZ A")
-print(A)
-print(linea)
-print("MATRIZ D")
-print(D)
-print(linea)
-print("LAMBDAS_U")
-print(LAMBDAS_IMP)
-print(linea)
-print("LAMBDAS_INF")
-print(QinvA)
-print(linea)
-print("Finalizando la simulación")
-print(linea)
+
 
 # --- Cálculo del transporte reactivo
 reactive_transport_wma(tr1d_exe)
@@ -462,12 +477,15 @@ ax2.grid()
 # --- Gráfica 3. Concentración ---
 
 # Crear la gráfica en formato de líneas para ambos tiempos
-for t, u in zip(times, U):
-    ax3.plot(x[0], u, ls ="-", lw = 1.0, #c = "C1", 
+####for t, u in zip(times, U):
+####    ax3.plot(x[0], u, ls ="-", lw = 1.0, #c = "C1", 
+####             marker ="o", markersize="4", alpha = 0.75,
+####             label=f"t = {t} days", zorder=2)
+
+ax3.plot(x[0], U[0], ls ="-", lw = 1.0, #c = "C1", 
              marker ="o", markersize="4", alpha = 0.75,
-             label=f"t = {t} days", zorder=2)
-
-
+             label=f"t = {0} days", zorder=2)
+    
 # Obtención de los datos de concentración simulados para cada tiempo
 #conc_t1 = cobj.get_data(totim=t1).flatten()
 #conc_t2 = cobj.get_data(totim=t2).flatten()
@@ -494,10 +512,47 @@ ax3.set_xlim(0, 30)
 ax3.grid()
 
 # Ajusta el límite superior del eje Y basado en el valor máximo de ambos conjuntos de datos
-max_y = max(U[0].max(), U[1].max(), U[2].max(), U[3].max())
-ax3.set_ylim(0, max_y * 1.1)
-ax3.legend(fontsize=7)
+#max_y = max(U[0].max(), U[1].max(), U[2].max(), U[3].max())
+#ax3.set_ylim(0, max_y * 1.1)
+#ax3.legend(fontsize=7)
 
 plt.tight_layout()
 plt.show()
+
+dummy = input("\n\n Teclear <ENTER> para continuar ...")
+
+# --- ANÁLISIS DE LOS RESULTADOS ---
+
+# Tiempo seleccionado de hoja excel
+tsel=10
+
+# Archivo con los resultados de TR_1D.exe
+file_name='gypsum_eq.out'   
+file_path = os.path.join(working_dir, file_name)
+Res_contrsns_ini, Res_contrsns_fin = rF.import_results(file_path)
+
+# Lectura de datos de la tabla de excel
+WMA_I=pd.read_excel('comparativa_02.xlsx', sheet_name='c_2')     
+data_set_C2 = np.transpose(WMA_I.iloc[11:,5:95].to_numpy())
+
+# Calculamos el RMSE
+RMSE = np.linalg.norm(data_set_C2[tsel][:]-np.array(Res_contrsns_fin[1][:])) / np.sqrt(len(Res_contrsns_fin))
+
+# --- Gráfica de los resultados
+plt.figure(figsize=(6,4))
+plt.plot(x[0], data_set_C2[tsel][:], 
+         lw=0.5, ls="--", c="k", zorder=5)
+plt.scatter(x[0], Res_contrsns_fin[1][:], 
+            marker = "s", c = "mediumblue", s=30, label="TR_1D", zorder=5)
+plt.scatter(x[0], data_set_C2[tsel][:], 
+            marker = "o", c = "violet", s=15,label="Excel", zorder=5)
+plt.title(f"t = {tsel} días, RMSE = {RMSE:5.3e}")
+plt.xlabel("$x$ [$m$]")
+plt.ylabel("$c_2 [mgr/cm^{3}]$")
+plt.legend()
+plt.minorticks_on()
+plt.grid(True,which='major', color='darkgray', lw = 0.5)
+plt.grid(True, which='minor', color='silver', lw = 0.25)
+plt.show()
+
 
