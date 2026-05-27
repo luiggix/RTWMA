@@ -1,9 +1,9 @@
-import subprocess
+import os, subprocess
 #import resultsFortran as rF 
 import numpy as np
 linea = 50*chr(0x2015)
 
-def build(dis, tdis, phys, A, RHS, U, wma_lambdas_filename, silent = True):
+def build(dis, tdis, phys, A, RHS, U, paths, silent = True):
 
     print(linea)
     print("- Iniciando la construcción de las matrices lambda")
@@ -49,7 +49,7 @@ def build(dis, tdis, phys, A, RHS, U, wma_lambdas_filename, silent = True):
     mixingWaters = mixingWaters.astype(np.int32)
 
     print("\n- Guardando las proporciones de mezcla en el archivo: ")
-    save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
+    save_mixing(paths["wma_lambdas_filename"], mixingRatios, mixingWaters)
 
 def upwind_1D(i, h, q):
     
@@ -228,7 +228,7 @@ def build_dfc(phys, grid, tdis, head, qx):
     
     return mixingRatios, mixingWaters
     
-def save_mixing(wma_filename, mixingRatios, mixingWaters):
+def save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters):
 
     header1 = [
     "'TRANSPORT PROPERTIES'\n",
@@ -250,8 +250,8 @@ def save_mixing(wma_filename, mixingRatios, mixingWaters):
     "'----------------------------------------------------------------------------'\n",
     "'end'"
     ]
-    
-    with open(wma_filename, "w") as file:
+        
+    with open(wma_lambdas_filename, "w") as file:
         # Write the header
         file.writelines(header1)
         
@@ -268,13 +268,19 @@ def save_mixing(wma_filename, mixingRatios, mixingWaters):
     
         file.writelines(endfile)
     
-    print(f" {wma_filename}")
+    print(f" {wma_lambdas_filename}")
     
-def reactive_transport_wma(tr1d_exe, wma_working_dir):
+def reactive_transport_wma(paths):
+    #
+    # Creación del archivo "workingDirectory.txt" necesario para 
+    # la ejecución del programa "TR_1D_oper.exe"
+    with open(os.path.join(paths["wma_working_dir"], paths["wma_wdname"]), "w") as f:
+        f.write(paths["wma_working_dir"])
+    
     # Ejecución de "TR_1D_oper.exe"
     print(linea)
     print("\n- Ejecutando TR_1D_oper.exe\n")
-    result = subprocess.run([tr1d_exe], cwd = wma_working_dir, 
+    result = subprocess.run([paths["tr1d_exe"]], cwd = paths["wma_working_dir"], 
                             capture_output = True, text = True)
     
     # Output from the program

@@ -1,14 +1,14 @@
 import xmf6
 linea = 50*chr(0x2015)
 
-def build(phys, dis, mf6_exe, flow_name, flow_ws):
+def build(phys, dis, paths):
     # --- Diccionario para la inicialización de la simulación ---
     sim_flow = dict(
         # Parámetros de la simulación (flopy.mf6.MFSimulation)
         init = {
-            'sim_name' : flow_name,
-            'exe_name' : mf6_exe,
-            'sim_ws' : flow_ws
+            'sim_name' : paths["flow_name"],
+            'exe_name' : paths["mf6_exe"],
+            'sim_ws' : paths["flow_ws"]
         },
     
         # Parámetros para el tiempo (flopy.mf6.ModflowTdis)
@@ -27,7 +27,7 @@ def build(phys, dis, mf6_exe, flow_name, flow_ws):
     gwf_d = dict(
         # Parámetros para el modelo de flujo (flopy.mf6.ModflowGwf)
         gwf = { 
-            'modelname': flow_name,
+            'modelname': paths["flow_name"],
             'save_flows': True
         },
     
@@ -64,8 +64,8 @@ def build(phys, dis, mf6_exe, flow_name, flow_ws):
 
         # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwfoc)
         oc = {
-            'budget_filerecord': f"{flow_name}.bud",
-            'head_filerecord': f"{flow_name}.hds",
+            'budget_filerecord': f"{paths["flow_name"]}.bud",
+            'head_filerecord': f"{paths["flow_name"]}.hds",
             'saverecord': [("HEAD", "ALL"), ("BUDGET", "ALL")],
         }
     )

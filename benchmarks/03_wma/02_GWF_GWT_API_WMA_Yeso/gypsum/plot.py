@@ -6,7 +6,7 @@ import flopy
 import xmf6
 import os
 
-def show(o_sim_f, o_sim_t, wma_working_dir):
+def show(o_sim_f, o_sim_t, paths):
 
     # --- Recuperamos el nombre y el objeto del modelo de flujo
     flow_name = o_sim_f.model_names[0]
@@ -50,7 +50,7 @@ def show(o_sim_f, o_sim_t, wma_working_dir):
     ax2.set_xlim(0, 30)
     ax2.set_ylabel("Head")
     ax2.grid()
-    
+
     # --- Gráfica 3. Concentración ---
     ax3.plot(x[0], U, ls ="-", lw = 1.0, #c = "C1", 
                  marker ="o", markersize="4", alpha = 0.75,
@@ -71,15 +71,15 @@ def show(o_sim_f, o_sim_t, wma_working_dir):
     tsel=10
     
     # Archivo con los resultados de TR_1D.exe
-    file_name='gypsum_eq.out'   
-    file_path = os.path.join(wma_working_dir, file_name)
+#    file_name='gypsum_eq.out'   
+    file_path = os.path.join(paths["wma_working_dir"], paths["tr1d_ofile"])
     Res_contrsns_ini, Res_contrsns_fin = import_results(file_path)
 
-    file_path_dfc = os.path.join(wma_working_dir, 'gypsum_eq_dfc.out' )
+    file_path_dfc = os.path.join(paths["wma_working_dir"], paths["tr1d_ofile_dfc"])
     Res_contrsns_ini_dfc, Res_contrsns_fin_dfc = import_results(file_path_dfc)
 
     # Lectura de datos de la tabla de excel
-    WMA_I=pd.read_excel('comparativa_02.xlsx', sheet_name='c_2')     
+    WMA_I=pd.read_excel(paths["excel_data"], sheet_name='c_2')     
     data_set_C2 = np.transpose(WMA_I.iloc[11:,5:95].to_numpy())
     
     # Calculamos el RMSE

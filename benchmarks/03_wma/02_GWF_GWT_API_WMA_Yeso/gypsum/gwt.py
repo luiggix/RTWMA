@@ -1,14 +1,14 @@
 import xmf6
 linea = 50*chr(0x2015)
 
-def build(phys, dis, mf6_exe, tran_name, tran_ws):
+def build(phys, dis, paths):
     # --- Diccionario para la inicialización de la simulación ---
     sim_trans = dict(
         # Parámetros de la simulación (flopy.mf6.MFSimulation)
         init = {
-            'sim_name' : tran_name,
-            'exe_name' : mf6_exe,
-            'sim_ws' : tran_ws,
+            'sim_name' : paths["tran_name"],
+            'exe_name' : paths["mf6_exe"],
+            'sim_ws' : paths["tran_ws"],
         },
 
         # Parámetros para el tiempo (flopy.mf6.ModflowTdis)
@@ -28,7 +28,7 @@ def build(phys, dis, mf6_exe, tran_name, tran_ws):
     gwt_d = dict(
         # Parámetros para el modelo de transporte (flopy.mf6.ModflowGwt)
         gwt = { 
-            'modelname': tran_name,
+            'modelname': paths["tran_name"],
             'save_flows': True
         },
     
@@ -60,8 +60,8 @@ def build(phys, dis, mf6_exe, tran_name, tran_ws):
 
         # Parámetros para FMI (flopy.mf6.ModflowGwtfmi)
         fmi = {
-            "packagedata" : [("GWFHEAD", "flow.hds", None),
-                             ("GWFBUDGET", "flow.bud", None),
+            "packagedata" : [("GWFHEAD", f"{paths["flow_name"]}.hds", None),
+                             ("GWFBUDGET", f"{paths["flow_name"]}.bud", None),
                             ]   
         },
 
@@ -85,8 +85,8 @@ def build(phys, dis, mf6_exe, tran_name, tran_ws):
 
         # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwtoc)
         oc = {
-            'budget_filerecord': f"{tran_name}.cbc",
-            'concentration_filerecord': f"{tran_name}.ucn",
+            'budget_filerecord': f"{paths["tran_name"]}.cbc",
+            'concentration_filerecord': f"{paths["tran_name"]}.ucn",
             'saverecord' : [("CONCENTRATION", "ALL"), ("BUDGET", "LAST")],
             'printrecord' : [("CONCENTRATION", "LAST"), ("BUDGET", "LAST")],
         },

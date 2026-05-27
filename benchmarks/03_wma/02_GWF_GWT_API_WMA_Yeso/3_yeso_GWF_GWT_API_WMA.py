@@ -1,36 +1,39 @@
 import os
 import numpy as np
 import xmf6
-import yeso_gwf, yeso_gwt, yeso_api, yeso_wma, yeso_plot
+from gypsum import gwf, gwt, api, wma, plot
 linea = 50*chr(0x2015)
-
 #
 # --- DEFINICIÓN DE LAS RUTAS Y NOMBRES ---
 #
-# Ejecutable de Modflow
-# WINDOWS
-mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
-mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
-# MACOSARM
-#mf6_exe = r"../../../bin/macosarm/mf6"
-#mf6_dll = r"../../../bin/macosarm/libmf6.dylib"
-#
-# Directorio de trabajo para WMA
-wma_working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
-#working_dir = r"../RT-EXE"
-#
-# Archivo para almacenar las proporciones de mezcla 
-wma_lambdas_filename = os.path.join(wma_working_dir, 
-                                    "input", "gypsum_eq", 
-                                    "WMA_lambdas_gypsum_eq.dat")
-#
-# Creación del archivo "workingDirectory.txt" necesario para 
-# la ejecución del programa "TR_1D_oper.exe"
-with open(os.path.join(wma_working_dir, "workingDirectory.txt"), "w") as f:
-    f.write(wma_working_dir)
+paths = dict(
+    # Ejecutable de Modflow: WINDOWS
+    mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6",
+    mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll",
+    #
+    # Directorio de trabajo para WMA
+    wma_working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE",
+    wma_wdname = "workingDirectory.txt",
+    #
+    # Archivo de salida de "TR_1D_oper.exe"
+    tr1d_ofile='gypsum_eq.out',
+    tr1d_ofile_dfc = 'gypsum_eq_dfc.out',
+    excel_data = 'comparativa_02.xlsx',
+    #
+    # Nombre de los modelos y espacios de trabajo
+    flow_name = "flow",
+    flow_ws = "output_api",
+    tran_name = "transport",
+    tran_ws = "output_api"
+)
 #
 # Ejecutable "TR_1D_oper.exe"
-tr1d_exe = os.path.join(wma_working_dir, "TR_1D_oper.exe")
+paths["tr1d_exe"] = os.path.join(paths["wma_working_dir"], "TR_1D_oper.exe")
+#
+# Archivo para almacenar las proporciones de mezcla 
+paths["wma_lambdas_filename"] = os.path.join(paths["wma_working_dir"], 
+                                             "input", "gypsum_eq", 
+                                             "WMA_lambdas_gypsum_eq.dat")
 #
 # --- DATOS PARA LA SIMULACIÓN ---
 #
@@ -73,19 +76,13 @@ phys = dict(
 )
 xmf6.nice_print(phys, "Parámetros físicos")
 #
-# Nombre de los modelos y espacios de trabajo
-flow_name = "flow"
-flow_ws = "output_api"
-tran_name = "transport"
-tran_ws = "output_api"
-#
 #
 __dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
 # - SIMULACIÓN DE FLUJO CON GWF ---
 #
 # --- Construcción de la simulación de flujo
-o_sim_f = yeso_gwf.build(phys, dis, mf6_exe, flow_name, flow_ws)
+o_sim_f = gwf.build(phys, dis, paths)
 #
 # --- Ejecución de la simulación ---
 print("- Ejecutando GWF")
@@ -95,10 +92,10 @@ __dummy = input("\nTeclea [ENTER] para continuar\n")
 #
 # - SIMULACIÓN DE TRANSPORTE CON GWT + API ---
 #
-o_sim_t = yeso_gwt.build(phys, dis, mf6_exe, tran_name, tran_ws)
+o_sim_t = gwt.build(phys, dis, paths)
 #
 # --- Ejecución de la API ---
-A, RHS, U = yeso_api.build(o_sim_t, mf6_dll)
+A, RHS, U = api.run(o_sim_t, paths)
 #
 __dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
@@ -116,11 +113,11 @@ if DFC == "S":
     qx, qy, qz, n_q = xmf6.gwf.get_specific_discharge(o_gwf, text="DATA-SPDIS")
     print(head[0,0])
     print(qx[0,0])
-    mixingRatios, mixingWaters = yeso_wma.build_dfc(phys, grid, tdis, head[0,0], qx[0,0])
-    yeso_wma.save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
-    yeso_wma.reactive_transport_wma(tr1d_exe, wma_working_dir)
-    file_name = os.path.join(wma_working_dir,'gypsum_eq.out')
-    file_dfc = os.path.join(wma_working_dir,'gypsum_eq_dfc.out')
+    mixingRatios, mixingWaters = wma.build_dfc(phys, grid, tdis, head[0,0], qx[0,0])
+    wma.save_mixing(paths, mixingRatios, mixingWaters)
+    wma.reactive_transport_wma(paths)
+    file_name = os.path.join(paths["wma_working_dir"], tr1d_ofile)
+    file_dfc = os.path.join(paths["wma_working_dir"], tr1d_ofile_dfc)
     print("- Renombrando archivo:")
     print(f"  Archivo original: {file_name}")
     print(f"  Archivo nuevo   : {file_dfc}")
@@ -131,19 +128,19 @@ __dummy = input("\nTeclea [ENTER] para continuar\n")
 print(linea)
 #
 # --- Usando GWT + API
-yeso_wma.build(dis, tdis, phys, A, RHS, U, wma_lambdas_filename, silent=True)
+wma.build(dis, tdis, phys, A, RHS, U, paths, silent=True)
 #
 __dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
 # - CÁLCULO DE TRANSPORTE REACTIVO
 #
-yeso_wma.reactive_transport_wma(tr1d_exe, wma_working_dir)
+wma.reactive_transport_wma(paths)
 #
 __dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
 # - ANÁLISIS DE RESULTADOS
 #
-yeso_plot.show(o_sim_f, o_sim_t, wma_working_dir)
+plot.show(o_sim_f, o_sim_t, paths)
 
 print(linea)
 print("- FIN DE LA SIMULACIÓN -")

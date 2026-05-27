@@ -6,18 +6,18 @@ linea = 50*chr(0x2015)
 
 # --- EJECUCIÓN CON LA API ---
 
-def build(o_sim, mf6_dll, VARNAME = "TRANSPORT"):
+def run(o_sim, paths, VARNAME = "TRANSPORT"):
 
     print(linea)
     print("- Incializando la API")
     
     # Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
-    print("Shared library:", mf6_dll)
+    print("Shared library:", paths["mf6_dll"])
     print("Config file:", mf6_config_file)
 
     # Objeto para acceder a toda la funcionalidad de la API
-    mf6 = ModflowApi(mf6_dll, working_directory=o_sim.sim_path)
+    mf6 = ModflowApi(paths["mf6_dll"], working_directory=o_sim.sim_path)
     
     # Inicialización del modelo
     mf6.initialize(mf6_config_file)
