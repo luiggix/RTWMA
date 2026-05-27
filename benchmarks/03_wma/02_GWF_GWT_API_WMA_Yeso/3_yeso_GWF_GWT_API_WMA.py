@@ -8,11 +8,14 @@ linea = 50*chr(0x2015)
 #
 paths = dict(
     # Ejecutable de Modflow: WINDOWS
-    mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6",
-    mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll",
+#    mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6",
+#    mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll",
+    mf6_exe = r"../../../bin/macosarm/mf6",
+    mf6_dll = r"../../../bin/macosarm/libmf6.dylib",    
     #
     # Directorio de trabajo para WMA
-    wma_working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE",
+#    wma_working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE",
+    wma_working_dir = r"../RT-EXE/",
     wma_wdname = "workingDirectory.txt",
     #
     # Archivo de salida de "TR_1D_oper.exe"
@@ -34,6 +37,7 @@ paths["tr1d_exe"] = os.path.join(paths["wma_working_dir"], "TR_1D_oper.exe")
 paths["wma_lambdas_filename"] = os.path.join(paths["wma_working_dir"], 
                                              "input", "gypsum_eq", 
                                              "WMA_lambdas_gypsum_eq.dat")
+xmf6.nice_print(paths, "Rutas y nombres de archivos")
 #
 # --- DATOS PARA LA SIMULACIÓN ---
 #
