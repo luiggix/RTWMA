@@ -25,9 +25,9 @@ paths = dict(
     #
     # Nombre de los modelos y espacios de trabajo
     flow_name = "flow",
-    flow_ws = "output_api",
+    flow_ws = "output_gwf_gwt_api_wma",
     tran_name = "transport",
-    tran_ws = "output_api"
+    tran_ws = "output_gwf_gwt_api_wma"
 )
 #
 # Ejecutable "TR_1D_oper.exe"

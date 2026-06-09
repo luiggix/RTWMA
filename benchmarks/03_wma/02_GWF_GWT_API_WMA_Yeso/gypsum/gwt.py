@@ -48,7 +48,7 @@ def build(phys, dis, paths):
 
         # Parámetros para ADV (flopy.mf6.ModflowGwtadv)
         adv = {
-            "scheme" : "CENTRAL" #"CENTRAL"# "UPSTREAM" #"TVD" #
+            "scheme" : "UPSTREAM" #"CENTRAL"# "UPSTREAM" #"TVD" #
         },
 
         # Parámetros para DSP (flopy.mf6.ModflowGwtdsp)
