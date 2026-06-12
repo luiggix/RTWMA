@@ -15,7 +15,7 @@ def show_f(o_gwf, head, x, y, z):
     # --- Gráfica 1. Malla ---
     pmv = flopy.plot.PlotMapView(o_gwf, ax=ax[0])
     pmv.plot_grid(colors='dimgray', lw=0.5)
-    ax[0].set_yticks(ticks=[0, 0.1])#, fontsize=8)
+    ax[0].set_yticks(ticks=[0, 1.0])#, fontsize=8)
     ax[0].set_title("Mesh")
     
     # --- Gráfica 2. Carga hidráulica---
@@ -25,15 +25,18 @@ def show_f(o_gwf, head, x, y, z):
     ax[1].set_ylabel("Head")
     ax[1].grid()
 
-def show_t(U, m, x, y, z):
+def show_t(U, labels, x, y, z):
+    ncomp = len(labels)
     # --- Gráficas de las concentraciones ---
-    plt.figure(figsize=(6,2))
-    plt.plot(x[0], U, ls ="-", lw = 1.0, c = f"C{m}", 
+    plt.figure(figsize=(6,5))
+    for m in range(0,ncomp):
+        plt.plot(x[0], U[m], ls ="-", lw = 1.0, c = f"C{m}", 
                  marker ="o", markersize="4", alpha = 0.75,
-                 label=f"t = {0} days", zorder=2)
-#    plt.xlabel("Distance (m)")
-    plt.ylabel(f"Concentration - C{m+1}")
-    plt.gca().yaxis.set_major_formatter('{x:6.3e}') 
+                 label=labels[m], zorder=2)
+    plt.xlabel("Distance (m)")
+    plt.ylabel(f"Concentration")
+#    plt.gca().yaxis.set_major_formatter('{x:5.2e}') 
     plt.xlim(0, 1.0)
+    plt.legend(loc='best', bbox_to_anchor=(0.95, 0.5, 0.5, 0.5))
     plt.grid()
     plt.show()

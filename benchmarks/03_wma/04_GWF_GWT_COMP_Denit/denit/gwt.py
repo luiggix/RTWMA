@@ -1,7 +1,7 @@
 import xmf6
 linea = 50*chr(0x2015)
 
-def build(phys, dis, m, paths):
+def build(phys, dis, m, paths, silent = True):
     # --- Diccionario para la inicialización de la simulación ---
     sim_trans = dict(
         # Parámetros de la simulación (flopy.mf6.MFSimulation)
@@ -15,7 +15,7 @@ def build(phys, dis, m, paths):
         tdis = {
             'units': "days",
             'nper' : 1,
-            'perioddata': [(1.0, 1, 1.0)] #PERLEN, NSTP, TSMULT
+            'perioddata': phys["perioddata"]
         },
 
         # Parámetros para la solución numérica (flopy.mf6.ModflowIms)
@@ -98,8 +98,10 @@ def build(phys, dis, m, paths):
     o_obs = xmf6.common.set_obs(o_gwt, gwt_d['obs'], silent = True)
 
     # --- Escritura de archivos ---
-    print(linea)
-    print("- Escribiendo archivos de entrada para GWT")
-    o_sim.write_simulation(silent = True)
+    if not silent:
+        print(linea)
+        print("- Escribiendo archivos de entrada para GWT")
+        
+    o_sim.write_simulation(silent = silent)
 
     return(o_sim)
