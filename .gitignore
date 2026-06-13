@@ -138,3 +138,4 @@ bin/linux/libmf6.so
 # Archivos de salida de MODFLOW 6
 output*/
 sandbox*/
+DENIT_DRIVE/
