@@ -25,7 +25,7 @@ def show_f(o_gwf, head, x, y, z):
     ax[1].set_ylabel("Head")
     ax[1].grid()
 
-def show_t(U, labels, x, y, z, yscale = "linear"):
+def show_t(U, labels, x, y, z, title, yscale = "linear"):
     ncomp = len(labels)
     # --- Gráficas de las concentraciones ---
     plt.figure(figsize=(6,5))
@@ -33,6 +33,7 @@ def show_t(U, labels, x, y, z, yscale = "linear"):
         plt.plot(x[0], U[m], ls ="-", lw = 1.0, c = f"C{m}", 
                  marker ="o", markersize="4", alpha = 0.75,
                  label=labels[m], zorder=2)
+    plt.title(title)
     plt.xlabel("Distance (m)")
     plt.ylabel(f"Concentration")
 #    plt.gca().yaxis.set_major_formatter('{x:5.2e}') 
@@ -40,4 +41,5 @@ def show_t(U, labels, x, y, z, yscale = "linear"):
     plt.xlim(0, 1.0)
     plt.legend(loc='best', bbox_to_anchor=(0.95, 0.5, 0.5, 0.5))
     plt.grid()
+#    plt.savefig(f"{labels[m]}.png")
     plt.show()

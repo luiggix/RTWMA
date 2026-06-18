@@ -48,7 +48,7 @@ def build(phys, dis, m, paths, silent = True):
 
         # Parámetros para ADV (flopy.mf6.ModflowGwtadv)
         adv = {
-            "scheme" : "TVD" #"CENTRAL"# "UPSTREAM" #"TVD" #
+            "scheme" : "UPSTREAM" #"CENTRAL"# "UPSTREAM" #"TVD" #
         },
 
         # Parámetros para DSP (flopy.mf6.ModflowGwtdsp)
@@ -101,7 +101,14 @@ def build(phys, dis, m, paths, silent = True):
     if not silent:
         print(linea)
         print("- Escribiendo archivos de entrada para GWT")
-        
+
+#    print(linea)
+#    print(gwt_d["dsp"])
+#    print(phys["dispersion_coefficient"])
+#    print(m)
+#    print(phys['initial_concentration'][m])
+#    print(linea)
+    
     o_sim.write_simulation(silent = silent)
 
     return(o_sim)

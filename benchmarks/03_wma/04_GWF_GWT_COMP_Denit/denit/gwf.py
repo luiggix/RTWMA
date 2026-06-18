@@ -23,7 +23,7 @@ def build(phys, dis, m, paths, silent = True):
     )
 
     # --- Diccionario para la simulación de flujo ---
-    volume = dis['delc'] * dis['delr'] * (dis['top'] - dis['botm'])
+    area = dis['delc'] * (dis['top'] - dis['botm'])
     gwf_d = dict(
         # Parámetros para el modelo de flujo (flopy.mf6.ModflowGwf)
         gwf = { 
@@ -55,7 +55,7 @@ def build(phys, dis, m, paths, silent = True):
         # Parámetros para las propiedades de los pozos (flopy.mf6.ModflowGwfwel)
         well = {
             'stress_period_data': [[(0, 0, 0), 
-                                    phys["specific_discharge"] * volume, 
+                                    phys["inflow"] * area, 
                                     phys["source_concentration"][m],]],
             'pname': "WEL-1",
             'auxiliary' : ["CONCENTRATION"],
@@ -78,7 +78,13 @@ def build(phys, dis, m, paths, silent = True):
     if not silent:
         print(linea)
         print("- Escribiendo archivos de entrada para GWF")
-    
+
+#    print(linea)
+#    print(m)
+#    print(phys["specific_discharge"] * volume)
+#    print(phys["source_concentration"][m])
+#    print(linea)
+
     o_sim.write_simulation(silent = silent)
 
     return(o_sim)
