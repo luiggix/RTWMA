@@ -88,6 +88,6 @@ def initial_conditions(paths, spec = False, comp = False):
         # Concentración de cada componente que proviene del exterior
         key_string = "Aqueous variable activity species concentrations of external waters:"
         i = find_index(lines, key_string, 2)
-        species["ext_water"] = [float(sw) for sw in lines[i:i+ncomp]]
+        species["ext_water"] = [float(sw) for sw in lines[i:i+nspec]]
         
     return components, species

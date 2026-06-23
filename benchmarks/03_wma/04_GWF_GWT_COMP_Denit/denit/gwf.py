@@ -56,7 +56,7 @@ def build(phys, dis, m, paths, silent = True):
         well = {
             'stress_period_data': [[(0, 0, 0), 
                                     phys["inflow"] * area, 
-                                    phys["source_concentration"][m],]],
+                                    phys["s_source_concentration"][m],]],
             'pname': "WEL-1",
             'auxiliary' : ["CONCENTRATION"],
 #            'save_flows': True
