@@ -262,7 +262,7 @@ while current_time < end_time:
     print("\n- Calculando las 𝜆's\n")
 
     lambdas1D, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head, q[:, 0])
-    print(lambdas1D)
+    #print(lambdas1D)
 
     # --- Almacenamiento de las proporciones de mezcla --- 
     print(f"\n - Escribiendo las 𝜆's")

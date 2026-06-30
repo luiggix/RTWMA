@@ -147,17 +147,7 @@ def mixingRatios1D(phys, grid, tdis, head, qx):
     invA = np.linalg.inv(D/dt-A)            
     LAMBDAS_IMP = invA.dot(D/dt)
     QinvA = invA.dot(Q)
-
-    print("-"*50)
-    print("LAMBDAS", LAMBDAS_IMP.shape, LAMBDAS_IMP)
-    print("Q", Q.shape, Q)
-    print("D", D.shape, D)
-    print("D/dt-A", DDD.shape, DDD)
-    print("dt", dt)
-    print("-"*50)
-    
-    dummy = input("[ENTER]")
-    
+        
     for i in range(0, nx):    
         SUM_COMPLEMENT[i] = QinvA[i]+LAMBDAS_IMP[i, :].sum()
     

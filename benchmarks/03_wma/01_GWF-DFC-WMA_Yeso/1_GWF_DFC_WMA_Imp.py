@@ -197,7 +197,7 @@ print("\n- Discretización con DFC")
 print("\n- Calculando las 𝜆's\n")
 
 mixingRatios, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head[0][0][:], qx[0][0][:])
-print("Mising Ratios", mixingRatios.shape, mixingRatios)
+#print("Mixing Ratios", mixingRatios.shape, mixingRatios)
 
 # --- Almacenamiento de las proporciones de mezcla --- 
 print("\n- Escribiendo las 𝜆's")
