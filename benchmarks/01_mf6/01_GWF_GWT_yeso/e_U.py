@@ -2,7 +2,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
-import gwfExch, gwtExch, Vis_exch
+import e_gwf, e_gwt
+import vis
 import xmf6
 linea = 50*chr(0x2015)
 
@@ -105,13 +106,13 @@ print(linea)
 print(" Ejecución de la función gwf.build(...)")
 print(linea)
 # Escritura de los archivos de entrada para la simulación.
-o_gwf = gwfExch.build(paths, o_sim, phys, dis, silent = False) 
+o_gwf = e_gwf.build(paths, o_sim, phys, dis, silent = False) 
 
 print(linea)
 print("Ejecución de la función gwt.build(...)")
 print(linea)
 # Escritura de los archivos de entrada para la simulación.
-o_gwt = gwtExch.build(paths, o_sim, phys, dis, silent = False) 
+o_gwt = e_gwt.build(paths, o_sim, phys, dis, silent = False) 
 
 # Agregamos el objeto del intercambio entre los modelos.
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
@@ -132,6 +133,6 @@ print(linea)
 o_sim.run_simulation(silent = False)
 print(linea)
 
-x, head, qx, qy, o_conc, times_c = Vis_exch.data_recovery(o_gwf, o_gwt)
+x, head, qx, qy, o_conc, times_c = vis.data_recovery(o_gwf, o_gwt)
 
-Vis_exch.plot(o_gwf, x, head, qx, qy, o_conc, times_c)
+vis.plot(o_gwf, x, head, qx, qy, o_conc, times_c)

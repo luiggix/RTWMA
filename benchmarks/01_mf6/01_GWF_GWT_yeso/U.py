@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import flopy
 import gwf, gwt
+import vis
 import xmf6
 linea = 50*chr(0x2015)
 
@@ -113,3 +114,7 @@ print(linea)
 # Ejecución de la simulación de flujo.
 o_sim_t.run_simulation(silent = False)
 print(linea)
+
+x, head, qx, qy, o_conc, times_c = vis.data_recovery(o_gwf, o_gwt)
+
+vis.plot(o_gwf, x, head, qx, qy, o_conc, times_c)
