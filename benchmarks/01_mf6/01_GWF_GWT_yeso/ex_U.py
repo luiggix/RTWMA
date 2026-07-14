@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
-import e_gwf, e_gwt
+import ex_gwf, ex_gwt
 import vis
 import xmf6
 linea = 50*chr(0x2015)
@@ -76,7 +76,7 @@ paths = dict(
     #
     # Nombre de los modelos y espacios de trabajo
     sim_name = "flow_trans",
-    sim_ws = "output_gwf_Uexch",
+    sim_ws = "output_Uexch",
     flow_name = "flow",
     tran_name = "transport",
 )
@@ -106,13 +106,13 @@ print(linea)
 print(" Ejecución de la función gwf.build(...)")
 print(linea)
 # Escritura de los archivos de entrada para la simulación.
-o_gwf = e_gwf.build(paths, o_sim, phys, dis, silent = False) 
+o_gwf = ex_gwf.build(paths, o_sim, phys, dis, silent = False) 
 
 print(linea)
 print("Ejecución de la función gwt.build(...)")
 print(linea)
 # Escritura de los archivos de entrada para la simulación.
-o_gwt = e_gwt.build(paths, o_sim, phys, dis, silent = False) 
+o_gwt = ex_gwt.build(paths, o_sim, phys, dis, silent = False) 
 
 # Agregamos el objeto del intercambio entre los modelos.
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
