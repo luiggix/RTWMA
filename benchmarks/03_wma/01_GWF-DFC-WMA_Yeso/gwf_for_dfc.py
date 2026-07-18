@@ -1,7 +1,4 @@
-#import xmf6
-#linea = 50*chr(0x2015)
-
-#import os
+import os
 import flopy
 
 def build(paths, tdis, phys, dis, silent = False):
@@ -95,7 +92,3 @@ def build(paths, tdis, phys, dis, silent = False):
     o_sim.write_simulation(silent = silent)
     
     return o_sim, o_gwf
-
-
-
-    

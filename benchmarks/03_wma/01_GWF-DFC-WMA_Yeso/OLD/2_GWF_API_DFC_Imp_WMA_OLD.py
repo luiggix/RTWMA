@@ -3,8 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import flopy
+from modflowapi import ModflowApi
 import xmf6
-import WMA_1D as WMA
+import wma_1D as wma
 import resultsFortran as rF 
 linea = 50*chr(0x2015)
 
@@ -12,6 +13,7 @@ linea = 50*chr(0x2015)
 
 # Ejecutable de Modflow
 mf6_exe = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\mf6"
+mf6_dll = r"C:\Users\luiggi\Documents\GitSites\mf6_tutorial\mf6\windows\libmf6.dll"
 
 # Directorio de trabajo para WMA
 working_dir = r"C:\Users\luiggi\Documents\GitSites\RTWMA\benchmarks\03_wma\RT-EXE"
@@ -36,7 +38,7 @@ def reactive_transport_wma(tr1d_exe):
     result = subprocess.run([tr1d_exe], cwd = working_dir, 
                             capture_output = True, text = True)
     
-    # Salida de "TR_1D_oper.exe"
+    # Output from the program
     print("Standard Output:", result.stdout)
     print("Standard Error:", result.stderr)
 
@@ -79,7 +81,7 @@ sim_flow = dict(
     # Parámetros de la simulación (flopy.mf6.MFSimulation)
     init = {
         'sim_name' : sim_name,
-        'exe_name' : mf6_exe,
+#        'exe_name' : mf6_exe,
         'sim_ws' : "output"
     },
     
@@ -153,66 +155,140 @@ gwf_d = dict(
 xmf6.nice_print(sim_flow["tdis"], "Discretización del tiempo para GWF")
 
 # --- Inicialización de la simulación ---
-o_sim = xmf6.common.init_sim(silent = True, **sim_flow)
-o_gwf, packages = xmf6.gwf.set_packages(o_sim, silent = True, **gwf_d)
+o_sim_f = xmf6.common.init_sim(silent = True, **sim_flow)
+o_gwf, packages = xmf6.gwf.set_packages(o_sim_f, silent = True, **gwf_d)
 
 # --- Escritura de archivos ---
 
 print(linea)
-print("Iniciando GWF".center(50))
+print("Iniciando GWF con la API".center(50))
 print(linea)
 print("\n- Escribiendo archivos de entrada para GWF")
-o_sim.write_simulation(silent = True)
+o_sim_f.write_simulation(silent = True)
 
-# --- Ejecución de la simulación ---
-print("\n- Ejecutando GWF y escribiendo archivos")
-o_sim.run_simulation(silent = True)
+# --- EJECUCIÓN CON LA API ---
+# Rutas a la biblioteca compartida y al archivo de configuración
+mf6_config_file = os.path.join(o_sim_f.sim_path, 'mfsim.nam')
+print("\n- Shared library:", mf6_dll)
+print("\n- Config file:", mf6_config_file)
 
-# --- Recuperamos los resultados de flujo de la simulación ---
-head = xmf6.gwf.get_head(o_gwf)
-qx, qy, qz, n_q = xmf6.gwf.get_specific_discharge(o_gwf, text="DATA-SPDIS")
+# Objeto para acceder a toda la funcionalidad de la API
+mf6 = ModflowApi(mf6_dll, working_directory=o_sim_f.sim_path)
 
-print("\n- Descarga específica", qx.shape)
-print(qx)
-print("\n- Carga hidráulica", head.shape)
-print(head)
+# Inicialización del modelo
+mf6.initialize(mf6_config_file)
 
-# --- Recuperamos las coordenadas del dominio
+# Obtenemos el tiempo actual y el tiempo final de la simulación
+current_time = mf6.get_current_time()
+end_time = mf6.get_end_time()
+
+# Máximo número de iteraciones para el algorimo de solución numérica
+max_iter = mf6.get_value(mf6.get_var_address("MXITER", "SLN_1"))
+
+# --- Recuperamos datos de la malla ---
 grid = o_gwf.modelgrid
 x, y, z = grid.xyzcellcenters
 
-print(linea)
-print("Iniciando DFC".center(50))
-print(linea)
+print(f"\n ---> Tiempo actual  = {current_time}")
+print(f" ---> Tiempo total   = {end_time}")
+print(f" ---> Iter (solver) = {max_iter}")
 
 tdis = {
         'units': "days",
         'nper' : 1,
         'perioddata': [(40.0, 40, 1.0)]
 }
-xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
 
-# --- Cálculo de las lambdas ... ---
-print("\n- Discretización con DFC")
-print("\n- Calculando las 𝜆's\n")
-
-mixingRatios, mixingWaters = WMA.mixingRatios1D(phys, grid, tdis, head[0][0][:], qx[0][0][:])
-#print("Mixing Ratios", mixingRatios.shape, mixingRatios)
-
-# --- Almacenamiento de las proporciones de mezcla --- 
-print("\n- Escribiendo las 𝜆's")
-WMA.save_mixing(wma_lambdas_filename, mixingRatios, mixingWaters)
-
-# --- Cálculo del transporte reactivo
+print()
 print(linea)
-print("Iniciando WMA".center(50))
+print("Iniciando ciclo de la API para GWF".center(50))
 print(linea)
-reactive_transport_wma(tr1d_exe)
+
+while current_time < end_time:
+    # Preparar el paso de tiempo 
+    mf6.prepare_time_step(mf6.get_time_step())
+
+    # Preparar la solución
+    mf6.prepare_solve()
+
+    print("\n ---> dt:", mf6.get_time_step(), ", t:", current_time, ", end_t:", end_time)
+
+    # Ciclo del algoritmo numérico de solución
+    kiter = 0
+    while kiter < max_iter:
+        print("\nkiter :", kiter)
+        
+        # Construir el sistema del problema y lo resolverlo
+        has_converged = mf6.solve(1)
+        
+        if has_converged:
+            print(f" ---> ¿Convergencia obtenida? : {has_converged}")
+            break
+        else:
+            print(f" ---> ¿Convergencia obtenida? : {has_converged}")
+            
+        kiter += 1
+        
+    # Finalizamos la solución del paso de tiempo actual
+    mf6.finalize_solve()
+
+    # Finalizamos el paso de tiempo actual. 
+    mf6.finalize_time_step()
+
+    # Avanzamos en el tiempo
+    current_time = mf6.get_current_time()
+
+    if not has_converged:
+        print("model did not converge")
+        break
+
+    # Recuperamos la solución obtenida por MF6 
+    # (ojo: necesitamos hacer una copia del arreglo)
+    head = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'FLOW')))
+    q = mf6.get_value(mf6.get_var_address("SPDIS", "FLOW", "NPF"))
+    
+    print("\n- Descarga específica", q[:,0].shape)
+    print(q[:,0])
+    print("\n- Carga hidráulica", head.shape)
+    print(head)
+
+    print()
+    print("Iniciando DFC (dentro del ciclo)".center(50))
+    print(linea)
+    xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
+
+    # --- Cálculo de las lambdas ... ---
+    print("\n- Discretización con DFC")
+    print("\n- Calculando las 𝜆's\n")
+
+    lambdas1D, mixingWaters = wma.mixingRatios1D(phys, grid, tdis, head, q[:, 0])
+    #print(lambdas1D)
+
+    # --- Almacenamiento de las proporciones de mezcla --- 
+    print(f"\n - Escribiendo las 𝜆's")
+    wma.save_mixing(wma_lambdas_filename, lambdas1D, mixingWaters)
+    print()
+
+    # --- Cálculo del transporte reactivo
+    print("Iniciando WMA (dentro del ciclo)".center(50))
+    print(linea)
+    reactive_transport_wma(tr1d_exe)
+    print(linea)
+
+    print(f"\n ---> t: {current_time}, end_t: {end_time}\n")
+
+# Finalizamos la simulación completa
+try:
+    mf6.finalize()
+    success = True
+except:
+    raise RuntimeError
+
+print(linea)
+print("Finalizando el ciclo de la API".center(50))
 print(linea)
 
 dummy = input("\n\n Teclear <ENTER> para continuar ...")
-
-# --- ANÁLISIS DE LOS RESULTADOS ---
 
 # Tiempo seleccionado de hoja excel
 tsel=10

@@ -10,10 +10,10 @@ def data_recovery(o_gwf, o_gwt):
     # Tiempos calculados para el flujo.
     times_h = np.array(o_head.get_times())
     
-    # Recuperamos la carga hidráulica
+    # Recuperamos la carga hidráulica del paso 40.
     head = o_head.get_data(totim=40)[0, 0, :]
     
-    # Recuperamos la descarga específica
+    # Recuperamos la descarga específica del paso 40.
     budget = o_gwf.output.budget()
     spdis = budget.get_data(totim=40, text="DATA-SPDIS")[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
@@ -82,5 +82,30 @@ def plot(o_gwf, x, head, qx, qy, o_conc, times_c):
     ax3.legend(fontsize=7)
     ax3.grid()
     
+    plt.tight_layout()
+    plt.show()
+
+def plot_obs(o_conc, times_c):
+    U_5 = np.array([o_conc.get_data(totim=t)[0, 0, 4] for t in times_c])
+    U_11 = np.array([o_conc.get_data(totim=t)[0, 0, 10] for t in times_c])
+    U_12 = np.array([o_conc.get_data(totim=t)[0, 0, 11] for t in times_c])
+    U_30 = np.array([o_conc.get_data(totim=t)[0, 0, 29] for t in times_c])
+    
+    fig, ax = plt.subplots(3,1, sharex = True, figsize=(7, 4.5))
+    fig.suptitle("Concentración $U$")
+    
+    ax[0].plot(times_c, U_5, lw=2,marker="o",markersize="2",c="C0",label="$x_5$")
+    ax[0].grid()
+    ax[0].legend()
+    
+    ax[1].plot(times_c, U_11, lw=2,marker="o",markersize="2",c="C1",label="$x_{11}$")
+    ax[1].plot(times_c, U_12, lw=2,marker="o",markersize="2",c="C2",label="$x_{12}$")
+    ax[1].grid()
+    ax[1].legend()
+    
+    ax[2].plot(times_c, U_30, lw=2,marker="o",markersize="2",c="C3",label="$x_{30}$")
+    ax[2].grid()
+    ax[2].legend()
+    ax[2].set_xlabel("tiempo (dias)")
     plt.tight_layout()
     plt.show()

@@ -83,6 +83,8 @@ paths = dict(
 xmf6.nice_print(paths, "Rutas, archivos y más ...")
 
 # --- COMPONENTES ---
+# Simulación y discretización temporal. 
+# Los objetos 'o_sim' y 'o_tdis' se comparte por ambos modelos.
 
 # Creación del objeto de la simulación de flujo
 o_sim = flopy.mf6.MFSimulation(
@@ -116,7 +118,10 @@ o_gwt = ex_gwt.build(paths, o_sim, phys, dis, silent = False)
 
 # Agregamos el objeto del intercambio entre los modelos.
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
-    o_sim, exgtype="GWF6-GWT6", exgmnamea=o_gwf.name, exgmnameb=o_gwt.name,
+    o_sim, 
+    exgtype="GWF6-GWT6", 
+    exgmnamea=o_gwf.name, 
+    exgmnameb=o_gwt.name,
     filename=f"{paths["sim_name"]}.gwfgwt",
 )
 
@@ -133,6 +138,6 @@ print(linea)
 o_sim.run_simulation(silent = False)
 print(linea)
 
-x, head, qx, qy, o_conc, times_c = vis.data_recovery(o_gwf, o_gwt)
+#x, head, qx, qy, o_conc, times_c = vis.data_recovery(o_gwf, o_gwt)
 
-vis.plot(o_gwf, x, head, qx, qy, o_conc, times_c)
+#vis.plot(o_gwf, x, head, qx, qy, o_conc, times_c)
