@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MODELO DE FLUJO Y TRANSPORTE UTILIZANDO GWF y MT3D-USGS – RTWMA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">RTWMA</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../notebooks/03_wma/01_GWF_DFC_WMA_Yeso/1_GWF_DFC_WMA_Imp.ipynb"> 
+<span class="menu-text">Análisis 1</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">MODELO DE FLUJO Y TRANSPORTE UTILIZANDO GWF y MT3D-USGS</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenido</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notebooks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+ <span class="menu-text">notebooks/03_wma/01_GWF_DFC_WMA_Yeso/1_GWF_DFC_WMA_Imp.ipynb</span>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#modelación-de-las-especies-sulfato-c_1-so_42--y-calcio-c_2-ca2" id="toc-modelación-de-las-especies-sulfato-c_1-so_42--y-calcio-c_2-ca2" class="nav-link active" data-scroll-target="#modelación-de-las-especies-sulfato-c_1-so_42--y-calcio-c_2-ca2">Modelación de las especies: sulfato <span class="math inline">\(c_1= SO_4^{2-}\)</span> y calcio <span class="math inline">\(c_2 = Ca^{2+}\)</span></a>
+  <ul class="collapse">
+  <li><a href="#flujo-y-transporte-sin-y-con-rct-en-1d-utilizando-gwf-mt3d-usgs-y-flopy" id="toc-flujo-y-transporte-sin-y-con-rct-en-1d-utilizando-gwf-mt3d-usgs-y-flopy" class="nav-link" data-scroll-target="#flujo-y-transporte-sin-y-con-rct-en-1d-utilizando-gwf-mt3d-usgs-y-flopy">Flujo y transporte sin y con RCT en 1D utilizando GWF, MT3D-USGS y Flopy</a></li>
+  </ul></li>
+  <li><a href="#descripción-del-modelo-gwf-mt3d-usgs" id="toc-descripción-del-modelo-gwf-mt3d-usgs" class="nav-link" data-scroll-target="#descripción-del-modelo-gwf-mt3d-usgs">DESCRIPCIÓN DEL MODELO GWF-MT3D-USGS</a></li>
+  <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno">1. Preparación del entorno</a></li>
+  <li><a href="#construcción-del-modelo-de-flujo-modflow-6" id="toc-construcción-del-modelo-de-flujo-modflow-6" class="nav-link" data-scroll-target="#construcción-del-modelo-de-flujo-modflow-6">2. Construcción del modelo de flujo (MODFLOW 6)</a></li>
+  <li><a href="#ejecución-del-modelo-de-flujo" id="toc-ejecución-del-modelo-de-flujo" class="nav-link" data-scroll-target="#ejecución-del-modelo-de-flujo">3. Ejecución del modelo de flujo</a></li>
+  <li><a href="#visualización-de-resultados-carga-hidráulica" id="toc-visualización-de-resultados-carga-hidráulica" class="nav-link" data-scroll-target="#visualización-de-resultados-carga-hidráulica">4. Visualización de resultados (Carga hidráulica)</a></li>
+  <li><a href="#visualización-descarga-específica-qx" id="toc-visualización-descarga-específica-qx" class="nav-link" data-scroll-target="#visualización-descarga-específica-qx">5. Visualización (Descarga específica qx)</a></li>
+  <li><a href="#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" id="toc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" class="nav-link" data-scroll-target="#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">MODELO DE FLUJO Y TRANSPORTE UTILIZANDO GWF y MT3D-USGS</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="ac1bcd3e-bf84-4a0c-bd5b-37910a680e36" class="cell" data-tags="[]" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ruta del directorio actual</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os<span class="op">;</span> ruta_actual <span class="op">=</span> os.getcwd()<span class="op">;</span> os.startfile(ruta_actual)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="modelación-de-las-especies-sulfato-c_1-so_42--y-calcio-c_2-ca2" class="level2">
+<h2 class="anchored" data-anchor-id="modelación-de-las-especies-sulfato-c_1-so_42--y-calcio-c_2-ca2">Modelación de las especies: sulfato <span class="math inline">\(c_1= SO_4^{2-}\)</span> y calcio <span class="math inline">\(c_2 = Ca^{2+}\)</span></h2>
+<section id="flujo-y-transporte-sin-y-con-rct-en-1d-utilizando-gwf-mt3d-usgs-y-flopy" class="level3">
+<h3 class="anchored" data-anchor-id="flujo-y-transporte-sin-y-con-rct-en-1d-utilizando-gwf-mt3d-usgs-y-flopy">Flujo y transporte sin y con RCT en 1D utilizando GWF, MT3D-USGS y Flopy</h3>
+<p><span class="math display">\[\frac{\partial}{\partial x}( K \frac{\partial h }{\partial x})+ q_s = S_s \frac{\partial h }{\partial t} \tag{1} \]</span></p>
+<p><span class="math display">\[\frac {\partial\left(\theta C^k\right)}{\partial t}  = \frac{\partial}{\partial x}\left(\theta D \frac{\partial C^k}{\partial x}\right)- \frac{\partial}{\partial x} (\theta v C^k) + q_s C^{k}_{s} \tag{2} \]</span></p>
+<div id="68d75233-e9cd-4a52-9c86-c3af22a994a5" class="cell" data-tags="[]" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># insertar imagen incrustada en base64 dentro del notebook</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ruta de tu imagen</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>image_path <span class="op">=</span> <span class="st">"dominio1.png"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Leer imagen como base64</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(image_path, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    image_base64 <span class="op">=</span> base64.b64encode(f.read()).decode(<span class="st">"utf-8"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># HTML para incrustar la imagen</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> <span class="ss">f'&lt;img src="data:image/png;base64,</span><span class="sc">{</span>image_base64<span class="sc">}</span><span class="ss">" /&gt;'</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar imagen</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>HTML(html)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<img src="data:image/png;base64,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">
+</div>
+</div>
+</section>
+</section>
+<section id="descripción-del-modelo-gwf-mt3d-usgs" class="level2">
+<h2 class="anchored" data-anchor-id="descripción-del-modelo-gwf-mt3d-usgs">DESCRIPCIÓN DEL MODELO GWF-MT3D-USGS</h2>
+<ul>
+<li><p><strong>Problema de flujo 1D</strong></p></li>
+<li><p>con las siguientes dimensiones del dominio:</p></li>
+<li><p>LX=30 m, LY=1 m, LZ=1 m</p></li>
+<li><p>considerando las siguientes condiciones de frontera:</p></li>
+<li><p>Flujo prescrito en la frontera izquierda CFI= 0.2 m3/d</p></li>
+<li><p>Carga prescrita en la frontera derecha CFD=1m</p></li>
+<li><p><strong>Problema de transporte 1D</strong></p></li>
+<li><p>Se consideran dos especies con las siguientes condiciones de frontera y condiciones iniciales:</p></li>
+<li><p><strong>Especie 1: c1 (sulfato)</strong></p></li>
+<li><p>Concentración en el flujo de entrada: c₁ = 1.0000329</p></li>
+<li><p>Concentración inicial c1i = 1.0000329 en todo el dominio, excepto en la celda 12, donde c₁₁₂ᵢ = 200</p></li>
+<li><p><strong>Especie 2: c2 (calcio)</strong></p></li>
+<li><p>Concentración en el flujo de entrada: c₂ = 3.294 × 10⁻⁵</p></li>
+<li><p>Concentración inicial c₂ᵢ: 3.294 × 10⁻⁵ en todo el dominio, excepto en la celda 12, donde c₂₁₂ᵢ = 1.647 × 10⁻⁷</p></li>
+<li><p>Estas concentraciones fueron calculadas usando la ley de acción de masas, con:</p></li>
+<li><p>c₂ᵢ = Kₑ / c₁ᵢ = 3.29382 × 10⁻⁵ / 1.0000329 = 3.294 × 10⁻⁵<br>
+</p></li>
+<li><p>c₂₁₂ᵢ = 3.29382 × 10⁻⁵ / 200 = 1.647 × 10⁻⁷</p></li>
+<li><p><strong>Las propiedades físicas del problema son</strong>:</p></li>
+<li><p>Conductividad hidráulica = 1.0 m/día</p></li>
+<li><p>Porosidad = 0.5</p></li>
+<li><p>Dispersividad longitudinal =0.2</p></li>
+<li><p>Factor de retardación =1.0</p></li>
+<li><p>Se simulan 40 días en 40 pasos de tiempo</p></li>
+</ul>
+</section>
+<section id="preparación-del-entorno" class="level2">
+<h2 class="anchored" data-anchor-id="preparación-del-entorno">1. Preparación del entorno</h2>
+<div id="cfbacc87-90ab-4852-b386-0f34e1ecd5bf" class="cell" data-tags="[]" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparación del entorno</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, sys <span class="co">#Permite interactuar con el sistema operativo, y al intérprete de Python</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co">#Proporciona estructuras y operaciones matemáticas de alto rendimiento.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> flopy</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flopy.utils.binaryfile <span class="im">import</span> HeadFile, CellBudgetFile, UcnFile</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flopy.plot.styles <span class="im">import</span> styles</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd <span class="co"># Facilita la manipulación y análisis de datos en estructuras tabulares.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Definición de rutas ---</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>base_dir <span class="op">=</span> os.getcwd()               <span class="co"># Directorio actual de trabajo</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>workspace <span class="op">=</span> os.path.join(base_dir, <span class="st">"flow_transport"</span>)  <span class="co"># Carpeta para guardar archivos flow_transport</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>exe_dir <span class="op">=</span> os.path.join(base_dir, <span class="st">"EXE"</span>)               <span class="co"># Carpeta con ejecutables</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>os.makedirs(workspace, exist_ok<span class="op">=</span><span class="va">True</span>)                 <span class="co"># Crear "flow_transport" si no existe</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Ejecutables ---</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>mf6_exe <span class="op">=</span> os.path.join(exe_dir, <span class="st">"mf6.exe"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>mt3d_exe <span class="op">=</span> os.path.join(exe_dir, <span class="st">"mt3d-usgs_1.1.0_64.exe"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Nombres de los archivos del modelo  ---</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>sim_name <span class="op">=</span> <span class="st">"flow_transport"</span> <span class="co"># Nombre de la simulación</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>flow_name <span class="op">=</span> <span class="st">"flow"</span> <span class="co"># Nombre archivos de flujo</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>transport_name <span class="op">=</span> <span class="st">"transport"</span> <span class="co"># Nombre archivos de transporte</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mf6_exe)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>C:\Users\NRBRT\clone\WMACC\DESARROLLO_MODELOS\GWF-MT3D-USGS\R1-GWF-MT3D-USGS\VERSIONES-0\CICLO\EXE\mf6.exe</code></pre>
+</div>
+</div>
+</section>
+<section id="construcción-del-modelo-de-flujo-modflow-6" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-del-modelo-de-flujo-modflow-6">2. Construcción del modelo de flujo (MODFLOW 6)</h2>
+<div id="ba9c1946-0546-40ed-a745-3a941d7cfbd3" class="cell" data-tags="[]" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Se define la simulación MFSimulation con nombre, ruta de trabajo y ejecutable mf6.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sim <span class="op">=</span> flopy.mf6.MFSimulation(sim_name<span class="op">=</span>sim_name, sim_ws<span class="op">=</span>workspace, exe_name<span class="op">=</span>mf6_exe)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Se configura el tiempo total de 40 días con 40 pasos de 1 día cada uno.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>tdis <span class="op">=</span> flopy.mf6.ModflowTdis(sim, time_units<span class="op">=</span><span class="st">"days"</span>, perioddata<span class="op">=</span>[(<span class="fl">1.0</span>, <span class="dv">1</span>, <span class="fl">1.0</span>)]) <span class="co"># (perlen,nstp,1.0)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Se incluye un iterative model solution (ModflowIms) para resolver el modelo.</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ims <span class="op">=</span> flopy.mf6.ModflowIms(sim, pname<span class="op">=</span><span class="st">"ims"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Se crea el modelo de flujo subterráneo (GWF) asociado a la simulación.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>gwf <span class="op">=</span> flopy.mf6.ModflowGwf(sim, modelname<span class="op">=</span>flow_name, save_flows<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Se define una malla de 1 capa, 1 fila, 31 columnas, con celdas de 1 metro de tamaño.</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>dis <span class="op">=</span> flopy.mf6.ModflowGwfdis(gwf, nlay<span class="op">=</span><span class="dv">1</span>, nrow<span class="op">=</span><span class="dv">1</span>, ncol<span class="op">=</span><span class="dv">31</span>, delr<span class="op">=</span><span class="fl">1.0</span>, delc<span class="op">=</span><span class="fl">1.0</span>, top<span class="op">=</span><span class="fl">1.0</span>, botm<span class="op">=</span>[<span class="fl">0.0</span>])</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Se establece una carga inicial de 1.0 en toda la malla.</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ic <span class="op">=</span> flopy.mf6.ModflowGwfic(gwf, strt<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Se asigna una conductividad hidráulica de 1.0 m/día y se activa el cálculo del flujo específico.</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>npf <span class="op">=</span> flopy.mf6.ModflowGwfnpf(gwf, icelltype<span class="op">=</span><span class="dv">0</span>, k<span class="op">=</span><span class="fl">1.0</span>, save_flows<span class="op">=</span><span class="va">True</span>, save_specific_discharge<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Se impone una carga fija de 1.0 en la celda del extremo derecho (columna 30).</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>chd_spd <span class="op">=</span> [[(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">30</span>), <span class="fl">1.0</span>]]</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>chd <span class="op">=</span> flopy.mf6.ModflowGwfchd(gwf, stress_period_data<span class="op">=</span>chd_spd)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Se coloca un pozo en la columna 0 que inyecta agua con un caudal de 0.2 y concentraciones c1 y c2</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>c1 <span class="op">=</span> <span class="fl">1.0000329</span> <span class="co"># sulfato</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>c2 <span class="op">=</span> <span class="fl">3.294e-5</span>  <span class="co"># calcio</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>wel_spd <span class="op">=</span> [[(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="fl">0.2</span>, c1, c2]]</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>wel <span class="op">=</span> flopy.mf6.ModflowGwfwel(gwf, stress_period_data<span class="op">=</span>wel_spd, auxiliary<span class="op">=</span>[<span class="st">"CONC_ESP_1"</span>, <span class="st">"CONC_ESP_2"</span>])</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Se configuran archivos de salida para cargas (.hds) y balance (.bud), guardando e imprimiendo todo.</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>oc <span class="op">=</span> flopy.mf6.ModflowGwfoc(</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    gwf,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    head_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>flow_name<span class="sc">}</span><span class="ss">.hds"</span>,</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    budget_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>flow_name<span class="sc">}</span><span class="ss">.bud"</span>,</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    saverecord<span class="op">=</span>[(<span class="st">"HEAD"</span>, <span class="st">"ALL"</span>), (<span class="st">"BUDGET"</span>, <span class="st">"ALL"</span>)],</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    printrecord<span class="op">=</span>[(<span class="st">"HEAD"</span>, <span class="st">"ALL"</span>), (<span class="st">"BUDGET"</span>, <span class="st">"ALL"</span>)]</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Se guardan todos los archivos necesarios para ejecutar la simulación en el directorio especificado.</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>sim.write_simulation()</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Archivos de flujo escritos en </span><span class="sc">{</span>workspace<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>writing simulation...
+  writing simulation name file...
+  writing simulation tdis package...
+  writing solution package ims...
+  writing model flow...
+    writing model name file...
+    writing package dis...
+    writing package ic...
+    writing package npf...
+    writing package chd_0...
+INFORMATION: maxbound in ('gwf6', 'chd', 'dimensions') changed to 1 based on size of stress_period_data
+    writing package wel_0...
+INFORMATION: maxbound in ('gwf6', 'wel', 'dimensions') changed to 1 based on size of stress_period_data
+    writing package oc...
+Archivos de flujo escritos en C:\Users\NRBRT\clone\WMACC\DESARROLLO_MODELOS\GWF-MT3D-USGS\R1-GWF-MT3D-USGS\VERSIONES-0\CICLO\flow_transport</code></pre>
+</div>
+</div>
+</section>
+<section id="ejecución-del-modelo-de-flujo" class="level2">
+<h2 class="anchored" data-anchor-id="ejecución-del-modelo-de-flujo">3. Ejecución del modelo de flujo</h2>
+<div id="f07db8ae-c401-4d0c-a428-8b06b4641095" class="cell" data-tags="[]" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>success, buff <span class="op">=</span> sim.run_simulation()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> success:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"✅ Simulación de flujo ejecutada exitosamente."</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"❌ Error en la simulación de flujo."</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(buff.decode())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>FloPy is using the following executable to run the model: ..\EXE\mf6.exe
+                                   MODFLOW 6
+                U.S. GEOLOGICAL SURVEY MODULAR HYDROLOGIC MODEL
+                            VERSION 6.4.2 06/28/2023
+
+   MODFLOW 6 compiled Jun 28 2023 18:41:13 with Intel(R) Fortran Intel(R) 64
+   Compiler Classic for applications running on Intel(R) 64, Version 2021.7.0
+                             Build 20220726_000000
+
+This software has been approved for release by the U.S. Geological 
+Survey (USGS). Although the software has been subjected to rigorous 
+review, the USGS reserves the right to update the software as needed 
+pursuant to further analysis and review. No warranty, expressed or 
+implied, is made by the USGS or the U.S. Government as to the 
+functionality of the software and related material nor shall the 
+fact of release constitute any such warranty. Furthermore, the 
+software is released on condition that neither the USGS nor the U.S. 
+Government shall be held liable for any damages resulting from its 
+authorized or unauthorized use. Also refer to the USGS Water 
+Resources Software User Rights Notice for complete use, copyright, 
+and distribution information.
+
+ 
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/07/31  9:45:17
+ 
+ Writing simulation list file: mfsim.lst
+ Using Simulation name file: mfsim.nam
+ 
+    Solving:  Stress period:     1    Time step:     1
+ 
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2025/07/31  9:45:17
+ Elapsed run time:  0.018 Seconds
+ 
+ Normal termination of simulation.
+✅ Simulación de flujo ejecutada exitosamente.</code></pre>
+</div>
+</div>
+</section>
+<section id="visualización-de-resultados-carga-hidráulica" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-de-resultados-carga-hidráulica">4. Visualización de resultados (Carga hidráulica)</h2>
+<div id="b78e0871-097e-4637-a3db-004c50ec3524" class="cell" data-tags="[]" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Cargar HEADS ---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>headfile <span class="op">=</span> os.path.join(workspace, <span class="ss">f"</span><span class="sc">{</span>flow_name<span class="sc">}</span><span class="ss">.hds"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>headobj <span class="op">=</span> HeadFile(headfile)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>times <span class="op">=</span> headobj.get_times()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>head <span class="op">=</span> headobj.get_data(totim<span class="op">=</span>times[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Graficar ---</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(head.shape[<span class="op">-</span><span class="dv">1</span>]), head[<span class="dv">0</span>, <span class="dv">0</span>, :], marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Carga hidráulica (Head)"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Columna"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Head (m)"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GWF_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="visualización-descarga-específica-qx" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-descarga-específica-qx">5. Visualización (Descarga específica qx)</h2>
+<div id="cb412543-eb81-4b77-9f45-2ac055bad8e4" class="cell" data-tags="[]" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Cargar descarga específica ---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>budfile <span class="op">=</span> os.path.join(workspace, <span class="ss">f"</span><span class="sc">{</span>flow_name<span class="sc">}</span><span class="ss">.bud"</span>) <span class="co"># Ruta del archivo .bud.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cbb <span class="op">=</span> CellBudgetFile(budfile, precision<span class="op">=</span><span class="st">'double'</span>) <span class="co"># Carga archivo de balance con doble precisión.</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>spdis <span class="op">=</span> cbb.get_data(text<span class="op">=</span><span class="st">'DATA-SPDIS'</span>)[<span class="dv">0</span>] <span class="co"># Extrae flujo específico del primer tiempo.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>qx <span class="op">=</span> spdis[<span class="st">'qx'</span>].flatten() <span class="co"># Lista del flujo en x (qx) a 1D.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Graficar ---</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(qx)), qx, marker<span class="op">=</span><span class="st">'s'</span>, color<span class="op">=</span><span class="st">'darkgreen'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Descarga específica qx"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Columna"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"qx (m/día)"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GWF_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" class="level2">
+<h2 class="anchored" data-anchor-id="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

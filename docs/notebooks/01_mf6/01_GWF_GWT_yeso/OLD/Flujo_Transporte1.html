@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Problema de flujo y transporte en un medio poroso 1D – RTWMA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">RTWMA</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../notebooks/03_wma/01_GWF_DFC_WMA_Yeso/1_GWF_DFC_WMA_Imp.ipynb"> 
+<span class="menu-text">Análisis 1</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Problema de flujo y transporte en un medio poroso 1D</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenido</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notebooks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+ <span class="menu-text">notebooks/03_wma/01_GWF_DFC_WMA_Yeso/1_GWF_DFC_WMA_Imp.ipynb</span>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#formulación-matemática-y-solución-con-modflow-6-flopy" id="toc-formulación-matemática-y-solución-con-modflow-6-flopy" class="nav-link active" data-scroll-target="#formulación-matemática-y-solución-con-modflow-6-flopy">Formulación matemática y solución con MODFLOW 6 / FloPy</a></li>
+  <li><a href="#planteamiento-físico-del-problema" id="toc-planteamiento-físico-del-problema" class="nav-link" data-scroll-target="#planteamiento-físico-del-problema">1. Planteamiento físico del problema</a>
+  <ul class="collapse">
+  <li><a href="#ecuación-de-flujo-subterráneo-gwf" id="toc-ecuación-de-flujo-subterráneo-gwf" class="nav-link" data-scroll-target="#ecuación-de-flujo-subterráneo-gwf">1.1 Ecuación de flujo subterráneo (GWF)</a></li>
+  <li><a href="#ecuación-de-transporte-de-soluto-gwt" id="toc-ecuación-de-transporte-de-soluto-gwt" class="nav-link" data-scroll-target="#ecuación-de-transporte-de-soluto-gwt">1.2 Ecuación de transporte de soluto (GWT)</a></li>
+  </ul></li>
+  <li><a href="#información-adicional-requerida-y-su-justificación" id="toc-información-adicional-requerida-y-su-justificación" class="nav-link" data-scroll-target="#información-adicional-requerida-y-su-justificación">2. Información adicional requerida (y su justificación)</a></li>
+  <li><a href="#solución-numérica-con-modflow-6-y-flopy" id="toc-solución-numérica-con-modflow-6-y-flopy" class="nav-link" data-scroll-target="#solución-numérica-con-modflow-6-y-flopy">3. Solución numérica con MODFLOW 6 y FloPy</a>
+  <ul class="collapse">
+  <li><a href="#ejecutable-de-modflow-6" id="toc-ejecutable-de-modflow-6" class="nav-link" data-scroll-target="#ejecutable-de-modflow-6">3.1 Ejecutable de MODFLOW 6</a></li>
+  <li><a href="#discretización-espacial-y-ubicación-de-los-puntos-de-la-figura" id="toc-discretización-espacial-y-ubicación-de-los-puntos-de-la-figura" class="nav-link" data-scroll-target="#discretización-espacial-y-ubicación-de-los-puntos-de-la-figura">3.2 Discretización espacial y ubicación de los puntos de la figura</a></li>
+  <li><a href="#parámetros-físicos-ver-tabla-de-la-sección-2" id="toc-parámetros-físicos-ver-tabla-de-la-sección-2" class="nav-link" data-scroll-target="#parámetros-físicos-ver-tabla-de-la-sección-2">3.3 Parámetros físicos (ver tabla de la sección 2)</a></li>
+  <li><a href="#simulación-y-discretización-temporal-tdis" id="toc-simulación-y-discretización-temporal-tdis" class="nav-link" data-scroll-target="#simulación-y-discretización-temporal-tdis">3.4 Simulación y discretización temporal (<code>TDIS</code>)</a></li>
+  <li><a href="#modelo-de-flujo-gwf" id="toc-modelo-de-flujo-gwf" class="nav-link" data-scroll-target="#modelo-de-flujo-gwf">3.5 Modelo de flujo (GWF)</a></li>
+  <li><a href="#modelo-de-transporte-gwt" id="toc-modelo-de-transporte-gwt" class="nav-link" data-scroll-target="#modelo-de-transporte-gwt">3.6 Modelo de transporte (GWT)</a></li>
+  <li><a href="#acople-flujo-transporte-gwf6-gwt6" id="toc-acople-flujo-transporte-gwf6-gwt6" class="nav-link" data-scroll-target="#acople-flujo-transporte-gwf6-gwt6">3.7 Acople flujo-transporte (<code>GWF6-GWT6</code>)</a></li>
+  <li><a href="#escritura-y-ejecución-de-la-simulación" id="toc-escritura-y-ejecución-de-la-simulación" class="nav-link" data-scroll-target="#escritura-y-ejecución-de-la-simulación">3.8 Escritura y ejecución de la simulación</a></li>
+  </ul></li>
+  <li><a href="#post-proceso-y-visualización-de-resultados" id="toc-post-proceso-y-visualización-de-resultados" class="nav-link" data-scroll-target="#post-proceso-y-visualización-de-resultados">4. Post-proceso y visualización de resultados</a>
+  <ul class="collapse">
+  <li><a href="#carga-hidráulica-en-estado-estacionario" id="toc-carga-hidráulica-en-estado-estacionario" class="nav-link" data-scroll-target="#carga-hidráulica-en-estado-estacionario">4.1 Carga hidráulica en estado estacionario</a></li>
+  <li><a href="#evolución-del-perfil-de-concentración" id="toc-evolución-del-perfil-de-concentración" class="nav-link" data-scroll-target="#evolución-del-perfil-de-concentración">4.2 Evolución del perfil de concentración</a></li>
+  <li><a href="#curva-de-llegada-breakthrough-curve-en-x_l" id="toc-curva-de-llegada-breakthrough-curve-en-x_l" class="nav-link" data-scroll-target="#curva-de-llegada-breakthrough-curve-en-x_l">4.3 Curva de llegada (<em>breakthrough curve</em>) en <span class="math inline">\(x_L\)</span></a></li>
+  </ul></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen">5. Resumen</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Problema de flujo y transporte en un medio poroso 1D</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="formulación-matemática-y-solución-con-modflow-6-flopy" class="level3">
+<h3 class="anchored" data-anchor-id="formulación-matemática-y-solución-con-modflow-6-flopy">Formulación matemática y solución con MODFLOW 6 / FloPy</h3>
+<p>Este notebook desarrolla el problema de flujo de agua subterránea y transporte de una especie química (<span class="math inline">\(c_1\)</span>) descrito en la figura <em>Flujo_Transporte</em>, lo plantea como un sistema de dos ecuaciones diferenciales parciales (EDP) con sus condiciones iniciales y de frontera, y construye la solución numérica usando <strong>MODFLOW 6</strong> (a través de <strong>FloPy</strong>), acoplando un modelo de flujo (GWF) con un modelo de transporte (GWT).</p>
+<p><strong>Contenido</strong></p>
+<ol type="1">
+<li>Planteamiento físico-matemático del problema (EDPs, condiciones iniciales y de frontera)</li>
+<li>Datos e información adicional necesaria (y su justificación)</li>
+<li>Construcción del modelo en FloPy / MODFLOW 6</li>
+<li>Ejecución de la simulación</li>
+<li>Post-proceso y visualización de resultados</li>
+</ol>
+</section>
+<section id="planteamiento-físico-del-problema" class="level2">
+<h2 class="anchored" data-anchor-id="planteamiento-físico-del-problema">1. Planteamiento físico del problema</h2>
+<p>El dominio es una columna 1D de longitud <span class="math inline">\(L\)</span> (dirección <span class="math inline">\(x\)</span>), representando un acuífero de espesor y ancho unitarios. Sobre este dominio ocurren dos procesos acoplados:</p>
+<ul>
+<li><strong>Flujo de agua subterránea</strong>, gobernado por la carga hidráulica <span class="math inline">\(h(x,t)\)</span>.</li>
+<li><strong>Transporte de soluto</strong>, gobernado por la concentración <span class="math inline">\(c_1(x,t)\)</span>, que se mueve por advección (arrastrado por el flujo de agua) y dispersión hidrodinámica.</li>
+</ul>
+<p>El acoplamiento es de un solo sentido en este caso: el campo de flujo (carga <span class="math inline">\(h\)</span> y velocidad <span class="math inline">\(v\)</span>) controla el transporte, pero el soluto no modifica la densidad ni la viscosidad del agua.</p>
+<section id="ecuación-de-flujo-subterráneo-gwf" class="level3">
+<h3 class="anchored" data-anchor-id="ecuación-de-flujo-subterráneo-gwf">1.1 Ecuación de flujo subterráneo (GWF)</h3>
+<p>Para un acuífero 1D, confinado, con conductividad hidráulica <span class="math inline">\(K_x\)</span> y coeficiente de almacenamiento específico <span class="math inline">\(S_s\)</span>, la ecuación de flujo es:</p>
+<p><span class="math display">\[
+S_s \frac{\partial h}{\partial t} = \frac{\partial}{\partial x}
+\left( K_x \frac{\partial h}{\partial x} \right) + q_s(x,t)
+\]</span></p>
+<p>donde <span class="math inline">\(q_s(x,t)\)</span> representa fuentes o sumideros volumétricos de agua por unidad de volumen (p.&nbsp;ej. un pozo).</p>
+<p><strong>Condiciones de frontera (dadas en la figura):</strong></p>
+<p><span class="math display">\[
+\left.\frac{\partial h}{\partial x}\right|_{(0,t)} = 0
+\qquad\text{(frontera cerrada / flujo nulo en } x=0\text{)}
+\]</span></p>
+<p><span class="math display">\[
+h(x_L, t) = 1.0 \qquad\text{(carga fija en el extremo } x=x_L=L\text{)}
+\]</span></p>
+<p><strong>Condición inicial:</strong> no se especifica en la figura; se requiere <span class="math inline">\(h(x,t_0)\)</span> para poder resolver el problema en régimen transitorio (ver sección 2).</p>
+</section>
+<section id="ecuación-de-transporte-de-soluto-gwt" class="level3">
+<h3 class="anchored" data-anchor-id="ecuación-de-transporte-de-soluto-gwt">1.2 Ecuación de transporte de soluto (GWT)</h3>
+<p>Para la especie <span class="math inline">\(c_1\)</span>, con porosidad <span class="math inline">\(\theta\)</span>, coeficiente de dispersión hidrodinámica <span class="math inline">\(D_x\)</span>, velocidad lineal media <span class="math inline">\(v_x\)</span> y, en general, retardo <span class="math inline">\(R\)</span> y decaimiento de primer orden <span class="math inline">\(\lambda\)</span>, la ecuación de advección-dispersión- reacción (ADE) es:</p>
+<p><span class="math display">\[
+R\,\frac{\partial c_1}{\partial t} =
+\frac{\partial}{\partial x}\left(D_x \frac{\partial c_1}{\partial x}\right)
+- v_x \frac{\partial c_1}{\partial x} - \lambda R\, c_1
+\]</span></p>
+<p>con <span class="math inline">\(D_x = \alpha_L |v_x| + D^{*}\)</span> (<span class="math inline">\(\alpha_L\)</span>: dispersividad longitudinal, <span class="math inline">\(D^{*}\)</span>: difusión molecular efectiva) y <span class="math inline">\(v_x = q_x/\theta\)</span> (velocidad de poro, obtenida del campo de flujo resuelto por la ecuación anterior).</p>
+<p><strong>Condiciones de frontera (dadas en la figura):</strong></p>
+<p><span class="math display">\[
+c_1(x_1, t) = 1.000329 \qquad\text{(concentración fija en } x=x_1\text{)}
+\]</span></p>
+<p><span class="math display">\[
+D_x \left.\frac{\partial c_1}{\partial x}\right|_{(L,t)} = 0
+\qquad\text{(flujo dispersivo nulo en la salida } x=x_L\text{)}
+\]</span></p>
+<p>Esta segunda condición es la clásica condición de “salida libre” o de tercer tipo (Cauchy) usada en el extremo de aguas abajo de una columna de transporte: el soluto sólo sale del dominio por advección, sin gradiente dispersivo impuesto.</p>
+<p><strong>Condición inicial (dada en la figura):</strong></p>
+<p><span class="math display">\[
+c_1(x,t_0) = 1.000329 \quad \forall\, x \neq x_{12}
+\qquad\qquad
+c_1(x_{12}, t_0) = 200.0
+\]</span></p>
+<p>Es decir, en el instante inicial la concentración es igual a un valor de fondo (<span class="math inline">\(1.000329\)</span>) en todo el dominio, excepto en el punto <span class="math inline">\(x_{12}\)</span>, donde existe un valor puntual muy alto (200.0) que representa una masa de soluto ya presente en el medio (p.&nbsp;ej. un derrame o inyección previa) que a partir de <span class="math inline">\(t_0\)</span> comenzará a migrar y dispersarse bajo la acción del flujo.</p>
+</section>
+</section>
+<section id="información-adicional-requerida-y-su-justificación" class="level2">
+<h2 class="anchored" data-anchor-id="información-adicional-requerida-y-su-justificación">2. Información adicional requerida (y su justificación)</h2>
+<p>La figura define correctamente las condiciones de frontera de <span class="math inline">\(h\)</span> y <span class="math inline">\(c_1\)</span> y la condición inicial de <span class="math inline">\(c_1\)</span>, pero dejan sin especificar varios elementos indispensables para resolver numéricamente el problema. Se listan a continuación, junto con el valor asumido y la razón por la cual es necesario:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dato faltante</th>
+<th>Símbolo</th>
+<th>Valor asumido</th>
+<th>¿Por qué es necesario?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Longitud del dominio y ubicación de <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_{12}\)</span>, <span class="math inline">\(x_L\)</span></td>
+<td><span class="math inline">\(L, x_1, x_{12}, x_L\)</span></td>
+<td><span class="math inline">\(L=100\)</span> m; <span class="math inline">\(x_1=4.5\)</span> m; <span class="math inline">\(x_{12}=44.5\)</span> m; <span class="math inline">\(x_L=99.5\)</span> m</td>
+<td>Sin coordenadas concretas no puede discretizarse la malla ni ubicar las condiciones de frontera/iniciales.</td>
+</tr>
+<tr class="even">
+<td>Conductividad hidráulica</td>
+<td><span class="math inline">\(K_x\)</span></td>
+<td>10 m/d</td>
+<td>Parámetro obligatorio de la ecuación de flujo; controla la magnitud del gradiente de carga necesario para un caudal dado.</td>
+</tr>
+<tr class="odd">
+<td><strong>Fuente de flujo real</strong></td>
+<td><span class="math inline">\(Q_{iny}\)</span> (pozo en <span class="math inline">\(x_1\)</span>)</td>
+<td>0.1 m³/d</td>
+<td><strong>Crítico:</strong> las condiciones dadas (frontera cerrada en <span class="math inline">\(x=0\)</span> y carga fija únicamente en <span class="math inline">\(x_L\)</span>) no generan por sí solas ningún flujo, ya que no existe diferencia de carga que lo impulse. Sin una fuente/sumidero interno el sistema permanecería estático (<span class="math inline">\(h(x,t)=1.0\)</span> en todo punto) y el transporte advectivo sería nulo. Se añade un pozo de inyección en <span class="math inline">\(x_1\)</span> —coherente con el hecho de que ahí se especifica la concentración de entrada <span class="math inline">\(c_1(x_1,t)=1.000329\)</span>— que representa el agua que ingresa al sistema y empuja el soluto hacia <span class="math inline">\(x_L\)</span>.</td>
+</tr>
+<tr class="even">
+<td>Porosidad efectiva</td>
+<td><span class="math inline">\(\theta\)</span></td>
+<td>0.30</td>
+<td>Necesaria para convertir el flujo específico (Ley de Darcy) en velocidad lineal de poro <span class="math inline">\(v_x=q_x/\theta\)</span>, que es la que transporta el soluto.</td>
+</tr>
+<tr class="odd">
+<td>Dispersividad longitudinal</td>
+<td><span class="math inline">\(\alpha_L\)</span></td>
+<td>1.0 m</td>
+<td>Define la magnitud de la dispersión hidrodinámica <span class="math inline">\(D_x\)</span>; sin ella la pluma nunca se ensancharía y el transporte sería puramente advectivo (pistón).</td>
+</tr>
+<tr class="even">
+<td>Difusión molecular efectiva</td>
+<td><span class="math inline">\(D^{*}\)</span></td>
+<td>0 (despreciable)</td>
+<td>Se asume nula porque en medios porosos con velocidades advectivas moderadas su aporte es despreciable frente a la dispersión mecánica.</td>
+</tr>
+<tr class="odd">
+<td>Coeficiente de almacenamiento / discretización temporal</td>
+<td>—</td>
+<td>Flujo en <strong>régimen permanente</strong> (sin paquete STO); transporte transitorio en 300 días, 150 pasos</td>
+<td>Las condiciones de frontera de <span class="math inline">\(h\)</span> no dependen del tiempo, por lo que basta con resolver el flujo en estado estacionario; el transporte sí es transitorio porque la pluma evoluciona en el tiempo a partir de la condición inicial.</td>
+</tr>
+<tr class="even">
+<td>Retardo y decaimiento</td>
+<td><span class="math inline">\(R, \lambda\)</span></td>
+<td><span class="math inline">\(R=1\)</span>, <span class="math inline">\(\lambda=0\)</span></td>
+<td>Se asume un soluto conservativo (tipo trazador), ya que la figura no menciona reacciones ni sorción.</td>
+</tr>
+<tr class="odd">
+<td>Geometría de la sección transversal</td>
+<td>espesor, ancho</td>
+<td>1 m × 1 m</td>
+<td>Necesaria para relacionar caudales volumétricos con velocidades de Darcy.</td>
+</tr>
+</tbody>
+</table>
+<p>Con esta información el problema queda completamente definido y puede resolverse numéricamente.</p>
+</section>
+<section id="solución-numérica-con-modflow-6-y-flopy" class="level2">
+<h2 class="anchored" data-anchor-id="solución-numérica-con-modflow-6-y-flopy">3. Solución numérica con MODFLOW 6 y FloPy</h2>
+<p>MODFLOW 6 resuelve este tipo de problemas acoplando dos modelos dentro de una misma simulación:</p>
+<ul>
+<li><strong>GWF (Groundwater Flow)</strong>: resuelve la ecuación de flujo (carga <span class="math inline">\(h\)</span>).</li>
+<li><strong>GWT (Groundwater Transport)</strong>: resuelve la ecuación de transporte (concentración <span class="math inline">\(c_1\)</span>), usando el campo de flujo calculado por el modelo GWF a través de un paquete de intercambio <code>GWF6-GWT6</code>.</li>
+</ul>
+<p>Los paquetes de MODFLOW 6 usados y su correspondencia con el planteamiento matemático son:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Elemento del problema</th>
+<th>Paquete MODFLOW 6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Malla / discretización espacial</td>
+<td><code>DIS</code> (en ambos modelos)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(K_x\)</span></td>
+<td><code>NPF</code> (GWF)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\partial h/\partial x(0,t)=0\)</span></td>
+<td>Ninguno (frontera sin condición ⇒ flujo nulo por defecto)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(h(x_L,t)=1.0\)</span></td>
+<td><code>CHD</code> (GWF)</td>
+</tr>
+<tr class="odd">
+<td>Fuente de flujo en <span class="math inline">\(x_1\)</span></td>
+<td><code>WEL</code> (GWF)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\theta\)</span>, transporte de masa</td>
+<td><code>MST</code> (GWT)</td>
+</tr>
+<tr class="odd">
+<td>Advección</td>
+<td><code>ADV</code> (GWT, esquema TVD)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\alpha_L\)</span>, <span class="math inline">\(D_x\)</span></td>
+<td><code>DSP</code> (GWT)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(c_1(x_1,t)=1.000329\)</span></td>
+<td><code>CNC</code> — concentración fija (GWT)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(D_x\,\partial c_1/\partial x(L,t)=0\)</span></td>
+<td>Ninguno (condición natural de MODFLOW 6 en la celda de salida)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(c_1(x,t_0)\)</span></td>
+<td><code>IC</code> (GWT)</td>
+</tr>
+<tr class="even">
+<td>Acople flujo-transporte</td>
+<td><code>GWFGWT</code> (exchange)</td>
+</tr>
+</tbody>
+</table>
+<p>A continuación se construye, ejecuta y post-procesa el modelo.</p>
+<div id="69c15f6d" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> flopy</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Version de FloPy:"</span>, flopy.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Version de FloPy: 3.9.3</code></pre>
+</div>
+</div>
+<section id="ejecutable-de-modflow-6" class="level3">
+<h3 class="anchored" data-anchor-id="ejecutable-de-modflow-6">3.1 Ejecutable de MODFLOW 6</h3>
+<p>Se requiere el ejecutable <code>mf6</code>. Si no está disponible, FloPy puede descargarlo automáticamente con <code>flopy.utils.get_modflow</code>. Ajuste <code>exe_mf6</code> a la ruta donde tenga (o desee instalar) el ejecutable.</p>
+<div id="2b33a0e0" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ws <span class="op">=</span> <span class="st">"./model_ws"</span>                 <span class="co"># carpeta de trabajo del modelo</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>exe_mf6 <span class="op">=</span> <span class="vs">r"C:</span><span class="er">\</span><span class="vs">Users</span><span class="er">\</span><span class="vs">luiggi</span><span class="dv">\D</span><span class="vs">ocuments</span><span class="dv">\G</span><span class="vs">itSites</span><span class="er">\</span><span class="vs">RTWMA</span><span class="dv">\b</span><span class="vs">in</span><span class="dv">\w</span><span class="vs">indows</span><span class="dv">\m</span><span class="vs">f6</span><span class="dv">.</span><span class="vs">exe"</span>             <span class="co"># ruta al ejecutable de MODFLOW 6</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sim_name <span class="op">=</span> <span class="st">"flujtrans"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>os.makedirs(ws, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Si no cuenta con el ejecutable de MODFLOW 6, descomente las siguientes</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># líneas para que FloPy lo descargue automáticamente desde el repositorio</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># oficial de USGS/MODFLOW-ORG:</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># os.makedirs("./bin", exist_ok=True)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># flopy.utils.get_modflow("./bin")</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># exe_mf6 = "./bin/mf6"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> os.path.isfile(exe_mf6), (</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"No se encontro el ejecutable </span><span class="sc">{</span>exe_mf6<span class="sc">}</span><span class="ss">. "</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Descargue MODFLOW 6 (vea el comentario de arriba) o ajuste la ruta."</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="discretización-espacial-y-ubicación-de-los-puntos-de-la-figura" class="level3">
+<h3 class="anchored" data-anchor-id="discretización-espacial-y-ubicación-de-los-puntos-de-la-figura">3.2 Discretización espacial y ubicación de los puntos de la figura</h3>
+<div id="f20b944d" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nlay, nrow, ncol <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>delr <span class="op">=</span> <span class="fl">1.0</span>          <span class="co"># m, tamano de celda en x</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>delc <span class="op">=</span> <span class="fl">1.0</span>          <span class="co"># m, ancho unitario (seccion 1D)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>top <span class="op">=</span> <span class="fl">1.0</span>           <span class="co"># m</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>botm <span class="op">=</span> <span class="fl">0.0</span>          <span class="co"># m  (espesor saturado = 1 m)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> ncol <span class="op">*</span> delr     <span class="co"># longitud total del dominio</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>icol_x1 <span class="op">=</span> <span class="dv">4</span>           <span class="co"># celda de entrada / concentracion fija c1(x1,t)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>icol_x12 <span class="op">=</span> <span class="dv">44</span>          <span class="co"># celda del pulso inicial de concentracion</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>icol_xL <span class="op">=</span> ncol <span class="op">-</span> <span class="dv">1</span>     <span class="co"># celda del extremo derecho (carga fija, salida)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>x1 <span class="op">=</span> (icol_x1 <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">*</span> delr</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>x12 <span class="op">=</span> (icol_x12 <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">*</span> delr</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>xL <span class="op">=</span> (icol_xL <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">*</span> delr</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"L   = </span><span class="sc">{</span>L<span class="sc">}</span><span class="ss"> m"</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x1  = </span><span class="sc">{</span>x1<span class="sc">}</span><span class="ss"> m  (columna/celda de concentracion fija)"</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x12 = </span><span class="sc">{</span>x12<span class="sc">}</span><span class="ss"> m (columna/celda del pulso inicial)"</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"xL  = </span><span class="sc">{</span>xL<span class="sc">}</span><span class="ss"> m  (columna/celda de carga fija / salida)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>L   = 100.0 m
+x1  = 4.5 m  (columna/celda de concentracion fija)
+x12 = 44.5 m (columna/celda del pulso inicial)
+xL  = 99.5 m  (columna/celda de carga fija / salida)</code></pre>
+</div>
+</div>
+</section>
+<section id="parámetros-físicos-ver-tabla-de-la-sección-2" class="level3">
+<h3 class="anchored" data-anchor-id="parámetros-físicos-ver-tabla-de-la-sección-2">3.3 Parámetros físicos (ver tabla de la sección 2)</h3>
+<div id="c36b1800" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> <span class="fl">10.0</span>             <span class="co"># m/d, conductividad hidraulica</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>porosity <span class="op">=</span> <span class="fl">0.30</span>       <span class="co"># -, porosidad efectiva</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>alphaL <span class="op">=</span> <span class="fl">1.0</span>          <span class="co"># m, dispersividad longitudinal</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>alphaTH <span class="op">=</span> <span class="fl">0.1</span>         <span class="co"># m, dispersividad transversal horizontal (irrelevante en 1D)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>alphaTV <span class="op">=</span> <span class="fl">0.1</span>         <span class="co"># m, dispersividad transversal vertical (irrelevante en 1D)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>diffc <span class="op">=</span> <span class="fl">0.0</span>           <span class="co"># m2/d, difusion molecular (despreciada)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>Q_iny <span class="op">=</span> <span class="fl">0.1</span>           <span class="co"># m3/d, caudal de inyeccion en x1 (necesario para generar flujo)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>h_L <span class="op">=</span> <span class="fl">1.0</span>             <span class="co"># m, carga fija en x_L (dato del enunciado)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>c_bg <span class="op">=</span> <span class="fl">1.000329</span>        <span class="co"># concentracion de fondo / agua inyectada (dato del enunciado)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>c_spike <span class="op">=</span> <span class="fl">200.0</span>        <span class="co"># concentracion inicial puntual en x12 (dato del enunciado)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Discretizacion temporal del transporte</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>perlen <span class="op">=</span> <span class="fl">300.0</span>   <span class="co"># dias, duracion total de la simulacion</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>nstp <span class="op">=</span> <span class="dv">150</span>       <span class="co"># numero de pasos de tiempo</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>tsmult <span class="op">=</span> <span class="fl">1.05</span>    <span class="co"># multiplicador del paso de tiempo</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="simulación-y-discretización-temporal-tdis" class="level3">
+<h3 class="anchored" data-anchor-id="simulación-y-discretización-temporal-tdis">3.4 Simulación y discretización temporal (<code>TDIS</code>)</h3>
+<div id="bf8af856" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sim <span class="op">=</span> flopy.mf6.MFSimulation(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    sim_name<span class="op">=</span>sim_name, sim_ws<span class="op">=</span>ws, exe_name<span class="op">=</span>exe_mf6, version<span class="op">=</span><span class="st">"mf6"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tdis <span class="op">=</span> flopy.mf6.ModflowTdis(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    sim,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    time_units<span class="op">=</span><span class="st">"DAYS"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    nper<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    perioddata<span class="op">=</span>[(perlen, nstp, tsmult)],</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="modelo-de-flujo-gwf" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-de-flujo-gwf">3.5 Modelo de flujo (GWF)</h3>
+<ul>
+<li><code>NPF</code>: conductividad hidráulica <span class="math inline">\(K_x\)</span>.</li>
+<li>No se define el paquete <code>STO</code> ⇒ el flujo se resuelve en <strong>régimen permanente</strong>, congruente con que las condiciones de frontera de <span class="math inline">\(h\)</span> no dependen del tiempo.</li>
+<li>El límite izquierdo (<span class="math inline">\(x=0\)</span>) no recibe ninguna condición de frontera, por lo que MODFLOW 6 le asigna flujo nulo por defecto: <span class="math inline">\(\partial h/\partial x(0,t)=0\)</span> se cumple automáticamente.</li>
+<li><code>WEL</code>: pozo de inyección en <span class="math inline">\(x_1\)</span> (fuente de flujo necesaria, ver sección 2).</li>
+<li><code>CHD</code>: carga fija <span class="math inline">\(h(x_L,t)=1.0\)</span>.</li>
+</ul>
+<div id="9bc0bbed" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>gwfname <span class="op">=</span> <span class="st">"gwf_"</span> <span class="op">+</span> sim_name</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>gwf <span class="op">=</span> flopy.mf6.ModflowGwf(sim, modelname<span class="op">=</span>gwfname, save_flows<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ims_gwf <span class="op">=</span> flopy.mf6.ModflowIms(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    sim,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwfname<span class="sc">}</span><span class="ss">.ims"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    complexity<span class="op">=</span><span class="st">"SIMPLE"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    outer_dvclose<span class="op">=</span><span class="fl">1e-6</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    inner_dvclose<span class="op">=</span><span class="fl">1e-6</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>sim.register_ims_package(ims_gwf, [gwf.name])</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>dis <span class="op">=</span> flopy.mf6.ModflowGwfdis(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    gwf,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    nlay<span class="op">=</span>nlay, nrow<span class="op">=</span>nrow, ncol<span class="op">=</span>ncol,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    delr<span class="op">=</span>delr, delc<span class="op">=</span>delc, top<span class="op">=</span>top, botm<span class="op">=</span>botm,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>npf <span class="op">=</span> flopy.mf6.ModflowGwfnpf(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    gwf, icelltype<span class="op">=</span><span class="dv">0</span>, k<span class="op">=</span>K, save_specific_discharge<span class="op">=</span><span class="va">True</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>ic <span class="op">=</span> flopy.mf6.ModflowGwfic(gwf, strt<span class="op">=</span>h_L)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Pozo de inyeccion en x1 (con concentracion auxiliar para el acople con GWT)</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>wel <span class="op">=</span> flopy.mf6.ModflowGwfwel(</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    gwf,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    stress_period_data<span class="op">=</span>{<span class="dv">0</span>: [[(<span class="dv">0</span>, <span class="dv">0</span>, icol_x1), Q_iny, c_bg]]},</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    auxiliary<span class="op">=</span>[<span class="st">"CONCENTRATION"</span>],</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    pname<span class="op">=</span><span class="st">"WEL-1"</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga fija en x_L: h(x_L,t) = 1.0</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>chd <span class="op">=</span> flopy.mf6.ModflowGwfchd(</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    gwf,</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    stress_period_data<span class="op">=</span>{<span class="dv">0</span>: [[(<span class="dv">0</span>, <span class="dv">0</span>, icol_xL), h_L]]},</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    pname<span class="op">=</span><span class="st">"CHD-1"</span>,</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>oc_gwf <span class="op">=</span> flopy.mf6.ModflowGwfoc(</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    gwf,</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    head_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwfname<span class="sc">}</span><span class="ss">.hds"</span>,</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    budget_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwfname<span class="sc">}</span><span class="ss">.cbc"</span>,</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    saverecord<span class="op">=</span>[(<span class="st">"HEAD"</span>, <span class="st">"ALL"</span>), (<span class="st">"BUDGET"</span>, <span class="st">"ALL"</span>)],</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="modelo-de-transporte-gwt" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-de-transporte-gwt">3.6 Modelo de transporte (GWT)</h3>
+<ul>
+<li><code>IC</code>: condición inicial <span class="math inline">\(c_1(x,t_0)\)</span> — valor de fondo en todo el dominio y el pulso puntual en <span class="math inline">\(x_{12}\)</span>.</li>
+<li><code>ADV</code> (esquema <code>TVD</code>) y <code>DSP</code> (<span class="math inline">\(\alpha_L\)</span>): advección y dispersión.</li>
+<li><code>MST</code>: porosidad <span class="math inline">\(\theta\)</span> (almacenamiento de masa disuelta).</li>
+<li><code>CNC</code>: condición de frontera de concentración fija en <span class="math inline">\(x_1\)</span> (<span class="math inline">\(c_1(x_1,t)=1.000329\)</span>).</li>
+<li>En <span class="math inline">\(x_L\)</span> <strong>no</strong> se define <code>CNC</code>: MODFLOW 6 aplica de forma natural un gradiente dispersivo nulo en la celda de salida (<code>CHD</code>), es decir <span class="math inline">\(D_x\,\partial c_1/\partial x(L,t)=0\)</span> se cumple automáticamente.</li>
+<li><code>SSM</code>: vincula la concentración auxiliar del pozo <code>WEL-1</code> con el transporte (requerido por MODFLOW 6 cuando el modelo de flujo tiene paquetes de frontera).</li>
+</ul>
+<div id="d98cf565" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>gwtname <span class="op">=</span> <span class="st">"gwt_"</span> <span class="op">+</span> sim_name</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>gwt <span class="op">=</span> flopy.mf6.ModflowGwt(sim, modelname<span class="op">=</span>gwtname, save_flows<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ims_gwt <span class="op">=</span> flopy.mf6.ModflowIms(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    sim,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwtname<span class="sc">}</span><span class="ss">.ims"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    complexity<span class="op">=</span><span class="st">"SIMPLE"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    linear_acceleration<span class="op">=</span><span class="st">"BICGSTAB"</span>,   <span class="co"># requerido: la matriz de GWT es asimetrica</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    outer_dvclose<span class="op">=</span><span class="fl">1e-8</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    inner_dvclose<span class="op">=</span><span class="fl">1e-8</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>sim.register_ims_package(ims_gwt, [gwt.name])</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>dis_t <span class="op">=</span> flopy.mf6.ModflowGwtdis(</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    gwt,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    nlay<span class="op">=</span>nlay, nrow<span class="op">=</span>nrow, ncol<span class="op">=</span>ncol,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    delr<span class="op">=</span>delr, delc<span class="op">=</span>delc, top<span class="op">=</span>top, botm<span class="op">=</span>botm,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Condicion inicial: c1(x,t0) = 1.000329 en todo el dominio,</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># excepto en x12 donde c1(x12,t0) = 200.0</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>c_ini <span class="op">=</span> np.full((nlay, nrow, ncol), c_bg)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>c_ini[<span class="dv">0</span>, <span class="dv">0</span>, icol_x12] <span class="op">=</span> c_spike</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>ic_t <span class="op">=</span> flopy.mf6.ModflowGwtic(gwt, strt<span class="op">=</span>c_ini)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>adv <span class="op">=</span> flopy.mf6.ModflowGwtadv(gwt, scheme<span class="op">=</span><span class="st">"TVD"</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>dsp <span class="op">=</span> flopy.mf6.ModflowGwtdsp(</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    gwt, xt3d_off<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    alh<span class="op">=</span>alphaL, ath1<span class="op">=</span>alphaTH, ath2<span class="op">=</span>alphaTV, diffc<span class="op">=</span>diffc,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>mst <span class="op">=</span> flopy.mf6.ModflowGwtmst(gwt, porosity<span class="op">=</span>porosity)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Frontera de concentracion fija (Dirichlet) en x1:  c1(x1,t) = 1.000329</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>cnc <span class="op">=</span> flopy.mf6.ModflowGwtcnc(</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    gwt,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    stress_period_data<span class="op">=</span>{<span class="dv">0</span>: [[(<span class="dv">0</span>, <span class="dv">0</span>, icol_x1), c_bg]]},</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    pname<span class="op">=</span><span class="st">"CNC-1"</span>,</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>ssm <span class="op">=</span> flopy.mf6.ModflowGwtssm(</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    gwt, sources<span class="op">=</span>[[<span class="st">"WEL-1"</span>, <span class="st">"AUX"</span>, <span class="st">"CONCENTRATION"</span>]]</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>oc_gwt <span class="op">=</span> flopy.mf6.ModflowGwtoc(</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    gwt,</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    concentration_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwtname<span class="sc">}</span><span class="ss">.ucn"</span>,</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    budget_filerecord<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>gwtname<span class="sc">}</span><span class="ss">.cbc"</span>,</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    saverecord<span class="op">=</span>[(<span class="st">"CONCENTRATION"</span>, <span class="st">"ALL"</span>), (<span class="st">"BUDGET"</span>, <span class="st">"ALL"</span>)],</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="acople-flujo-transporte-gwf6-gwt6" class="level3">
+<h3 class="anchored" data-anchor-id="acople-flujo-transporte-gwf6-gwt6">3.7 Acople flujo-transporte (<code>GWF6-GWT6</code>)</h3>
+<div id="7fa82f1f" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>gwfgwt <span class="op">=</span> flopy.mf6.ModflowGwfgwt(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    sim, exgtype<span class="op">=</span><span class="st">"GWF6-GWT6"</span>, exgmnamea<span class="op">=</span>gwfname, exgmnameb<span class="op">=</span>gwtname,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>sim_name<span class="sc">}</span><span class="ss">.gwfgwt"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="escritura-y-ejecución-de-la-simulación" class="level3">
+<h3 class="anchored" data-anchor-id="escritura-y-ejecución-de-la-simulación">3.8 Escritura y ejecución de la simulación</h3>
+<div id="10e4a63d" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sim.write_simulation()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>success, buff <span class="op">=</span> sim.run_simulation(silent<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Exito de la corrida:"</span>, success)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(buff[<span class="op">-</span><span class="dv">40</span>:]))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> success</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>writing simulation...
+  writing simulation name file...
+  writing simulation tdis package...
+  writing solution package ims_-1...
+  writing solution package ims_0...
+  writing package flujtrans.gwfgwt...
+  writing model gwf_flujtrans...
+    writing model name file...
+    writing package dis...
+    writing package npf...
+    writing package ic...
+    writing package wel-1...
+INFORMATION: maxbound in ('gwf6', 'wel', 'dimensions') changed to 1 based on size of stress_period_data
+    writing package chd-1...
+INFORMATION: maxbound in ('gwf6', 'chd', 'dimensions') changed to 1 based on size of stress_period_data
+    writing package oc...
+  writing model gwt_flujtrans...
+    writing model name file...
+    writing package dis...
+    writing package ic...
+    writing package adv...
+    writing package dsp...
+    writing package mst...
+    writing package cnc-1...
+INFORMATION: maxbound in ('gwt6', 'cnc', 'dimensions') changed to 1 based on size of stress_period_data
+    writing package ssm...
+    writing package oc...
+FloPy is using the following executable to run the model: ..\..\..\..\bin\windows\mf6.exe
+                                   MODFLOW 6
+                U.S. GEOLOGICAL SURVEY MODULAR HYDROLOGIC MODEL
+                            VERSION 6.6.1 02/10/2025
+
+   MODFLOW 6 compiled Feb 10 2025 17:37:25 with Intel(R) Fortran Intel(R) 64
+   Compiler Classic for applications running on Intel(R) 64, Version 2021.7.0
+                             Build 20220726_000000
+
+This software has been approved for release by the U.S. Geological 
+Survey (USGS). Although the software has been subjected to rigorous 
+review, the USGS reserves the right to update the software as needed 
+pursuant to further analysis and review. No warranty, expressed or 
+implied, is made by the USGS or the U.S. Government as to the 
+functionality of the software and related material nor shall the 
+fact of release constitute any such warranty. Furthermore, the 
+software is released on condition that neither the USGS nor the U.S. 
+Government shall be held liable for any damages resulting from its 
+authorized or unauthorized use. Also refer to the USGS Water 
+Resources Software User Rights Notice for complete use, copyright, 
+and distribution information.
+
+ 
+ MODFLOW runs in SEQUENTIAL mode
+ 
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2026/07/11 14:12:51
+ 
+ Writing simulation list file: mfsim.lst
+ Using Simulation name file: mfsim.nam
+ 
+    Solving:  Stress period:     1    Time step:     1
+    Solving:  Stress period:     1    Time step:     2
+    Solving:  Stress period:     1    Time step:     3
+    Solving:  Stress period:     1    Time step:     4
+    Solving:  Stress period:     1    Time step:     5
+    Solving:  Stress period:     1    Time step:     6
+    Solving:  Stress period:     1    Time step:     7
+    Solving:  Stress period:     1    Time step:     8
+    Solving:  Stress period:     1    Time step:     9
+    Solving:  Stress period:     1    Time step:    10
+    Solving:  Stress period:     1    Time step:    11
+    Solving:  Stress period:     1    Time step:    12
+    Solving:  Stress period:     1    Time step:    13
+    Solving:  Stress period:     1    Time step:    14
+    Solving:  Stress period:     1    Time step:    15
+    Solving:  Stress period:     1    Time step:    16
+    Solving:  Stress period:     1    Time step:    17
+    Solving:  Stress period:     1    Time step:    18
+    Solving:  Stress period:     1    Time step:    19
+    Solving:  Stress period:     1    Time step:    20
+    Solving:  Stress period:     1    Time step:    21
+    Solving:  Stress period:     1    Time step:    22
+    Solving:  Stress period:     1    Time step:    23
+    Solving:  Stress period:     1    Time step:    24
+    Solving:  Stress period:     1    Time step:    25
+    Solving:  Stress period:     1    Time step:    26
+    Solving:  Stress period:     1    Time step:    27
+    Solving:  Stress period:     1    Time step:    28
+    Solving:  Stress period:     1    Time step:    29
+    Solving:  Stress period:     1    Time step:    30
+    Solving:  Stress period:     1    Time step:    31
+    Solving:  Stress period:     1    Time step:    32
+    Solving:  Stress period:     1    Time step:    33
+    Solving:  Stress period:     1    Time step:    34
+    Solving:  Stress period:     1    Time step:    35
+    Solving:  Stress period:     1    Time step:    36
+    Solving:  Stress period:     1    Time step:    37
+    Solving:  Stress period:     1    Time step:    38
+    Solving:  Stress period:     1    Time step:    39
+    Solving:  Stress period:     1    Time step:    40
+    Solving:  Stress period:     1    Time step:    41
+    Solving:  Stress period:     1    Time step:    42
+    Solving:  Stress period:     1    Time step:    43
+    Solving:  Stress period:     1    Time step:    44
+    Solving:  Stress period:     1    Time step:    45
+    Solving:  Stress period:     1    Time step:    46
+    Solving:  Stress period:     1    Time step:    47
+    Solving:  Stress period:     1    Time step:    48
+    Solving:  Stress period:     1    Time step:    49
+    Solving:  Stress period:     1    Time step:    50
+    Solving:  Stress period:     1    Time step:    51
+    Solving:  Stress period:     1    Time step:    52
+    Solving:  Stress period:     1    Time step:    53
+    Solving:  Stress period:     1    Time step:    54
+    Solving:  Stress period:     1    Time step:    55
+    Solving:  Stress period:     1    Time step:    56
+    Solving:  Stress period:     1    Time step:    57
+    Solving:  Stress period:     1    Time step:    58
+    Solving:  Stress period:     1    Time step:    59
+    Solving:  Stress period:     1    Time step:    60
+    Solving:  Stress period:     1    Time step:    61
+    Solving:  Stress period:     1    Time step:    62
+    Solving:  Stress period:     1    Time step:    63
+    Solving:  Stress period:     1    Time step:    64
+    Solving:  Stress period:     1    Time step:    65
+    Solving:  Stress period:     1    Time step:    66
+    Solving:  Stress period:     1    Time step:    67
+    Solving:  Stress period:     1    Time step:    68
+    Solving:  Stress period:     1    Time step:    69
+    Solving:  Stress period:     1    Time step:    70
+    Solving:  Stress period:     1    Time step:    71
+    Solving:  Stress period:     1    Time step:    72
+    Solving:  Stress period:     1    Time step:    73
+    Solving:  Stress period:     1    Time step:    74
+    Solving:  Stress period:     1    Time step:    75
+    Solving:  Stress period:     1    Time step:    76
+    Solving:  Stress period:     1    Time step:    77
+    Solving:  Stress period:     1    Time step:    78
+    Solving:  Stress period:     1    Time step:    79
+    Solving:  Stress period:     1    Time step:    80
+    Solving:  Stress period:     1    Time step:    81
+    Solving:  Stress period:     1    Time step:    82
+    Solving:  Stress period:     1    Time step:    83
+    Solving:  Stress period:     1    Time step:    84
+    Solving:  Stress period:     1    Time step:    85
+    Solving:  Stress period:     1    Time step:    86
+    Solving:  Stress period:     1    Time step:    87
+    Solving:  Stress period:     1    Time step:    88
+    Solving:  Stress period:     1    Time step:    89
+    Solving:  Stress period:     1    Time step:    90
+    Solving:  Stress period:     1    Time step:    91
+    Solving:  Stress period:     1    Time step:    92
+    Solving:  Stress period:     1    Time step:    93
+    Solving:  Stress period:     1    Time step:    94
+    Solving:  Stress period:     1    Time step:    95
+    Solving:  Stress period:     1    Time step:    96
+    Solving:  Stress period:     1    Time step:    97
+    Solving:  Stress period:     1    Time step:    98
+    Solving:  Stress period:     1    Time step:    99
+    Solving:  Stress period:     1    Time step:   100
+    Solving:  Stress period:     1    Time step:   101
+    Solving:  Stress period:     1    Time step:   102
+    Solving:  Stress period:     1    Time step:   103
+    Solving:  Stress period:     1    Time step:   104
+    Solving:  Stress period:     1    Time step:   105
+    Solving:  Stress period:     1    Time step:   106
+    Solving:  Stress period:     1    Time step:   107
+    Solving:  Stress period:     1    Time step:   108
+    Solving:  Stress period:     1    Time step:   109
+    Solving:  Stress period:     1    Time step:   110
+    Solving:  Stress period:     1    Time step:   111
+    Solving:  Stress period:     1    Time step:   112
+    Solving:  Stress period:     1    Time step:   113
+    Solving:  Stress period:     1    Time step:   114
+    Solving:  Stress period:     1    Time step:   115
+    Solving:  Stress period:     1    Time step:   116
+    Solving:  Stress period:     1    Time step:   117
+    Solving:  Stress period:     1    Time step:   118
+    Solving:  Stress period:     1    Time step:   119
+    Solving:  Stress period:     1    Time step:   120
+    Solving:  Stress period:     1    Time step:   121
+    Solving:  Stress period:     1    Time step:   122
+    Solving:  Stress period:     1    Time step:   123
+    Solving:  Stress period:     1    Time step:   124
+    Solving:  Stress period:     1    Time step:   125
+    Solving:  Stress period:     1    Time step:   126
+    Solving:  Stress period:     1    Time step:   127
+    Solving:  Stress period:     1    Time step:   128
+    Solving:  Stress period:     1    Time step:   129
+    Solving:  Stress period:     1    Time step:   130
+    Solving:  Stress period:     1    Time step:   131
+    Solving:  Stress period:     1    Time step:   132
+    Solving:  Stress period:     1    Time step:   133
+    Solving:  Stress period:     1    Time step:   134
+    Solving:  Stress period:     1    Time step:   135
+    Solving:  Stress period:     1    Time step:   136
+    Solving:  Stress period:     1    Time step:   137
+    Solving:  Stress period:     1    Time step:   138
+    Solving:  Stress period:     1    Time step:   139
+    Solving:  Stress period:     1    Time step:   140
+    Solving:  Stress period:     1    Time step:   141
+    Solving:  Stress period:     1    Time step:   142
+    Solving:  Stress period:     1    Time step:   143
+    Solving:  Stress period:     1    Time step:   144
+    Solving:  Stress period:     1    Time step:   145
+    Solving:  Stress period:     1    Time step:   146
+    Solving:  Stress period:     1    Time step:   147
+    Solving:  Stress period:     1    Time step:   148
+    Solving:  Stress period:     1    Time step:   149
+    Solving:  Stress period:     1    Time step:   150
+ 
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2026/07/11 14:12:51
+ Elapsed run time:  0.384 Seconds
+ 
+ Normal termination of simulation.
+Exito de la corrida: True</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="post-proceso-y-visualización-de-resultados" class="level2">
+<h2 class="anchored" data-anchor-id="post-proceso-y-visualización-de-resultados">4. Post-proceso y visualización de resultados</h2>
+<div id="1f523e98-400d-4ec8-8d06-d3bdd74441ae" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>odummy <span class="op">=</span> gwf.output.head()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>tt <span class="op">=</span> odummy.get_times()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(tt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>150</code></pre>
+</div>
+</div>
+<div id="a26c43c9" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> (np.arange(ncol) <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">*</span> delr</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>head <span class="op">=</span> gwf.output.head().get_data()[<span class="dv">0</span>, <span class="dv">0</span>, :]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>ucn <span class="op">=</span> gwt.output.concentration()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>times <span class="op">=</span> np.array(ucn.get_times())</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Carga hidraulica: min ="</span>, head.<span class="bu">min</span>(), <span class="st">" max ="</span>, head.<span class="bu">max</span>(), <span class="st">"m"</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Numero de tiempos de salida de concentracion:"</span>, <span class="bu">len</span>(times))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Carga hidraulica: min = 1.0  max = 1.949999999999998 m
+Numero de tiempos de salida de concentracion: 150</code></pre>
+</div>
+</div>
+<section id="carga-hidráulica-en-estado-estacionario" class="level3">
+<h3 class="anchored" data-anchor-id="carga-hidráulica-en-estado-estacionario">4.1 Carga hidráulica en estado estacionario</h3>
+<p>Al no existir otra fuente de flujo distinta del pozo de inyección en <span class="math inline">\(x_1\)</span> y de la carga fija en <span class="math inline">\(x_L\)</span>, la carga crece monótonamente desde <span class="math inline">\(x_1\)</span> hacia <span class="math inline">\(x=0\)</span> (zona sin salida, por la condición de flujo nulo) y decrece desde <span class="math inline">\(x_1\)</span> hacia <span class="math inline">\(x_L\)</span>, generando el gradiente que empuja el agua —y el soluto— hacia la salida.</p>
+<div id="d8b0aa35" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ax.plot(x, head, lw<span class="op">=</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"#1f77b4"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>ax.axvline(x1, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"$x_1$"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>ax.axvline(xL, color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"$x_L$"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"x (m)"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Carga hidraulica $h$ (m)"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Carga hidraulica en estado permanente"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Flujo_Transporte1_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="evolución-del-perfil-de-concentración" class="level3">
+<h3 class="anchored" data-anchor-id="evolución-del-perfil-de-concentración">4.2 Evolución del perfil de concentración</h3>
+<p>Se observa cómo la condición inicial puntual en <span class="math inline">\(x_{12}\)</span> (pico de 200) se dispersa y se traslada por advección hacia <span class="math inline">\(x_L\)</span>, mientras que desde <span class="math inline">\(x_1\)</span> avanza el frente de agua “limpia” (<span class="math inline">\(c_1=1.000329\)</span>) inyectada por el pozo.</p>
+<div id="e10aee0c" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sel_times <span class="op">=</span> [times[<span class="dv">0</span>], <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">60</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sel_times <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">set</span>(times[np.argmin(np.<span class="bu">abs</span>(times <span class="op">-</span> t))] <span class="cf">for</span> t <span class="kw">in</span> sel_times))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>cmap <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="bu">len</span>(sel_times)))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t, col <span class="kw">in</span> <span class="bu">zip</span>(sel_times, cmap):</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> ucn.get_data(totim<span class="op">=</span>t)[<span class="dv">0</span>, <span class="dv">0</span>, :]</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    ax.plot(x, c, color<span class="op">=</span>col, lw<span class="op">=</span><span class="fl">1.8</span>, label<span class="op">=</span><span class="ss">f"t = </span><span class="sc">{</span>t<span class="sc">:.1f}</span><span class="ss"> d"</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>ax.axvline(x1, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>ax.axvline(x12, color<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>ax.axvline(xL, color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"x (m)"</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Concentracion $c_1$"</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Evolucion del perfil de concentracion"</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Flujo_Transporte1_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="curva-de-llegada-breakthrough-curve-en-x_l" class="level3">
+<h3 class="anchored" data-anchor-id="curva-de-llegada-breakthrough-curve-en-x_l">4.3 Curva de llegada (<em>breakthrough curve</em>) en <span class="math inline">\(x_L\)</span></h3>
+<p>Muestra cómo cambia con el tiempo la concentración justo en la celda de salida (<span class="math inline">\(x_L\)</span>), donde se aplica la condición de flujo dispersivo nulo.</p>
+<div id="8462b6af" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>icol_xL_ <span class="op">=</span> ncol <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>c_xL <span class="op">=</span> np.array([ucn.get_data(totim<span class="op">=</span>t)[<span class="dv">0</span>, <span class="dv">0</span>, icol_xL_] <span class="cf">for</span> t <span class="kw">in</span> times])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>ax.plot(times, c_xL, lw<span class="op">=</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"#d62728"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"tiempo (dias)"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Concentracion $c_1$ en $x_L$"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Curva de llegada (breakthrough) en $x_L$"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Flujo_Transporte1_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="resumen" class="level2">
+<h2 class="anchored" data-anchor-id="resumen">5. Resumen</h2>
+<ul>
+<li>El problema se planteó como un sistema acoplado de dos EDPs: la ecuación de flujo subterráneo para <span class="math inline">\(h(x,t)\)</span> y la ecuación de advección-dispersión para <span class="math inline">\(c_1(x,t)\)</span>, con las condiciones iniciales y de frontera dadas en la figura.</li>
+<li>Se identificó que las condiciones de frontera de flujo, tal como se presentan, no bastan para generar movimiento de agua (y por tanto transporte advectivo), por lo que se agregó un pozo de inyección en <span class="math inline">\(x_1\)</span> como fuente necesaria, coherente con la condición de concentración fija especificada en ese mismo punto.</li>
+<li>El modelo se resolvió con <strong>MODFLOW 6</strong>, acoplando un modelo de flujo (<code>GWF</code>) en régimen permanente con un modelo de transporte (<code>GWT</code>) transitorio, usando FloPy para la construcción, ejecución y post-proceso.</li>
+<li>Los resultados muestran cómo el pulso inicial de concentración en <span class="math inline">\(x_{12}\)</span> se advecta y dispersa hacia la salida <span class="math inline">\(x_L\)</span>, mientras el frente de agua inyectada en <span class="math inline">\(x_1\)</span> (con concentración de fondo) avanza detrás de él.</li>
+</ul>
+<p>Este mismo flujo de trabajo (definición de EDPs → identificación de datos faltantes → construcción del modelo por paquetes → ejecución → post-proceso) es directamente extensible a dominios 2D/3D, múltiples especies químicas, reacciones o condiciones transitorias más complejas.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,9 @@
+---
+title: "Bienvenido"
+---
+
+Este sitio contiene el análisis de datos organizado en notebooks interactivos.
+
+## Contenido
+
+- [Análisis 1](notebooks/03_wma/01_GWF_DFC_WMA_Yeso/1_GWF_DFC_WMA_Imp.ipynb)
