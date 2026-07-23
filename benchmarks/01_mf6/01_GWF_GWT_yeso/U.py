@@ -85,9 +85,9 @@ paths = dict(
     #
     # Nombre de los modelos y espacios de trabajo
     flow_name = "flow",
-    flow_ws = "output_gwf_U",
+    flow_ws = "output_U/gwf",
     tran_name = "transport",
-    tran_ws = "output_gwt_U"
+    tran_ws = "output_U/gwt"
 )
 xmf6.nice_print(paths, "Paths, files and more ...")
 

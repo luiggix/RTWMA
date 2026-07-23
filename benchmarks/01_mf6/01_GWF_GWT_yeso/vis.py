@@ -61,19 +61,25 @@ def plot(o_gwf, x, head, qx, qy, o_conc, times_c):
     pmv.plot_vector(qx, qy, scale=40, pivot="mid", width=0.004, normalize=True, color="k")
     
     # --- Gráfica 2. Carga hidráulica vs posición
-    ax2.plot(x[0], head, marker="o", lw =1.0, mec="k", mfc="C0", 
-             markersize="4", alpha = 1.0, label = 'Head')
+    ax2.plot(x[0], head, marker="o", lw =1.0, c = "dimgray", label = 'Head', 
+             mec="black", mfc="black", markersize="5", alpha = 0.75, )
+
+#    ax2.plot(x[0], head, marker="o", lw =1.0, mec="k", mfc="C0", 
+#             markersize="4", alpha = 1.0, label = 'Head')
     ax2.set_xlim(0, 30)
     ax2.set_ylabel("$h$ (m)")
     ax2.grid()
     
     max_y = 0
     # --- Gráfica 3. Concentración para diferentes pasos de tiempo
-    for t in times_c[9::10]:
+    marker = ["o", "s", "v", "^"] 
+    for i, t in enumerate(times_c[9::10]):
         U = o_conc.get_data(totim=t).flatten()
-        ax3.plot(x[0], U, ls ="-", lw = 1.0, 
-             marker ="o", markersize="4", alpha = 0.75,
-             label=f"t = {t} days", zorder=2)
+        ax3.plot(x[0], U, ls ="-", lw = 1.0, label=f"t = {t} days", zorder=2,
+             marker = marker[i], markersize="4", alpha = 0.75)
+#        ax3.plot(x[0], U, ls ="-", lw = 1.0, 
+#             marker ="o", markersize="4", alpha = 0.75,
+#             label=f"t = {t} days", zorder=2)
         max_y = max(max_y, U.max())
     
     ax3.set_ylim(0, max_y * 1.1)
@@ -92,7 +98,7 @@ def plot_obs(o_conc, times_c):
     U_30 = np.array([o_conc.get_data(totim=t)[0, 0, 29] for t in times_c])
     
     fig, ax = plt.subplots(3,1, sharex = True, figsize=(7, 4.5))
-    fig.suptitle("Concentración $U$")
+    fig.suptitle("$U$ at observation points (as time function)")
     
     ax[0].plot(times_c, U_5, lw=2,marker="o",markersize="2",c="C0",label="$x_5$")
     ax[0].grid()
@@ -106,6 +112,6 @@ def plot_obs(o_conc, times_c):
     ax[2].plot(times_c, U_30, lw=2,marker="o",markersize="2",c="C3",label="$x_{30}$")
     ax[2].grid()
     ax[2].legend()
-    ax[2].set_xlabel("tiempo (dias)")
+    ax[2].set_xlabel("time (days)")
     plt.tight_layout()
     plt.show()

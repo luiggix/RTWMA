@@ -1,7 +1,0 @@
-'kinetic data for mineral dissolution/precipitation in mol m-2 s-1'
-'gypsum' 1 0 10.0 1.0 'Barton and Wilde, 1970'
-        2.15d-4 1.0 1.0
-'calcite' 1 0 15.0 1.0 'Inskeep and Bloom, 1986'
-        4.64d-7 1.0 1.0
-'null' 0 0 0.0 0.0 ' '
-

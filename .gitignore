@@ -139,3 +139,6 @@ bin/linux/libmf6.so
 output*/
 sandbox*/
 DENIT_DRIVE/
+
+/.quarto/
+**/*.quarto_ipynb
