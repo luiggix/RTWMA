@@ -6,10 +6,10 @@ linea = 50*chr(0x2015)
 
 # --- EJECUCIÓN CON LA API ---
 
-def run(o_sim, paths, VARNAME = "FLOW"):
+def run(o_sim, paths):
 
     print(linea)
-    print("- Incializando la API")
+    print("-> Initializing the API")
     
     # Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
@@ -30,9 +30,9 @@ def run(o_sim, paths, VARNAME = "FLOW"):
     max_iter = mf6.get_value(mf6.get_var_address("MXITER", "SLN_1"))
     
     print(linea)
-    print("- Iniciando la simulación con la API")
-    print(f"  Tiempo actual: {current_time}")
-    print(f"  Tiempo final: {end_time}")
+    print("-> Initializing the simulation with the API (one time step)")
+    print(f"  Current time: {current_time}")
+    print(f"  Final time: {end_time}")
     print(linea)
     
     # Obtenemos el paso de tiempo
@@ -50,10 +50,10 @@ def run(o_sim, paths, VARNAME = "FLOW"):
         has_converged = mf6.solve(1)
             
         if has_converged:
-            print(f" ---> Convergencia obtenida en iter = {kiter} ")
+            print(f" ---> Convergence at iter = {kiter} ")
             break
         else:
-            print(f" ---> ¿Convergencia obtenida? : {has_converged}")
+            print(f" ---> ¿Convergence? : {has_converged}")
             
         kiter += 1
             

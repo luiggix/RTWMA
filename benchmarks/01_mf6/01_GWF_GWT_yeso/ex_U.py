@@ -26,7 +26,7 @@ dis = {
     'top' : top, 
     'botm': botm 
 }
-xmf6.nice_print(dis, "Discretización espacial")
+xmf6.nice_print("Spatial discretization", dis)
 
 # Discretización del tiempo para el flujo 
 tdis = {
@@ -34,7 +34,7 @@ tdis = {
     'nper' : 1,
     'perioddata': [(40.0, 40, 1.0)] #PERLEN, NSTP, TSMULT
 }
-xmf6.nice_print(tdis, "Discretización del tiempo para el flujo")
+xmf6.nice_print("Time discretization (flow)", tdis)
 
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
@@ -47,7 +47,8 @@ c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 # Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
-print("Información del arreglo de la concentración inicial")
+
+xmf6.nice_print("Array info: U_ini")
 xmf6.info_array(U_ini)
 
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
@@ -68,7 +69,7 @@ phys = dict(
 q = phys["specific_discharge"] * dis['delc'] * dis['delr'] * dis['top']
 phys["well"] = [("WEL-1", "AUX", "CONCENTRATION"), ((0, 0, 0), q, phys["source_concentration"])]
 
-xmf6.nice_print(phys, "Parámetros físicos")
+xmf6.nice_print("Physical parameters", phys)
 
 paths = dict(
     # Ejecutable de MODFLOW 6
@@ -80,7 +81,7 @@ paths = dict(
     flow_name = "flow",
     tran_name = "transport",
 )
-xmf6.nice_print(paths, "Rutas, archivos y más ...")
+xmf6.nice_print("Paths, files and more ...", paths)
 
 # --- COMPONENTES ---
 # Simulación y discretización temporal. 
@@ -104,18 +105,15 @@ o_tdis = flopy.mf6.ModflowTdis(
 
 # -------------------------------------------
 
-print(linea)
-print(" Ejecución de la función gwf.build(...)")
-print(linea)
+xmf6.nice_print("Function gwf.build(...) :  flow model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_gwf = ex_gwf.build(paths, o_sim, phys, dis, silent = False) 
 
-print(linea)
-print("Ejecución de la función gwt.build(...)")
-print(linea)
+xmf6.nice_print("Function gwt.build(...) :  transport model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_gwt = ex_gwt.build(paths, o_sim, phys, dis, silent = False) 
 
+xmf6.nice_print("GWF-GWT exchange creation")
 # Agregamos el objeto del intercambio entre los modelos.
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
     o_sim, 
@@ -125,19 +123,11 @@ o_gwfgwt = flopy.mf6.ModflowGwfgwt(
     filename=f"{paths["sim_name"]}.gwfgwt",
 )
 
-print(linea)
-print("Escritura de los archivos de entrada para la simulación")
-print(linea)
+xmf6.nice_print("Writing input files for the simulation")
 # Escritura de los archivos de entrada para la simulación.
 o_sim.write_simulation(silent = False)
 
-print(linea)
-print("Ejecución de la simulación")
-print(linea)
+xmf6.nice_print("Executing the simulation")
 # Ejecución de la simulación.
 o_sim.run_simulation(silent = False)
 print(linea)
-
-#x, head, qx, qy, o_conc, times_c = vis.data_recovery(o_gwf, o_gwt)
-
-#vis.plot(o_gwf, x, head, qx, qy, o_conc, times_c)

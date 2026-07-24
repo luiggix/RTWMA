@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import flopy
 import xmf6
 from gypsum import gwf, gwf_api, lambdas, wma, vis
-linea = 50*chr(0x2015)
 
 # --- DEFINICIÓN DE LAS RUTAS ---
 
@@ -41,7 +40,7 @@ paths["gypsum_eq"] = os.path.join(paths["wma_working_dir"], 'gypsum_eq.out')
 # Archivo requerido por "TR_1D_oper.exe"
 paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "workingDirectory.txt")
 
-xmf6.nice_print(paths, "Rutas y nombres de archivos")
+xmf6.nice_print("Paths, filenames and more ...", paths)
 
 # --- DATOS PARA LA SIMULACIÓN ---
 
@@ -64,7 +63,7 @@ dis = {
     'top' : top, 
     'botm': botm 
 }
-xmf6.nice_print(dis, "Spatial discretization")
+xmf6.nice_print("Spatial discretization", dis)
 
 # Discretización del tiempo para el flujo 
 tdis = {
@@ -72,7 +71,7 @@ tdis = {
     'nper' : 1,
     'perioddata': [(40.0, 1, 1.0)] #PERLEN, NSTP, TSMULT
 }
-xmf6.nice_print(tdis, "Time discretization (flow)")
+xmf6.nice_print("Time discretization (flow)", tdis)
 
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
@@ -108,17 +107,14 @@ phys = dict(
 q = phys["specific_discharge"] * dis['delc'] * dis['delr'] * dis['top']
 phys["well"] = [("WEL-1", "AUX", "CONCENTRATION"), ((0, 0, 0), q, phys["source_concentration"])]
 
-xmf6.nice_print(phys, "Physical parameters")
+xmf6.nice_print("Physical parameters", phys)
 
 # --- SIMULACIÓN DE FLUJO ---
-print(linea)
-print("Escribiendo archivos de entrada para GWF")
-print(linea)
+xmf6.nice_print("Writing input files for GWF")
 # Escritura de los archivos de entrada para la simulación.
 o_sim, o_gwf = gwf.build(paths, tdis, phys, dis, silent = False) 
 
-print(linea)
-print("Ejecutando GWF con la API")
+xmf6.nice_print("Executing GWF")
 # Ejecución de la simulación de flujo a través de la API
 head, q = gwf_api.run(o_sim, paths)
 
@@ -139,13 +135,12 @@ flow_data = dict(
     head = [head],
     qx = [q[:,0]],
 )
-xmf6.nice_print(flow_data, "Head")
+xmf6.nice_print("Head", flow_data)
 
 # --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO DFC ---
 #
 # Cálculo de las lambdas ...
-print(linea)
-print("- Calculando las 𝜆's")
+xmf6.nice_print("-> Calculating 𝜆's")
 
 # Pasos de tiempo para el cálculo del transporte reactivo
 tdis = {
@@ -153,19 +148,17 @@ tdis = {
         'nper' : 1,
         'perioddata': [(40.0, 40, 1.0)]
 }
-xmf6.nice_print(tdis, "Discretización del tiempo para DFC")
+xmf6.nice_print("Time discretization for DFC", tdis)
 
 # Cálculo de las proporciones de mezcla
 lambdas1D, mixingWaters = lambdas.mixingRatios_dfc(phys, grid, tdis, head, q[:,0])
 
 # Almacenamiento de las proporciones de mezcla 
-print(f"- Escribiendo las 𝜆's")
+print(f"-> Writing 𝜆's")
 lambdas.save_mixing(paths["wma_lambdas_filename"], lambdas1D, mixingWaters)
 
 # --- CÁLCULO DEL TRANSPORTE REACTIVO ---
-print(linea)
-print("- Ejecutando TR_1D_oper.exe")
-print(linea)
+xmf6.nice_print("Executing TR_1D_oper.exe")
 
 # Ejecución de "TR_1D_oper.exe"
 wma.run(paths)
@@ -173,9 +166,11 @@ wma.run(paths)
 # Copiamos el resultado al directorio principal
 shutil.copy2(paths["gypsum_eq"], paths["gypsum_eq_dfc"])
 
-print(linea)
-
 # --- ANÁLISIS DE LOS RESULTADOS ---
 #
-vis.plot(x, *vis.data_recovery(paths["gypsum_eq_dfc"], 'comparativa_02.xlsx'), 
-         label1 = "DFC", label2 = "Excel", latex = True)
+c_dfc = vis.data_recovery("gypsum_eq_dfc.out")
+c1, c2, an_c1, an_c2 = vis.data_recovery_excel("comparativa_02.xlsx")
+
+vis.latex(True)
+vis.plot(x, (an_c1, an_c2), 
+         (c_dfc,), ("s-",), ("DFC",))

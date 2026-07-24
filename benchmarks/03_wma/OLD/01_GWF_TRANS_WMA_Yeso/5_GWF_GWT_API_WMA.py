@@ -43,7 +43,7 @@ paths["gypsum_eq"] = os.path.join(paths["wma_working_dir"], 'gypsum_eq.out')
 # Archivo requerido por "TR_1D_oper.exe"
 paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "workingDirectory.txt")
 
-xmf6.nice_print(paths, "Rutas y nombres de archivos")
+xmf6.nice_print("Paths, filenames and more ...", paths)
 #
 # --- DATOS PARA LA SIMULACIÓN ---
 #
@@ -66,7 +66,7 @@ dis = {
     'top' : 1.0, 
     'botm': 0.0 
 }
-xmf6.nice_print(dis, "Spatial discretization")
+xmf6.nice_print("Spatial discretization", dis)
 #
 # Discretización del tiempo para el flujo
 tdis_f = {
@@ -74,7 +74,7 @@ tdis_f = {
     'nper' : 1,
     'perioddata': [(40.0, 1, 1.0)]
 }
-xmf6.nice_print(dis, "Time discretization (flow)")
+xmf6.nice_print("Time discretization (flow)", tdis_f)
 #
 # Discretización del tiempo para el transporte
 tdis_t = {
@@ -82,9 +82,8 @@ tdis_t = {
         'nper' : 1,
         'perioddata': [(40.0, 40, 1.0)] #PERLEN, NSTP, TSMULT
     }
-xmf6.nice_print(tdis_t, "Time discretization (transport)")
+xmf6.nice_print("Time discretization (transport)", tdis_t)
 
-# <> -----------------------------------------------------------------------
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
 c1_ini[0, 0, 11] = 200.0  # Pulso en x_L
@@ -94,22 +93,22 @@ c2_ini = np.full((nlay,nrow,ncol), 3.294e-5) # En todo el dominio
 c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 
 # Arreglo para la condición inicial de U
-U_ini = np.full((nlay,nrow,ncol), 1.0) # c1_ini - c2_ini # En todo el dominio
+U_ini = np.full((nlay,nrow,ncol), 1.0) # En todo el dominio # c1_ini - c2_ini (no converge!)
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
 print("Array info: U")
 xmf6.info_array(U_ini)
+
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
-# <> -----------------------------------------------------------------------
 
 phys = dict(
     initial_head = 1.0,
     bc_head_t1 = [("CHD-1" , [(0, 0, dis['ncol'] - 1), 1.0])],
     hydraulic_conductivity = 1.0, 
     specific_discharge = 0.2, 
-    source_concentration = 1.0, # 1.0 o U_s
+    source_concentration = 1.0, # 1.0 o U_s (no converge!)
     porosity = 0.5,
     initial_concentration = U_ini,
-    bc_conc_t1 = [("CNC-1", [(0, 0, 0), 1.0])], # 1.0 o U_s
+    bc_conc_t1 = [("CNC-1", [(0, 0, 0), 1.0])], # 1.0 o U_s  (no converge!)
     longitudinal_dispersivity = 0.2,
     dispersion_coefficient = 0.2,
     decay_rate =  0.0,    
@@ -118,19 +117,16 @@ phys = dict(
 q = phys["specific_discharge"] * dis['delc'] * dis['delr'] * dis['top']
 phys["well"] = [("WEL-1", "AUX", "CONCENTRATION"), ((0, 0, 0), q, phys["source_concentration"])]
 
-xmf6.nice_print(phys, "Parámetros físicos")
+xmf6.nice_print("Physical parameters", phys)
 
-__dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
 # --- SIMULACIÓN DE FLUJO ---
-#
-# --- Construcción de la simulación de flujo
-#o_sim_f 
-o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False) #gwf.build(phys, dis, paths)
-#(paths, tdis, phys, dis, silent = False):
-#
-# --- Ejecución de la simulación ---
-print("- Ejecutando GWF")
+xmf6.nice_print("Writing input files for GWF")
+# Escritura de los archivos de entrada para la simulación.
+o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False)
+
+xmf6.nice_print("Executing GWF")
+# Ejecución de la simulación de flujo.
 o_sim_f.run_simulation(silent=False)
 
 # --- ANÁLSIS DE RESULTADOS DEL FLUJO ---
@@ -161,58 +157,22 @@ flow_data = dict(
     head = [head],
     qx = qx[:,0],
 )
-xmf6.nice_print(flow_data, "Head")
+xmf6.nice_print("Head", flow_data)
 
-
-__dummy = input("\nTeclea [ENTER] para continuar\n")
+# --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO GWT ---
 #
-# - SIMULACIÓN DE TRANSPORTE CON GWT + API ---
-#
-#o_sim_t = gwt.build(phys, dis, paths)
+# Construcción de las matrices de transporte usando GWT + API
+xmf6.nice_print("Writting input files for GWT")
+# Escritura de los archivos de entrada para la simulación.
 o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False)
-#
-# --- Ejecución de la API ---
+# Ejecución de la API ---
 A, RHS, U = gwt_api.run(o_sim_t, paths)
 #
-__dummy = input("\nTeclea [ENTER] para continuar\n") 
-#
-# - CÁLCULO DE LAS RAZONES DE MEZCLA (WMA)
-#
-# --- Usando DFC
-#DFC = input("Calcular con DFC?")
-
-#if DFC == "S":
-#    print(linea)
-#    print("- Calculando las proporciones de mezcla con DFC")
-#    o_gwf = o_sim_f.get_model(flow_name)
-#    grid = o_gwf.modelgrid
-#    head = xmf6.gwf.get_head(o_gwf)
-#    qx, qy, qz, n_q = xmf6.gwf.get_specific_discharge(o_gwf, text="DATA-SPDIS")
-#    print(head[0,0])
-#    print(qx[0,0])
-#    mixingRatios, mixingWaters = wma.build_dfc(phys, grid, tdis, head[0,0], qx[0,0])
-#    wma.save_mixing(paths, mixingRatios, mixingWaters)
-#    wma.reactive_transport_wma(paths)
-#    file_name = os.path.join(paths["wma_working_dir"], tr1d_ofile)
-#    file_dfc = os.path.join(paths["wma_working_dir"], tr1d_ofile_dfc)
-#    print("- Renombrando archivo:")
-#    print(f"  Archivo original: {file_name}")
-#    print(f"  Archivo nuevo   : {file_dfc}")
-#    os.rename(file_name, file_dfc)
-#
-#__dummy = input("\nTeclea [ENTER] para continuar\n") 
-#
-print(linea)
-#
-# --- Usando GWT + API
+# Cálculo de las proporciones de mezcla
 lambdas.mixingRatios_gwt(dis, tdis_t, phys, A, RHS, U, paths, silent=True)
-#
-__dummy = input("\nTeclea [ENTER] para continuar\n") 
-#
-# - CÁLCULO DE TRANSPORTE REACTIVO
-print(linea)
-print("- Ejecutando TR_1D_oper.exe")
-print(linea)
+
+# --- CÁLCULO DEL TRANSPORTE REACTIVO ---
+xmf6.nice_print("Executing TR_1D_oper.exe")
 
 # Ejecución de "TR_1D_oper.exe"
 wma.run(paths)
@@ -220,17 +180,12 @@ wma.run(paths)
 # Copiamos el resultado al directorio principal
 shutil.copy2(paths["gypsum_eq"], paths["gypsum_eq_gwt"])
 
-print(linea)
-
-#wma.reactive_transport_wma(paths)
-#
-__dummy = input("\nTeclea [ENTER] para continuar\n") 
 #
 # - ANÁLISIS DE RESULTADOS
 #
-vis.plot(x, *vis.data_recovery(paths["gypsum_eq_gwt"], 'comparativa_02.xlsx'), 
-         label1 = "GWT", label2 = "Excel", latex = True)
+c_gwt = vis.data_recovery("gypsum_eq_gwt.out")
+c1, c2, an_c1, an_c2 = vis.data_recovery_excel("comparativa_02.xlsx")
 
-print(linea)
-print("- FIN DE LA SIMULACIÓN -")
-print(linea)
+vis.latex(True)
+vis.plot(x, (an_c1, an_c2),
+         (c_gwt,), ("s-",), ("GWT",))

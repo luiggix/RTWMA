@@ -6,7 +6,6 @@ import gwf_gypsum as gwf
 import gwt_gypsum as gwt
 #import vis
 import xmf6
-linea = 50*chr(0x2015)
 
 # Parámetros para la discretización espacial
 nlay = 1
@@ -27,7 +26,7 @@ dis = {
     'top' : top, 
     'botm': botm 
 }
-xmf6.nice_print(dis, "Spatial discretization")
+xmf6.nice_print("Spatial discretization", dis)
 
 # Discretización del tiempo para el flujo 
 tdis_f = {
@@ -35,7 +34,7 @@ tdis_f = {
     'nper' : 1,
     'perioddata': [(40.0, 1, 1.0)] #PERLEN, NSTP, TSMULT
 }
-xmf6.nice_print(tdis_f, "Time discretization (flow)")
+xmf6.nice_print("Time discretization (flow)", tdis_f)
 
 # Discretización del tiempo para el transporte 
 tdis_t = {
@@ -43,7 +42,7 @@ tdis_t = {
     'nper' : 1,
     'perioddata': [(40.0, 40, 1.0)] #PERLEN, NSTP, TSMULT
 }
-xmf6.nice_print(tdis_t, "Time discretization (transport)")
+xmf6.nice_print("Time discretization (transport)", tdis_t)
 
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
@@ -56,7 +55,7 @@ c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 # Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
-print("Array info: U")
+xmf6.nice_print("Array info: U")
 xmf6.info_array(U_ini)
 
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
@@ -77,7 +76,7 @@ phys = dict(
 q = phys["specific_discharge"] * dis['delc'] * dis['delr'] * dis['top']
 phys["well"] = [("WEL-1", "AUX", "CONCENTRATION"), ((0, 0, 0), q, phys["source_concentration"])]
 
-xmf6.nice_print(phys, "Parámetros físicos")
+xmf6.nice_print("Physical parameters", phys)
 
 paths = dict(
     # Ejecutable de MODFLOW 6
@@ -89,29 +88,20 @@ paths = dict(
     tran_name = "transport",
     tran_ws = "output_U/gwt"
 )
-xmf6.nice_print(paths, "Paths, files and more ...")
+xmf6.nice_print("Paths, files and more ...", paths)
 
-print(linea)
-print("Function gwf.build(...) :  flow model creation")
-print(linea)
+xmf6.nice_print("Function gwf.build(...) :  flow model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_sim, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False) 
 
-print(linea)
-print("Flow simulation execution")
-print(linea)
+xmf6.nice_print("Flow simulation execution")
 # Ejecución de la simulación de flujo.
 o_sim.run_simulation(silent = False)
 
-print(linea)
-print("Function gwt.build(...) :  transport model creation")
-print(linea)
+xmf6.nice_print("Function gwt.build(...) :  transport model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False) 
 
-print(linea)
-print("Transport simulation execution")
-print(linea)
+xmf6.nice_print("Transport simulation execution")
 # Ejecución de la simulación de flujo.
 o_sim_t.run_simulation(silent = False)
-print(linea)

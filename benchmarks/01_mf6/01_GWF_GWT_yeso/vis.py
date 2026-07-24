@@ -27,7 +27,7 @@ def data_recovery(o_gwf, o_gwt):
         head = [head],
         qx = qx,
     )
-    xmf6.nice_print(flow_dict, "Carga hidráulica")
+    xmf6.nice_print("Carga hidráulica", flow_dict)
     
     # Objeto para recuperar los resultados del transporte
     o_conc = o_gwt.output.concentration()
@@ -44,7 +44,7 @@ def data_recovery(o_gwf, o_gwt):
         times = [times_c],
         conc = [U_40]
     )
-    xmf6.nice_print(tran_dict, "Concentración")
+    xmf6.nice_print("Concentración", tran_dict)
 
     return x, head, qx, qy, o_conc, times_c
 
@@ -63,9 +63,6 @@ def plot(o_gwf, x, head, qx, qy, o_conc, times_c):
     # --- Gráfica 2. Carga hidráulica vs posición
     ax2.plot(x[0], head, marker="o", lw =1.0, c = "dimgray", label = 'Head', 
              mec="black", mfc="black", markersize="5", alpha = 0.75, )
-
-#    ax2.plot(x[0], head, marker="o", lw =1.0, mec="k", mfc="C0", 
-#             markersize="4", alpha = 1.0, label = 'Head')
     ax2.set_xlim(0, 30)
     ax2.set_ylabel("$h$ (m)")
     ax2.grid()
@@ -77,9 +74,6 @@ def plot(o_gwf, x, head, qx, qy, o_conc, times_c):
         U = o_conc.get_data(totim=t).flatten()
         ax3.plot(x[0], U, ls ="-", lw = 1.0, label=f"t = {t} days", zorder=2,
              marker = marker[i], markersize="4", alpha = 0.75)
-#        ax3.plot(x[0], U, ls ="-", lw = 1.0, 
-#             marker ="o", markersize="4", alpha = 0.75,
-#             label=f"t = {t} days", zorder=2)
         max_y = max(max_y, U.max())
     
     ax3.set_ylim(0, max_y * 1.1)
