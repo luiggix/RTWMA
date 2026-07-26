@@ -114,7 +114,7 @@ xmf6.nice_print("Writing input files for GWF")
 # Escritura de los archivos de entrada para la simulación.
 o_sim, o_gwf = gwf.build(paths, tdis, phys, dis, silent = False) 
 
-xmf6.nice_print("Executing GWF")
+xmf6.nice_print("Initializing and running the API (GWF)")
 # Ejecución de la simulación de flujo a través de la API
 head, q = gwf_api.run(o_sim, paths)
 
@@ -140,7 +140,7 @@ xmf6.nice_print("Head", flow_data)
 # --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO DFC ---
 #
 # Cálculo de las lambdas ...
-xmf6.nice_print("-> Calculating 𝜆's")
+xmf6.nice_print("Construction of 𝜆 matrices (DFC)")
 
 # Pasos de tiempo para el cálculo del transporte reactivo
 tdis = {
@@ -154,7 +154,7 @@ xmf6.nice_print("Time discretization for DFC", tdis)
 lambdas1D, mixingWaters = lambdas.mixingRatios_dfc(phys, grid, tdis, head, q[:,0])
 
 # Almacenamiento de las proporciones de mezcla 
-print(f"-> Writing 𝜆's")
+print("-> Storing the mixing ratios")
 lambdas.save_mixing(paths["wma_lambdas_filename"], lambdas1D, mixingWaters)
 
 # --- CÁLCULO DEL TRANSPORTE REACTIVO ---

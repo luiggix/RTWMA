@@ -1,6 +1,6 @@
-import numpy as np
 import os
-linea = 50*chr(0x2015)
+import numpy as np
+import xmf6
 
 def upwind_1D(i, h, q):
     
@@ -18,6 +18,7 @@ def upwind_1D(i, h, q):
 
 ####Qué regresará #### Solo las lamdas o toda 
 def mixingRatios_dfc(phys, grid, tdis, head, qx):
+    print("-> Calculating DFC coefficients and 𝜆's ...")
     #
     # --- Renaming variables for local calculations
     #
@@ -173,9 +174,7 @@ def mixingRatios_dfc(phys, grid, tdis, head, qx):
 
 def mixingRatios_gwt(dis, tdis, phys, A, RHS, U, paths, silent = True):
 
-    print(linea)
-    print("- Iniciando la construcción de las matrices lambda")
-
+    print("-> Calculating ...")
     # Construcción de las matrices para generar las lambdas
     ncol = dis['ncol']
     D = np.identity(ncol) * phys["porosity"]
@@ -206,7 +205,7 @@ def mixingRatios_gwt(dis, tdis, phys, A, RHS, U, paths, silent = True):
     mixingWaters = np.concatenate((aux,  mixingWaters), axis=1)
     mixingWaters = mixingWaters.astype(np.int32)
 
-    print("\n- Guardando las proporciones de mezcla en el archivo: ")
+    print("-> Storing the mixing ratios")
     save_mixing(paths["wma_lambdas_filename"], mixingRatios, mixingWaters)
     
 

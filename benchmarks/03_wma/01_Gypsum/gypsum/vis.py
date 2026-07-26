@@ -88,7 +88,7 @@ def data_recovery_exch(o_gwf, o_gwt):
 
     return x, head, qx, qy, o_conc, times_c
     
-def plot(x, data_exa, data_num, markers, labels):
+def plot(x, data_exa, data_num, markers, labels, savefig=False):
     # --- Visualización de los resultados
     fig, ax = plt.subplots(2, 1, sharex=True, figsize=(7,6))
     plt.suptitle("Species concentration, t = $10$ days", x=0.085, ha="left")
@@ -122,10 +122,11 @@ def plot(x, data_exa, data_num, markers, labels):
     ax[1].spines.top.set_visible(False)
     
     plt.tight_layout()
-    #plt.savefig("yeso.pdf")
+    if savefig:
+        plt.savefig("gypsum.pdf")
     plt.show()
 
-def plot_exch(o_gwf, x, head, qx, qy, o_conc, times_c):
+def plot_exch(o_gwf, x, head, qx, qy, o_conc, times_c, savefig=False):
     # --- Definición de la figura. Se definen tres gráficas 
     fig, (ax1, ax2, ax3) = plt.subplots(3,1, sharex = True, figsize =(6,5),
                                         height_ratios=[0.1, 0.5, 0.5])
@@ -166,4 +167,6 @@ def plot_exch(o_gwf, x, head, qx, qy, o_conc, times_c):
     ax3.grid()
     
     plt.tight_layout()
+    if savefig:
+        plt.savefig("gypsum.pdf")
     plt.show()

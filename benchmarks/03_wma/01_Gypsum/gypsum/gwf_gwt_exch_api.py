@@ -2,16 +2,13 @@ import os
 from modflowapi import ModflowApi
 import numpy as np
 import xmf6
-linea = 50*chr(0x2015)
 
 def run(o_sim, paths, IMS = "SLN_1"):
-    print(linea)
-    print("-> Initializing the API")
-    
+  
     # Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
-    print("Shared library:", paths["mf6_dll"])
-    print("Config file:", mf6_config_file)
+    print("-> Shared library:", paths["mf6_dll"])
+    print("-> Config file:", mf6_config_file)
 
     # Objeto para acceder a toda la funcionalidad de la API
     mf6 = ModflowApi(paths["mf6_dll"], working_directory=o_sim.sim_path)
@@ -36,6 +33,7 @@ def run(o_sim, paths, IMS = "SLN_1"):
     sln_gwf = "SLN_1"
     sln_gwt = "SLN_2"
 
+    print("-> Initializing the simulation with the API (one time step for each model)")
     for sol_id in range(1, mf6.get_subcomponent_count() + 1):
         mf6.prepare_solve(sol_id)
         mf6.solve(sol_id) 

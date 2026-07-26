@@ -93,7 +93,7 @@ c2_ini = np.full((nlay,nrow,ncol), 3.294e-5) # En todo el dominio
 c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 
 # Arreglo para la condición inicial de U
-U_ini = np.full((nlay,nrow,ncol), 1.0) # En todo el dominio # c1_ini - c2_ini (no converge!)
+U_ini = c1_ini - c2_ini # np.full((nlay,nrow,ncol), 1.0) # En todo el dominio
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
 print("Array info: U")
 xmf6.info_array(U_ini)
@@ -105,7 +105,7 @@ phys = dict(
     bc_head_t1 = [("CHD-1" , [(0, 0, dis['ncol'] - 1), 1.0])],
     hydraulic_conductivity = 1.0, 
     specific_discharge = 0.2, 
-    source_concentration = 1.0, # 1.0 o U_s (no converge!)
+    source_concentration = U_s, # 1.0 o U_s 
     porosity = 0.5,
     initial_concentration = U_ini,
     bc_conc_t1 = [("CNC-1", [(0, 0, 0), 1.0])], # 1.0 o U_s  (no converge!)
@@ -159,15 +159,18 @@ flow_data = dict(
 )
 xmf6.nice_print("Head", flow_data)
 
-# --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO GWT ---
+# --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO LOS COEF DE GWT ---
 #
 # Construcción de las matrices de transporte usando GWT + API
 xmf6.nice_print("Writting input files for GWT")
 # Escritura de los archivos de entrada para la simulación.
 o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False)
-# Ejecución de la API ---
+
+xmf6.nice_print("Initializing and running the API (GWT)")
+# Ejecución de la simulación de transporte a través de la API
 A, RHS, U = gwt_api.run(o_sim_t, paths)
 #
+xmf6.nice_print("Construction of 𝜆 matrices (GWT)")
 # Cálculo de las proporciones de mezcla
 lambdas.mixingRatios_gwt(dis, tdis_t, phys, A, RHS, U, paths, silent=True)
 
@@ -183,9 +186,13 @@ shutil.copy2(paths["gypsum_eq"], paths["gypsum_eq_gwt"])
 #
 # - ANÁLISIS DE RESULTADOS
 #
+# Recuperamos los resultados del transporte reactivo
 c_gwt = vis.data_recovery("gypsum_eq_gwt.out")
+#
+# Datos de la solución exacta
 c1, c2, an_c1, an_c2 = vis.data_recovery_excel("comparativa_02.xlsx")
-
+#
+# Visualización
 vis.latex(True)
 vis.plot(x, (an_c1, an_c2),
          (c_gwt,), ("s-",), ("GWT",))

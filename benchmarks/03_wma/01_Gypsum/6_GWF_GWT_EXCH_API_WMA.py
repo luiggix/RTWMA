@@ -72,7 +72,7 @@ xmf6.nice_print("Spatial discretization", dis)
 tdis = {
     'units': "days",
     'nper' : 1,
-    'perioddata': [(10.0, 10, 1.0)] #PERLEN, NSTP, TSMULT
+    'perioddata': [(1.0, 1, 1.0)] #PERLEN, NSTP, TSMULT
 }
 xmf6.nice_print("Time discretization (flow)", tdis)
 
@@ -94,7 +94,7 @@ c2_ini = np.full((nlay,nrow,ncol), 3.294e-5) # En todo el dominio
 c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 
 # Arreglo para la condición inicial de U
-U_ini = c1_ini - c2_ini #np.full((nlay,nrow,ncol), 1.0) # En todo el dominio
+U_ini = c1_ini - c2_ini #np.full((nlay,nrow,ncol), 1.0) # En todo el dominio 
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
 print("Array info: U")
 xmf6.info_array(U_ini)
@@ -126,6 +126,7 @@ xmf6.nice_print("Physical parameters", phys)
 # Simulación y discretización temporal. 
 # Los objetos 'o_sim' y 'o_tdis' se comparten por ambos modelos.
 
+xmf6.nice_print("GWF-GWT exchange model")
 # Creación del objeto de la simulación de flujo
 o_sim = flopy.mf6.MFSimulation(
     sim_name = paths["sim_name"], 
@@ -144,15 +145,15 @@ o_tdis = flopy.mf6.ModflowTdis(
 
 # -------------------------------------------
 
-xmf6.nice_print("Function gwf.build(...) :  flow model creation")
+print("-> Function gwf_exch.build(...) :  flow model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_gwf = gwf_exch.build(paths, o_sim, phys, dis, silent = False) 
 
-xmf6.nice_print("Function gwt.build(...) :  transport model creation")
+print("-> Function gwt_exch.build(...) :  transport model creation")
 # Escritura de los archivos de entrada para la simulación.
 o_gwt = gwt_exch.build(paths, o_sim, phys, dis, silent = False) 
 
-xmf6.nice_print("GWF-GWT exchange creation")
+print("-> GWF-GWT exchange creation")
 # Agregamos el objeto del intercambio entre los modelos.
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
     o_sim, 
@@ -166,12 +167,13 @@ xmf6.nice_print("Writing input files for the simulation")
 # Escritura de los archivos de entrada para la simulación.
 o_sim.write_simulation(silent = False)
 
-xmf6.nice_print("Executing the simulation")
-# Ejecución de la simulación.
-#o_sim.run_simulation(silent = False)
-# Ejecución de la API ---
+xmf6.nice_print("Initializing and running the API (GWF-GWT exchange)")
+print("- > Getting the coefficients ")
+# Ejecución de la simulación con la API.
+# Obtenemos la matriz y el RHS del transporte: "SLN_2"
 A, RHS, U = gwf_gwt_exch_api.run(o_sim, paths, "SLN_2")
 
+# --- CÁLCULO DE LAS PROPORCIONES DE MEZCLA USANDO LOS COEF DE GWT ---
 #
 # Cálculo de las proporciones de mezcla
 lambdas.mixingRatios_gwt(dis, tdis_t, phys, A, RHS, U, paths, silent=True)
@@ -184,27 +186,23 @@ wma.run(paths)
 
 # Copiamos el resultado al directorio principal
 shutil.copy2(paths["gypsum_eq"], paths["gypsum_eq_exch"])
-
 #
 # - ANÁLISIS DE RESULTADOS
 #
 # Recuperamos las coordenadas del dominio
 grid = o_gwf.modelgrid
-
+#
 # Recuperamos las coordenadas de los centros de las celdas de la malla
 x = grid.xcellcenters[0] # centros de los volúmenes
-
+#
+# Recuperamos los resultados del transporte reactivo
 c_gwt = vis.data_recovery("gypsum_eq_exch.out")
+#
+# Datos de la solución exacta
 c1, c2, an_c1, an_c2 = vis.data_recovery_excel("comparativa_02.xlsx")
-
+#
+# Visualización
 vis.latex(True)
 vis.plot(x, (an_c1, an_c2),
-         (c_gwt,), ("s-",), ("GWF-GWT EXCH + API",))
+         (c_gwt,), ("s-",), ("GWF-GWT + API",))
 
-#xmf6.nice_print("Linear system")
-#print(f"A = \n {A}")
-#print(f"RHS = \n {RHS}")
-#print(f"U = \n {U}")
-
-#x, head, qx, qy, o_conc, times_c = vis.data_recovery_exch(o_gwf, o_gwt)
-#vis.plot_exch(o_gwf, x, head, qx, qy, o_conc, times_c)

@@ -2,19 +2,15 @@ import os
 from modflowapi import ModflowApi
 import numpy as np
 import xmf6
-linea = 50*chr(0x2015)
 
 # --- EJECUCIÓN CON LA API ---
 
 def run(o_sim, paths, IMS = "SLN_1"):
-
-    print(linea)
-    print("-> Initializing the API")
     
     # Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
-    print("Shared library:", paths["mf6_dll"])
-    print("Config file:", mf6_config_file)
+    print("-> Shared library:", paths["mf6_dll"])
+    print("-> Config file:", mf6_config_file)
 
     # Objeto para acceder a toda la funcionalidad de la API
     mf6 = ModflowApi(paths["mf6_dll"], working_directory=o_sim.sim_path)
@@ -29,15 +25,13 @@ def run(o_sim, paths, IMS = "SLN_1"):
     # Máximo número de iteraciones para el algorimo de solución numérica
     max_iter = mf6.get_value(mf6.get_var_address("MXITER", IMS))
     
-    print(linea)
     print("-> Initializing the simulation with the API (one time step)")
     print(f"  Current time: {current_time}")
     print(f"  Final time: {end_time}")
-    print(linea)
     
     # Obtenemos el paso de tiempo
     dt = mf6.get_time_step()
-    print("dt:", dt, ", t:", current_time, ", end_t:", end_time, ", max_iter:", max_iter)
+    print("  dt:", dt, ", t:", current_time, ", end_t:", end_time, ", max_iter:", max_iter)
     
     # Preparar el objeto de la API para obtener la solución y con el paso de tiempo
     mf6.prepare_time_step(dt)

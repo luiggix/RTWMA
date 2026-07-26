@@ -165,7 +165,7 @@ xmf6.nice_print("Time discretization for DFC", tdis)
 lambdas1D, mixingWaters = lambdas.mixingRatios_dfc(phys, grid, tdis, head, qx[0,0])
 
 # Almacenamiento de las proporciones de mezcla 
-xmf6.nice_print("-> Writing 𝜆's")
+print("-> Storing the mixing ratios")
 lambdas.save_mixing(paths["wma_lambdas_filename"], lambdas1D, mixingWaters)
 
 # --- CÁLCULO DEL TRANSPORTE REACTIVO ---
