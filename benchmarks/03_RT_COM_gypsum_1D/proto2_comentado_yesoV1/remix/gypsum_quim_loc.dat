@@ -1,0 +1,45 @@
+'TITLE OF THE PROBLEM: Gypsum in equilibrium'
+'-----------------------------------------------------------------------------'
+'INITIAL AND BOUNDARY WATER TYPES'
+0						! activity coefficients model
+3						! number of water types
+1     25.0					! iwtype, temp (C)
+'pulso'						! name
+'       icon        guess         ctot          constrain'
+'h2o(p)'		3	1d0	1d0		''
+'ca+2'      1         2.000000002d2       2.000000002d2           ''
+'cl-'		1	4d2		4d2		''
+'so4-2'    4         1d-9		1d0		'gypsum'
+'*'      0         0.0           0.0              ' '
+2     25.0					!iwtype, temp (C)
+'inicial'						! name
+'       icon        guess         ctot          constrain'
+'h2o(p)'		3	1d0	1d0		''
+'ca+2'      1         1.000032937d0       1.000032937d0           ''
+'cl-'		1	2d0		2d0		''
+'so4-2'    4         1d-6		1d0		'gypsum'
+'*'      0         0.0           0.0              ' '
+3     25.0					!iwtype, temp (C)
+'entrada'						! name
+'       icon        guess         ctot          constrain'
+'h2o(p)'		3	1d0	1d0		''
+'ca+2'      1         1.000032937d0       1.000032937d0           ''
+'cl-'		1	2d0		2d0		''
+'so4-2'    4         1d-6		1d0		'gypsum'
+'*'      0         0.0           0.0              ' '
+'----------------------------------------------------------------------------'
+'INITIAL MINERAL ZONES'
+1					! nmtype= number of mineral zones 
+1	25.0				! imtype, temp (C)
+'gypsum'				! name of mineral zone
+'mineral         vol.frac.    area(m2/m3rock)'
+'gypsum'          0.50         0.1d+3 
+'*'                0.00          0.00
+'----------------------------------------------------------------------------'
+'end'
+
+
+
+
+
+
