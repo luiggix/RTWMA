@@ -23,7 +23,7 @@ paths = dict(
     mf6_dll = env["MF6DLL"],
     #
     # Directorio de trabajo para WMA
-    wma_working_dir = os.path.join(env["ROOT_DIR"], "rt_files"),
+    wma_working_dir = os.path.join(env["ROOT_DIR"], "rt_workingDir"),
     #
     # Ejecutable "TR_1D_oper.exe"
     tr1d_exe = os.path.join(env["RT_BINARIES"], "TR_1D_oper.exe"),
