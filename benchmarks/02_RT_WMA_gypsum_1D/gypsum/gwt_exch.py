@@ -49,7 +49,7 @@ def build(paths, o_sim, phys, dis, silent = False):
     # Agregamos el paquete ADV para seleccionar el esquema de advección
     o_adv = flopy.mf6.ModflowGwtadv(
         o_gwt, 
-        scheme = "UPSTREAM" #"CENTRAL"# "UPSTREAM" #"TVD" #
+        scheme = "TVD" #"CENTRAL"# "UPSTREAM" #"TVD" #
     )
     
     # Agregamos el paquete DSP para seleccionar el modelo de dispersión

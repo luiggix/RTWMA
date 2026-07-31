@@ -18,8 +18,10 @@ def workingDirectoryFile(paths):
 
 def run(paths):
     #
-    # Checamos si existe el archivo #workingDirectory.txt"
-    workingDirectoryFile(paths)
+    # Creando el archivo "workingDirectory.txt"
+    print(f"-> Generating {paths["wma_workingDirectory_file"]}: ... \n")
+    with open(paths["wma_workingDirectory_file"], "w") as f:
+        f.write(paths["wma_working_dir"])
     #
     # Ejecutamos el programa
     result = subprocess.run([paths["tr1d_exe"]], 

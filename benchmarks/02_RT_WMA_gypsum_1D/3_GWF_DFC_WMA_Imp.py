@@ -10,40 +10,49 @@ from gypsum import gwf, lambdas, wma, vis
 import json
 with open('../env.json', 'r', encoding='utf-8') as file:
     env = json.load(file)
+env["ROOT_DIR"] = os.getcwd() # Agregamos el dir raíz
+
+for d in env.items():
+    print(d)
     
 # --- DEFINICIÓN DE LAS RUTAS ---
 
 paths = dict(
-    # Ejecutable de Modflow: WINDOWS
+    # Ejecutable de Modflow
     mf6_exe = env["MF6EXE"],
-    mf6_dll = env["MF6DLL"],  
+    mf6_dll = env["MF6DLL"],
     #
     # Directorio de trabajo para WMA
-    wma_working_dir = env["WMA_WORKING_DIR"],
-    wma_wdname = "workingDirectory.txt",
+    wma_working_dir = os.path.join(env["ROOT_DIR"], "rt_files"),
     #
-    # Archivo de salida de "TR_1D_oper.exe"
-    gypsum_eq_dfc = 'gypsum_eq_dfc.out',
-    excel_data = 'comparativa_02.xlsx',
+    # Ejecutable "TR_1D_oper.exe"
+    tr1d_exe = os.path.join(env["RT_BINARIES"], "TR_1D_oper.exe"),
     #
     # Nombre de los modelos y espacios de trabajo
     flow_name = "flow",
     flow_ws = "output_gwf_dfc_wma",
+    #
+    # Directorio de datos de salida
+    visual = os.path.join(env["ROOT_DIR"], "visual_analysis")
 )
-#
-# Ejecutable "TR_1D_oper.exe"
-paths["tr1d_exe"] = os.path.join(paths["wma_working_dir"], "TR_1D_oper.exe")
+
 #
 # Archivo para almacenar las proporciones de mezcla 
 paths["wma_lambdas_filename"] = os.path.join(paths["wma_working_dir"], 
                                              "input", "gypsum_eq", 
                                              "WMA_lambdas_gypsum_eq.dat")
 #
+# Archivo requerido por "TR_1D_oper.exe"
+paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "workingDirectory.txt")
+#
 # Archivo de resultados del transporte reactivo
 paths["gypsum_eq"] = os.path.join(paths["wma_working_dir"], 'gypsum_eq.out')
 #
-# Archivo requerido por "TR_1D_oper.exe"
-paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "workingDirectory.txt")
+# Copia de los resultados del transporte reactivo para comparación
+paths["gypsum_eq_dfc"] = os.path.join(env["ROOT_DIR"], paths["visual"], "gypsum_eq_dfc.out")
+#
+# Archivo con datos para comparación
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["visual"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 
@@ -103,7 +112,7 @@ phys = dict(
     porosity = 0.5,
     initial_concentration = U_ini,
     bc_conc_t1 = [("CNC-1", [(0, 0, 0), U_s])],
-    longitudinal_dispersivity = 0.2,
+    longitudinal_dispersivity = 0.5,
     dispersion_coefficient = 0.2,
     decay_rate =  0.0,
 
@@ -183,9 +192,14 @@ wma.run(paths)
 shutil.copy2(paths["gypsum_eq"], paths["gypsum_eq_dfc"])
 
 # --- ANÁLISIS DE LOS RESULTADOS ---
-c_dfc = vis.data_recovery("gypsum_eq_dfc.out")
-c1, c2, an_c1, an_c2 = vis.data_recovery_excel("comparativa_02.xlsx")
-
+#
+# Recuperamos los resultados del transporte reactivo
+c_dfc = vis.data_recovery(paths["gypsum_eq_dfc"])
+#
+# Datos de la solución exacta
+c1, c2, an_c1, an_c2 = vis.data_recovery_excel(paths["excel_data"])
+#
+# Visualización
 vis.latex(True)
 vis.plot(x, (an_c1, an_c2), 
          (c_dfc,), ("s-",), ("DFC",))

@@ -1,7 +1,7 @@
 import os
 import flopy
 
-def build(paths, tdis, phys, dis, m, silent = False):
+def build(paths, tdis, phys, dis, silent = False):
     # --- COMPONENTES ---
 
     # Creación del objeto de la simulación de flujo
@@ -63,7 +63,7 @@ def build(paths, tdis, phys, dis, m, silent = False):
     # Agregamos el paquete ADV para seleccionar el esquema de advección
     o_adv = flopy.mf6.ModflowGwtadv(
         o_gwt, 
-        scheme = "UPSTREAM" #"CENTRAL"# "UPSTREAM" #"TVD" #
+        scheme = "TVD" #"CENTRAL"# "UPSTREAM" #"TVD" #
     )
     
     # Agregamos el paquete DSP para seleccionar el modelo de dispersión
@@ -82,11 +82,11 @@ def build(paths, tdis, phys, dis, m, silent = False):
     
     # Agregamos el paquete CNC para definir una concentracion fija 
     # c1(x1,t) = 3.294e-05
-    o_cnc = flopy.mf6.ModflowGwtcnc(
-        o_gwt,
-        stress_period_data = [phys["bc_conc_t1"][0][1]],
-        pname = phys["bc_conc_t1"][0][0],
-    )
+#    o_cnc = flopy.mf6.ModflowGwtcnc(
+#        o_gwt,
+#        stress_period_data = [phys["bc_conc_t1"][0][1]],
+#        pname = phys["bc_conc_t1"][0][0],
+#    )
     
     # Agregamos el paquete FMI para enlazar la solución del flujo con la de transporte
     path_flow = os.path.join(os.getcwd(), paths["flow_ws"], paths["flow_name"])
