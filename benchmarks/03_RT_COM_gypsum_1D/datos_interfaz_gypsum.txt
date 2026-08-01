@@ -1,0 +1,10 @@
+'.\rt_workingDir\DB\'
+'.\rt_workingDir\'
+gypsum
+30
+1
+u_init_yeso.dat
+u_new_yeso.out
+u_tilde_yeso.dat
+0
+1d0

@@ -136,7 +136,7 @@ bin/linux/libmf6.so
 .DS_Store
 
 # Archivos de salida de MODFLOW 6
-output*/
+io_mf6*/
 sandbox*/
 DENIT_DRIVE/
 

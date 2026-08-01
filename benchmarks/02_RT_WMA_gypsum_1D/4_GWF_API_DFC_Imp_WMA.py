@@ -1,19 +1,18 @@
 import os, shutil
+import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import flopy
 import xmf6
-from gypsum import gwf, gwf_api, lambdas, wma, vis
+from src_gypsum import gwf, gwf_api, lambdas, wma, vis
 
 # Variables de entorno
-import json
 with open('../env.json', 'r', encoding='utf-8') as file:
     env = json.load(file)
 env["ROOT_DIR"] = os.getcwd() # Agregamos el dir raíz
 
-for d in env.items():
-    print(d)
+xmf6.nice_print("Environment variables", env)
     
 # --- DEFINICIÓN DE LAS RUTAS ---
 
@@ -30,10 +29,10 @@ paths = dict(
     #
     # Nombre de los modelos y espacios de trabajo
     flow_name = "flow",
-    flow_ws = "output_gwf_dfc_wma",
+    flow_ws = "io_mf6/gwf_api_dfc_wma",
     #
     # Directorio de datos de salida
-    visual = os.path.join(env["ROOT_DIR"], "visual_analysis")
+    num_results = os.path.join(env["ROOT_DIR"], "nr_analysis")
 )
 
 #
@@ -49,10 +48,10 @@ paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "wor
 paths["gypsum_eq"] = os.path.join(paths["wma_working_dir"], 'gypsum_eq.out')
 #
 # Copia de los resultados del transporte reactivo para comparación
-paths["gypsum_eq_dfc"] = os.path.join(env["ROOT_DIR"], paths["visual"], "gypsum_eq_dfc.out")
+paths["gypsum_eq_dfc"] = os.path.join(env["ROOT_DIR"], paths["num_results"], "gypsum_eq_dfc.out")
 #
 # Archivo con datos para comparación
-paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["visual"], 'comparativa_02.xlsx')
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["num_results"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 

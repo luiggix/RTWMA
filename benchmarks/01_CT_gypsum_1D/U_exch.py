@@ -3,7 +3,9 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
-from src_gypsum import gwf, gwt
+from src_gypsum import gwf_exch as gwf
+from src_gypsum import gwt_exch as gwt
+from src_gypsum import vis
 import xmf6
 
 # Variables de entorno
@@ -19,10 +21,10 @@ paths = dict(
     mf6_exe = env["MF6EXE"],
     #
     # Nombre de los modelos y espacios de trabajo
+    sim_name = "flow_trans",
+    sim_ws = "io_mf6/Uexch",
     flow_name = "flow",
-    flow_ws = "io_mf6/U/gwf",
     tran_name = "transport",
-    tran_ws = "io_mf6/U/gwt"
 )
 xmf6.nice_print("Paths, files and more ...", paths)
 
@@ -48,20 +50,12 @@ dis = {
 xmf6.nice_print("Spatial discretization", dis)
 
 # Discretización del tiempo para el flujo 
-tdis_f = {
-    'units': "days",
-    'nper' : 1,
-    'perioddata': [(40.0, 1, 1.0)] #PERLEN, NSTP, TSMULT
-}
-xmf6.nice_print("Time discretization (flow)", tdis_f)
-
-# Discretización del tiempo para el transporte 
-tdis_t = {
+tdis = {
     'units': "days",
     'nper' : 1,
     'perioddata': [(40.0, 40, 1.0)] #PERLEN, NSTP, TSMULT
 }
-xmf6.nice_print("Time discretization (transport)", tdis_t)
+xmf6.nice_print("Time discretization (flow)", tdis)
 
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
@@ -74,7 +68,8 @@ c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
 # Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
-xmf6.nice_print("Array info: U")
+
+xmf6.nice_print("Array info: U_ini")
 xmf6.info_array(U_ini)
 
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
@@ -88,7 +83,7 @@ phys = dict(
     porosity = 0.5,
     initial_concentration = U_ini,
     bc_conc_t1 = [("CNC-1", [(0, 0, 0), U_s])],
-    longitudinal_dispersivity = 0.2, # 0.2 o 0.5?
+    longitudinal_dispersivity = 0.5,  # 0.2 o 0.5?
     dispersion_coefficient = 1.0 
 )
 # Agregamos la información del pozo
@@ -97,18 +92,50 @@ phys["well"] = [("WEL-1", "AUX", "CONCENTRATION"), ((0, 0, 0), q, phys["source_c
 
 xmf6.nice_print("Physical parameters", phys)
 
+# --- COMPONENTES ---
+# Simulación y discretización temporal. 
+# Los objetos 'o_sim' y 'o_tdis' se comparte por ambos modelos.
+
+# Creación del objeto de la simulación de flujo
+o_sim = flopy.mf6.MFSimulation(
+    sim_name = paths["sim_name"], 
+    sim_ws = paths["sim_ws"], 
+    exe_name = paths["mf6_exe"], 
+    version="mf6"
+)
+
+# Creación del objeto de la discretización del tiempo
+o_tdis = flopy.mf6.ModflowTdis(
+    o_sim,
+    time_units = tdis["units"],
+    nper = tdis["nper"],
+    perioddata = tdis["perioddata"],
+)
+
+# -------------------------------------------
+
 xmf6.nice_print("Function gwf.build(...) :  flow model creation")
 # Escritura de los archivos de entrada para la simulación.
-o_sim, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False) 
-
-xmf6.nice_print("Flow simulation execution")
-# Ejecución de la simulación de flujo.
-o_sim.run_simulation(silent = False)
+o_gwf = gwf.build(paths, o_sim, phys, dis, silent = False) 
 
 xmf6.nice_print("Function gwt.build(...) :  transport model creation")
 # Escritura de los archivos de entrada para la simulación.
-o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False) 
+o_gwt = gwt.build(paths, o_sim, phys, dis, silent = False) 
 
-xmf6.nice_print("Transport simulation execution")
-# Ejecución de la simulación de flujo.
-o_sim_t.run_simulation(silent = False)
+xmf6.nice_print("GWF-GWT exchange creation")
+# Agregamos el objeto del intercambio entre los modelos.
+o_gwfgwt = flopy.mf6.ModflowGwfgwt(
+    o_sim, 
+    exgtype="GWF6-GWT6", 
+    exgmnamea=o_gwf.name, 
+    exgmnameb=o_gwt.name,
+    filename=f"{paths["sim_name"]}.gwfgwt",
+)
+
+xmf6.nice_print("Writing input files for the simulation")
+# Escritura de los archivos de entrada para la simulación.
+o_sim.write_simulation(silent = False)
+
+xmf6.nice_print("Executing the simulation")
+# Ejecución de la simulación.
+o_sim.run_simulation(silent = False)
