@@ -3,7 +3,7 @@
 
 **Responsable**.
 
-* Dr. Graciela Herrera Zamarrón, IGEF-UNAM.
+* Dra. Graciela Herrera Zamarrón, IGEF-UNAM.
 
 ## Descripción.
 La contaminación de acuíferos por nitrato y amonio constituye un problema ambiental y de salud
@@ -101,7 +101,7 @@ Los carpetas **01_...** en adelante contienen cada una de ellas un ejemplo. Dent
 |**src_**| Códigos en Python (`.py`) que permiten separar la implementación en módulos para una mejor organización. El nombre se completa con una palabra del ejemplo en cuestión (p ej. **src_gypsum**).|
 
 
-**Nota.** Los ejemplos pueden contener las cuatro carpetas mencionadas en la tabla 2 o subconjunto de ellas, dependiendo de las necesidades de cada ejemplo.
+**Nota.** Los ejemplos pueden contener las cuatro carpetas mencionadas en la tabla 2 o un subconjunto de ellas, dependiendo de las necesidades de cada ejemplo.
 
 Los ejemplos dentro de cada carpeta se organizan en jupyter notebooks (`.ipynb`) o archivos de Python (`.py`) que se ejecutan en línea de comandos. 
 
