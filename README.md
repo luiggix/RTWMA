@@ -1,15 +1,31 @@
+# Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno (SECIHTI: CF-2023-G-904)
 
-Proyecto: **Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno**
 
-Responsable del proyecto:
+**Responsable**.
 
-Dr. Graciela Herrera Zamarrón, IGEF-UNAM.
+* Dr. Graciela Herrera Zamarrón, IGEF-UNAM.
 
-Responsable del repositorio y desarrollo de software.
+## Descripción.
+La contaminación de acuíferos por nitrato y amonio constituye un problema ambiental y de salud
+pública de alta relevancia en México y a escala global. Este proyecto, financiado por la SECIHTI a
+través del programa Ciencia de Frontera (CF-2023-G-904), tiene como objetivo desarrollar soluciones
+basadas en la naturaleza para la remoción *in situ* de especies de nitrógeno en aguas subterráneas,
+mediante el aprovechamiento de procesos hidrogeoquímicos naturales. Para alcanzar este objetivo
+se conformó un equipo interdisciplinario e interinstitucional de carácter binacional que investiga los
+mecanismos de transformación del amonio y nitrato en el subsuelo, evalúa métodos de remoción
+mediante experimentación y modelación matemática, y desarrolla herramientas computacionales
+para la simulación del transporte reactivo en medios porosos. 
 
-Dr. Luis Miguel de la Cruz Salas, IGEF-UNAM.
+En este repositorio se depositan todas las herramientas de software así como los ejemplos para la
+simulación de la remoción de nitrato y amonio en diferentes sistemas acuíferos de interés. Los ejemplos de transporte reacivo se desarrollan usando el enfoque de mezcla de aguas ([WMA](https://doi.org/10.1016/j.advwatres.2022.104131) por sus siglas en inglés).
 
-Colaboradores.
+# Organización de repositorio.
+
+**Responsable del repositorio y organización del software.**
+
+* Dr. Luis Miguel de la Cruz Salas, IGEF-UNAM.
+
+## Colaboradores académicos
 
 * Dr. Jesús Carrera Ramírez, IDAEA-CSIC
 * Dr. Iván Contreras Trejo, IGF-UNAM
@@ -19,7 +35,7 @@ Colaboradores.
 * Dr. Leonardo Teja Juárez, FI-UNAM
 * Dr. Norberto Carmen Vera Guzmán, IGF-UNAM
 
-Estudiantes.
+## Estudiantes.
 * Jordi Petchamé Guerrero, Doctorado en Ingeniería del Terreno, Multiscale Characterization Of
 GroUndwater and Solutes discharge into The Ocean (MuchoGusto), Instituto de Diagnóstico
 Ambiental y Estudios del Agua (IDAEA-CSIC), España.
@@ -27,36 +43,70 @@ Ambiental y Estudios del Agua (IDAEA-CSIC), España.
 * José Armando Torres López, Maestría en Ingeniería Exploración y Explotación de Recursos
 Naturales, Programa de Maestría y Doctorado en Ingeniería, UNAM.
 
-* **benchmarks**. Contiene ejemplos desarrollados por todo el grupo de trabajo en diferentes subdirectorios y ramas:
+## Estructura del repositorio.
 
-|Flujo de trabajo|Directorio|Descripción|
-|---|---|---|
-|**GWF**| 01_mf6 | Flujo (GWF).|
-|**GWF-GWT**| 01_mf6 |Flujo (GWF) y transporte (GWT).|
-|**GWF-DFC**| 02_dfc |Flujo (GWF) y transporte (DFC).|
-|**DFC-DFC**| 02_dfc |Flujo (DFC) y transporte (DFC).|
-|**GWF-GWT-WMA**| 03_wma |Flujo (GWF), transporte (GWT) y transporte reactivo (WMA).|
-|**GWF-DFC-WMA**| 03_wma |Flujo (GWF), transporte (DFC) y transporte reactivo (WMA).|
-|**DFC-DFC-WMA**| 03_wma |Flujo (DFC), transporte (DFC) y transporte reactivo (WMA).|
-|**GWF-MT3D_USGS**| 04_mt3d |Flujo (GWF) y transporte y transporte reactivo (MT3D_USGS).|
-|**GWF-MT3D_USGS-WMA**| 04_mt3d|Flujo (GWF), transporte (MT3D_USGS) y transporte reactivo (WMA).|
+El repositorio ha sido configurado usando la herramienta [uv](https://docs.astral.sh/uv/) la cual permite configurar y reproducir el ambiente del proyecto 
+de una manera fácil y eficiente. El desarrollo de los ejemplos se basa en [MODFLOW 6](https://www.usgs.gov/software/modflow-6-usgs-modular-hydrologic-model), 
+[FloPy](https://github.com/modflowpy/flopy) y códigos propios desarrollados en Python y Fortran. La estructura de directorios del repositorio es como sigue:
 
+
+* **benchmarks**. Contiene ejemplos desarrollados por todo el grupo de trabajo.
 * **bin**. Contiene los ejecutables de MODFLOW 6 para diferentes sistemas operativos.
 	- **linux**. Sistema operativo Linux.
 	- **macos**. Sistema operativo MacOS, procesador Intel.
 	- **macosarm**.  Sistema operativo MacOS, procesador ARM64.
 	- **windows**. Sistema operativo Windows 64 bits.
 	- **doc**. Documentación de MODFLOW 6.
-
 * **src**. Fuentes de código común para todos los ejemplos.
+* **README.md**. Este archivo.
+* **LICENSE.txt**. Licencia de uso del software.
+* **pyproject.toml**. Archivo de configuración del proyecto.
+* **uv.sync**. Archivo para reproducir el ambiente del proyecto en una computadora local.
 
-**Colaboradores (en el repositorio de GiutHub):**
-* Luis M. de la Cruz Salas (Admin).
-* Víctor Leonardo Teja Juárez.
-* Norberto Vera Guzmán.
+Los ejemplos desarrollados se encuentran en la carpeta **benchmarks**. Se ha definido una notación para los nombres de las subcarpetas y de los archivos de los ejemplos, la cual permite identificar de que se trata cada ejemplo, y se describe en la Tabla 1.
+
+*Tabla 1. Descripción de la notación de los nombres de archivos.*
+
+|Cadena|Descripción|
+|---|---|
+|`CT`| Ejemplo de transporte conservativo (*Conservative Transport*)|
+|`RT`| Ejemplo de transporte reactivo (*Reactive Transport*)|
+|`WMA`| Ejemplo de transporte reactivo resuelto con el enfoque de mezcla de aguas.|
+|`COM`| Ejemplo de transporte reactivo resuelto con el enfoque de componentes.|
+|`GWF`| Ejemplo de flujo resuelto con GWF de MODFLOW 6.|
+|`GWT`| Ejemplo de transporte resuelto con GWT de MODFLOW 6.|
+|`EXCH`| Ejemplo de flujo y transporte que utiliza un intercambio GWFGWT de MODFLOW 6.|
+|`API`| Ejemplo que utiliza la API de MODFLOW 6.|
+|`DFC`| Ejemplos que resuelve flujo y/o transporte usando un software basado en Diferencias Finitas Centrales escrito en Python.|
+
+### Descripción de los ejemplos.
+
+En la carpeta **benchmarks** se tiene la siguiente estructura de archivos:
+
+* **figures**. Figuras compartidas por todos los ejemplos.
+* **Desciption.md**. Descripción corta de cada ejemplo.
+* **env.json**. Configuración de variables de ambiente locales.
+* **00_RT_EXE**. Archivos ejecutables para realizar la simulación de transporte reactivo con el enfoque de mezclas y con el enfoque de componentes.
+
+
+Los carpetas **01_...** en adelante contienen cada una de ellas un ejemplo. Dentro de estas carpetas se tiene también una estructura que permite organizar el código de una manera clara. Esta estructura se describe en la tabla 2.
+
+*Tabla 2. Descripción de las subcarpetas de cada ejemplo.*
+
+|Subcarpeta|Descripción|
+|---|---|
+|**io_mf6**| Archivos de entrada y salida de MODFLOW 6. |
+|**nr_analysis**| Archivos de resultados para un análisis posterior y visualización.|
+|**rt_workingDir**| Directorio de trabajo para la simulación de transporte reactivo. Contiene entre otras cosas bases de datos químicas, archivos de entrada y de salida.|
+|**src_**| Códigos en Python (`.py`) que permiten separar la implementación en módulos para una mejor organización. El nombre se completa con una palabra del ejemplo en cuestión (p ej. **src_gypsum**).|
+
+
+**Nota.** Los ejemplos pueden contener las cuatro carpetas mencionadas en la tabla 2 o subconjunto de ellas, dependiendo de las necesidades de cada ejemplo.
+
+Los ejemplos dentro de cada carpeta se organizan en jupyter notebooks (`.ipynb`) o archivos de Python (`.py`) que se ejecutan en línea de comandos. 
 
 # Enlaces a otros repositorios.
 
-* REMIX: https://github.com/jordipg10/REMIX.git
+El código fuente del software que realiza la simulación de transporte reactivo se puede obtener del siguiente repositorio (mediante solicitud a los autores):
 
-* Interfaz de REMIX: https://github.com/jordipg10/interfaz_remix.git
+* [REMIX](https://github.com/jordipg10/interfaz_remix)
