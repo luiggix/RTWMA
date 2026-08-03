@@ -1,4 +1,4 @@
-# Ejemplos de simulación de flujo (**GWF**, **DFC**), transporte (**GWT**, **DFC**) y transporte reactivo (**WMA**).
+# Descripción de los ejemplos.
 
 * **01_CT_gypsum_1D**. Ejemplos de simulación de flujo y transporte conservativo utilizando GWF y GWT.
     - $c_1 = SO_4^{2-}$ (`01_flow_tran_gypsum_c1.ipynb`)
