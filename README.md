@@ -1,5 +1,11 @@
 # Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno (SECIHTI: CF-2023-G-904)
 
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/release/python-3130/)
+[![NumPy Badge](https://img.shields.io/badge/numpy-2.4.6-013243?logo=numpy&logoColor=white)](https://numpy.org/devdocs/release/2.4.6-notes.html)
+[![Matplotlib Badge](https://custom-icon-badges.demolab.com/badge/Matplotlib-3.11.1-71D291?logo=matplotlib&logoColor=fff)](https://matplotlib.org)
+[![Pandas](https://img.shields.io/badge/pandas-2.3.3-%23150458?style=flat&logo=pandas&logoColor=white)](https://pypi.org/project/pandas/2.3.3/)
+[![Flopy Badge](https://custom-icon-badges.demolab.com/badge/Flopy-3.10.0-ffb338?logo=flopy&logoColor=fff)](https://github.com/modflowpy/flopy)
+[![XMF6 Badge](https://custom-icon-badges.demolab.com/badge/xmf6-0.1.0-1E90FF?logo=flopy&logoColor=fff)](https://github.com/luiggix/xmf6)
 
 **Responsable**.
 
