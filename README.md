@@ -1,6 +1,32 @@
 
 Proyecto: **Soluciones basadas en la naturaleza a la contaminación del agua subterránea por especies de nitrógeno**
 
+Responsable del proyecto:
+
+Dr. Graciela Herrera Zamarrón, IGEF-UNAM.
+
+Responsable del repositorio y desarrollo de software.
+
+Dr. Luis Miguel de la Cruz Salas, IGEF-UNAM.
+
+Colaboradores.
+
+* Dr. Jesús Carrera Ramírez, IDAEA-CSIC
+* Dr. Iván Contreras Trejo, IGF-UNAM
+* Dr. Guillermo de Jesús Hernández García, IGF-UNAM
+* Dr. Mario Hernández Hernández, IGF-UNAM
+* Dr. Eric Morales Casique, IGl-UNAM
+* Dr. Leonardo Teja Juárez, FI-UNAM
+* Dr. Norberto Carmen Vera Guzmán, IGF-UNAM
+
+Estudiantes.
+* Jordi Petchamé Guerrero, Doctorado en Ingeniería del Terreno, Multiscale Characterization Of
+GroUndwater and Solutes discharge into The Ocean (MuchoGusto), Instituto de Diagnóstico
+Ambiental y Estudios del Agua (IDAEA-CSIC), España.
+
+* José Armando Torres López, Maestría en Ingeniería Exploración y Explotación de Recursos
+Naturales, Programa de Maestría y Doctorado en Ingeniería, UNAM.
+
 * **benchmarks**. Contiene ejemplos desarrollados por todo el grupo de trabajo en diferentes subdirectorios y ramas:
 
 |Flujo de trabajo|Directorio|Descripción|
