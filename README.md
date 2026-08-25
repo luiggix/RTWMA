@@ -116,3 +116,6 @@ Los ejemplos dentro de cada carpeta se organizan en jupyter notebooks (`.ipynb`)
 El código fuente del software que realiza la simulación de transporte reactivo se puede obtener del siguiente repositorio (mediante solicitud a los autores):
 
 * [REMIX](https://github.com/jordipg10/interfaz_remix)
+* [REMIX_v1](https://github.com/jordipg10/REMIX_v1) 
+
+
