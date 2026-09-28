@@ -42,8 +42,7 @@ simulación de la remoción de nitrato y amonio en diferentes sistemas acuífero
 * Dr. Norberto Carmen Vera Guzmán, IGF-UNAM
 
 ## Estudiantes.
-* Jordi Petchamé Guerrero, Doctorado en Ingeniería del Terreno, Multiscale Characterization Of
-GroUndwater and Solutes discharge into The Ocean (MuchoGusto), Instituto de Diagnóstico
+* Jordi Petchamé Guerrero, Doctorado en Ingeniería del Terreno en la Universidad Politécnica de Cataluña (UPC), Proyecto Eastern Lights, Instituto de Diagnóstico
 Ambiental y Estudios del Agua (IDAEA-CSIC), España.
 
 * José Armando Torres López, Maestría en Ingeniería Exploración y Explotación de Recursos
@@ -115,7 +114,7 @@ Los ejemplos dentro de cada carpeta se organizan en jupyter notebooks (`.ipynb`)
 
 El código fuente del software que realiza la simulación de transporte reactivo se puede obtener del siguiente repositorio (mediante solicitud a los autores):
 
-* [REMIX](https://github.com/jordipg10/interfaz_remix)
-* [REMIX_v1](https://github.com/jordipg10/REMIX_v1) 
+* [REMIX (interfaz del enfoque de componentes)](https://github.com/jordipg10/interfaz_remix)
+* [REMIX](https://github.com/jordipg10/REMIX_v1)
 
 
