@@ -139,6 +139,7 @@ bin/linux/libmf6.so
 io_mf6*/
 sandbox*/
 DENIT_DRIVE/
+mf6_gwf_gwt_comp/
 
 /.quarto/
 **/*.quarto_ipynb
