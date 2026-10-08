@@ -19,3 +19,8 @@ dependencies = [
 
 [tool.uv.sources]
 xmf6 = { git = "https://github.com/luiggix/xmf6" }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.10",
+]
