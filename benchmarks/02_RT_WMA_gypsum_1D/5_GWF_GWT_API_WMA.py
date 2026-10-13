@@ -97,17 +97,18 @@ tdis_t = {
     }
 xmf6.nice_print("Time discretization (transport)", tdis_t)
 
+i_pulse = 10
 # Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329) # En todo el dominio
-c1_ini[0, 0, 11] = 200.0  # Pulso en x_L
+c1_ini[0, 0, i_pulse] = 200.0  # Pulso en x_L
 
 # Arreglo para la condición inicial de c2
 c2_ini = np.full((nlay,nrow,ncol), 3.294e-5) # En todo el dominio
-c2_ini[0, 0, 11] = 1.647e-7  # Pulso en x_L
+c2_ini[0, 0, i_pulse] = 1.647e-7  # Pulso en x_L
 
 # Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # np.full((nlay,nrow,ncol), 1.0) # En todo el dominio
-U_ini[0, 0, 11] = c1_ini[0, 0, 11] - c2_ini[0, 0, 11]  # Pulso en x_L
+U_ini[0, 0, i_pulse] = c1_ini[0, 0, i_pulse] - c2_ini[0, 0, i_pulse]  # Pulso en x_L
 print("Array info: U")
 xmf6.info_array(U_ini)
 
