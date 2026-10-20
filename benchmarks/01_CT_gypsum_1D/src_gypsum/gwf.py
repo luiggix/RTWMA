@@ -40,6 +40,7 @@ def build(paths, tdis, phys, dis, silent = False):
     ## ---> Agregamos el paquete DIS para la discretización espacial estructurada
     o_dis = flopy.mf6.ModflowGwfdis(
         o_gwf,
+        length_units = dis["length_units"],
         nlay = dis["nlay"], 
         nrow = dis["nrow"], 
         ncol = dis["ncol"],
