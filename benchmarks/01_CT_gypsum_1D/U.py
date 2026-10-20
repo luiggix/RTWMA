@@ -36,7 +36,7 @@ top  = 1.0
 botm = 0.0
 
 dis = {
-    'units' : "meters",
+    'length_units' : "meters",
     'nlay': nlay, 
     'nrow': nrow, 
     'ncol': ncol,
