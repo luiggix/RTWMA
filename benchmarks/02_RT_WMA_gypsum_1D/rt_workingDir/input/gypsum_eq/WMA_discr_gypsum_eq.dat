@@ -1,5 +1,5 @@
 'TIME'
-10				! number of time steps
+40				! number of time steps
 1d0				! time step ( we assume uniform time discretisation )
 2				! time integration method for chemical reactions (1: Euler explicit, 2: Euler fully implicit)
 '*'

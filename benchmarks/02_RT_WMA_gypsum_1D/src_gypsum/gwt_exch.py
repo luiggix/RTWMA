@@ -67,11 +67,11 @@ def build(paths, o_sim, phys, dis, silent = False):
     )
     
     # Agregamos el paquete CNC para definir una concentracion fija igual a U(x1,t)
-    o_cnc = flopy.mf6.ModflowGwtcnc(
-        o_gwt,
-        stress_period_data = [phys["bc_conc_t1"][0][1]],
-        pname = phys["bc_conc_t1"][0][0],
-    )
+#    o_cnc = flopy.mf6.ModflowGwtcnc(
+#        o_gwt,
+#        stress_period_data = [phys["bc_conc_t1"][0][1]],
+#        pname = phys["bc_conc_t1"][0][0],
+#    )
     
     # Agregamos el paquete SSM para vincular la concentración auxiliar del 
     # pozo WEL-1 con el transporte
