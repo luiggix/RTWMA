@@ -1,11 +1,11 @@
 # Descripción de los ejemplos.
 
 * **01_CT_gypsum_1D**. Ejemplos de simulación de flujo y transporte conservativo utilizando GWF y GWT.
-    - $c_1 = SO_4^{2-}$ (`01_flow_tran_gypsum_c1.ipynb`)
-    - $c_2 = Ca^{2+}$ (`02_flow_tran_gypsum_c2.ipynb`)
-    - $U = c_1 - c_2$ (`03_flow_tran_gypsum_U.ipynb`, `03_flow_tran_gypsum_U.ipynb`)
-    - $U = c_1 - c_2$ con intercambio entre el flujo y transporte (`05_flow_tran_gypsum_Uexch.ipynb`, `06_flow_tran_gypsum_Uexch_vis.ipynb`)
-    - 
+    - $c_1 = Ca^{2+}$ (`01_C1_flow_tran.ipynb`)
+    - $c_2 = SO_4^{2-}$ (`02_C2_flow_tran.ipynb`)
+    - $U = c_1 - c_2$ (`03_U_flow_tran.ipynb`, `04_U_flow_tran_vis.ipynb`)
+    - $U = c_1 - c_2$ con intercambio entre el flujo y transporte (`05_U_flow_tran_exch.ipynb`, `06_U_flow_tran_exch_vis.ipynb`)
+    - Analisis y visualización de resultados (`07_Analysis_Vis.ipynb`)
 * **02_RT_WMA_gypsum_1D**.
     - `1_GWF_DFC_WMA_Imp.ipynb`. Solución del ejemplo del Yeso con transporte reactivo. El flujo se calcula con GWT, mientras que el transporte reactivo se calcula con WMA usando el programa REMIX. Para obtener las proporciones de mezcla se utilizan diferencias finitas centradas (DFC) para generar los coeficientes de la ecuación de transporte conservativa, en conjunto con un desarrollo en python para generar las matrices correspondientes. En esta notebook, además de resolver el problema, contiene toda la explicación paso a paso de la solución. Se considera solo el caso **implícito** del WMA.
     - `2_Optimized_Code.ipynb`. Se resuelve el mismo problema resuelto en la notebook **1_GWF_DFC_WMA_Imp.ipynb** como sigue:
