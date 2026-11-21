@@ -1,0 +1,7 @@
+'TITLE OF THE PROBLEM: Gypsum in equilibrium'
+'------------------------------------------------------------------------------------------------------------------' 
+'TIME STEPS'
+6					! number of intermediate output time steps
+1 2 3 5 7 9				! intermediate time steps for output file
+'-----------------------------------------------------------------------------------------------------------------'
+'end'

@@ -1,0 +1,10 @@
+'TITLE OF THE PROBLEM: Gypsum in equilibrium'
+'-------------------------------------------------------------------------'
+'TIME DISCRETISATION'
+0		! Integration method chemical reactions (0: Euler, 1: RKF45)
+1d0   		! Time weighting factor for transport
+5d-1  		! Time weighting factor for reactions
+1d0   		! Time step (days)
+30    		! Number of time steps
+'-------------------------------------------------------------------------'
+'end'

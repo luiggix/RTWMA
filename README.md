@@ -62,11 +62,10 @@ de una manera fácil y eficiente. El desarrollo de los ejemplos se basa en [MODF
 	- **macosarm**.  Sistema operativo MacOS, procesador ARM64.
 	- **windows**. Sistema operativo Windows 64 bits.
 	- **doc**. Documentación de MODFLOW 6.
-* **src**. Fuentes de código común para todos los ejemplos.
 * **README.md**. Este archivo.
 * **LICENSE.txt**. Licencia de uso del software.
 * **pyproject.toml**. Archivo de configuración del proyecto.
-* **uv.sync**. Archivo para reproducir el ambiente del proyecto en una computadora local.
+* **uv.lock**. Archivo para reproducir el ambiente del proyecto en una computadora local.
 
 Los ejemplos desarrollados se encuentran en la carpeta **benchmarks**. Se ha definido una notación para los nombres de las subcarpetas y de los archivos de los ejemplos, la cual permite identificar de que se trata cada ejemplo, y se describe en la Tabla 1.
 
@@ -101,9 +100,9 @@ Los carpetas **01_...** en adelante contienen cada una de ellas un ejemplo. Dent
 |Subcarpeta|Descripción|
 |---|---|
 |**io_mf6**| Archivos de entrada y salida de MODFLOW 6. |
-|**nr_analysis**| Archivos de resultados para un análisis posterior y visualización.|
-|**rt_workingDir**| Directorio de trabajo para la simulación de transporte reactivo. Contiene entre otras cosas bases de datos químicas, archivos de entrada y de salida.|
-|**src_**| Códigos en Python (`.py`) que permiten separar la implementación en módulos para una mejor organización. El nombre se completa con una palabra del ejemplo en cuestión (p ej. **src_gypsum**).|
+|**io_wma**| Directorio de trabajo para la simulación de transporte reactivo. Contiene entre otras cosas bases de datos químicas, archivos de entrada y de salida.|
+|**vis_ana**| Archivos de resultados para un análisis posterior y visualización.|
+|**src_??**| Códigos en Python (`.py`) que permiten separar la implementación en módulos para una mejor organización. El nombre se completa con el número del ejemplo en cuestión (p ej. **src_01**).|
 
 
 **Nota.** Los ejemplos pueden contener las cuatro carpetas mencionadas en la tabla 2 o un subconjunto de ellas, dependiendo de las necesidades de cada ejemplo.

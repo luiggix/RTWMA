@@ -1,0 +1,13 @@
+'TITLE OF THE PROBLEM: Gypsum in equilibrium 60 cells'
+'----------------------------------------------------------------------------'
+'TARGET SOLIDS'
+60				! number of target solids
+1-60	1			! target solids interval, solid zone index
+'----------------------------------------------------------------------------'
+'end'
+
+
+
+
+
+

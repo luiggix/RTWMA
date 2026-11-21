@@ -4,9 +4,9 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
-from src_gypsum import gwf_exch as gwf
-from src_gypsum import gwt_exch as gwt
-from src_gypsum import vis
+from src_01 import gwf_exch as gwf
+from src_01 import gwt_exch as gwt
+from src_01 import vis
 import xmf6
 
 ## ---> Variables de entorno

@@ -9,7 +9,7 @@ import flopy
 import xmf6
 
 ## ---> Módulos para las diferentes etapas del cálculo numérico
-from src_gypsum import gwf, gwt, gwt_api, lambdas, wma, vis
+from src_02 import gwf, gwt, gwt_api, lambdas, wma, vis
 
 ## ---> Las variables de entorno de leen del archivo 'env.json'
 with open('../env.json', 'r', encoding='utf-8') as file:
@@ -27,7 +27,7 @@ paths = dict(
     mf6_dll = env["MF6DLL"],
     
     # Directorio de trabajo para WMA
-    wma_working_dir = os.path.join(env["ROOT_DIR"], "rt_workingDir"),
+    io_wma = os.path.join(env["ROOT_DIR"], "io_wma"),
     
     # Ejecutable "TR_1D_oper.exe"
     tr1d_exe = env["RT_WMA"],
@@ -39,30 +39,30 @@ paths = dict(
     tran_ws = "io_mf6/gwf_gwt_api_wma/gwt",
     
     # Directorio de datos de salida
-    num_results = os.path.join(env["ROOT_DIR"], "nr_analysis")
+    vis_ana = os.path.join(env["ROOT_DIR"], "vis_ana")
 )
 
 ## ---> Archivo para almacenar las proporciones de mezcla 
-paths["wma_lambdas_filename"] = os.path.join(paths["wma_working_dir"], 
+paths["wma_lambdas_filename"] = os.path.join(paths["io_wma"], 
                                              "input", "gypsum_eq", 
                                              "WMA_lambdas_gypsum_eq.dat")
 
 ## ---> Archivo para almacenar las proporciones de mezcla 
-paths["wma_discr_gypsum_eq"] = os.path.join(paths["wma_working_dir"], 
-                                             "input", "gypsum_eq", 
-                                             "WMA_discr_gypsum_eq.dat")
+paths["wma_discr_gypsum_eq"] = os.path.join(paths["io_wma"], 
+                                            "input", "gypsum_eq", 
+                                            "WMA_discr_gypsum_eq.dat")
 
 ## ---> Archivo requerido por "TR_1D_oper.exe"
-paths["wma_workingDirectory_file"] = os.path.join(paths["wma_working_dir"], "workingDirectory.txt")
+paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirectory.txt")
 
 ## ---> Archivo de resultados del transporte reactivo
-paths["gypsum_eq"] = os.path.join(paths["wma_working_dir"], 'gypsum_eq.out')
+paths["gypsum_eq"] = os.path.join(paths["io_wma"], 'gypsum_eq.out')
 
 ## ---> Copia de los resultados del transporte reactivo para comparación
-paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["num_results"], "gypsum_eq_gwt_api.out")
+paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], "gypsum_eq_gwt_api.out")
 
 ## ---> Archivo con datos para comparación
-paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["num_results"], 'comparativa_02.xlsx')
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 
