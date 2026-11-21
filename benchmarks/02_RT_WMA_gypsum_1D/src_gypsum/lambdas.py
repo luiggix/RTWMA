@@ -16,9 +16,7 @@ def upwind_1D(i, h, q):
         
     return (qx_e, qx_w)
 
-####Qué regresará #### Solo las lamdas o toda 
 def mixingRatios_dfc(phys, grid, tdis, head, qx):
-    print("-> Calculating DFC coefficients and 𝜆's ...")
     #
     # --- Renaming variables for local calculations
     #
