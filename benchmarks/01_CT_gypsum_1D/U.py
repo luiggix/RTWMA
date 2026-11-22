@@ -115,9 +115,27 @@ phys["SSM"] = [(phys["well"]["pname"],
 
 xmf6.nice_print("Physical parameters", phys)
 
+## ---> Diccionario para los parámetros numéricos
+num = {
+    "adv_scheme" : "TVD",
+    "ims_flow" : {
+        "complexity" : "SIMPLE",
+        "outer_dvclose" : 1e-6,
+        "inner_dvclose" : 1e-6,
+    },
+    "ims_tran" : {
+        "complexity" : "SIMPLE",
+        "linear_acceleration" : "BICGSTAB",
+        "outer_dvclose" : 1e-8,
+        "inner_dvclose" : 1e-8,
+    },
+}
+
+xmf6.nice_print("Numerical parameters", num)
+
 ## ---> Construcción del modelo de flujo y escritura de los archivos de entrada.
 xmf6.nice_print("Function gwf.build(...) :  flow model creation")
-o_sim, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False) 
+o_sim, o_gwf = gwf.build(paths, tdis_f, phys, num, dis, silent = False) 
 
 ## ---> Ejecución de la simulación de flujo.
 xmf6.nice_print("Flow simulation execution")
@@ -125,7 +143,7 @@ o_sim.run_simulation(silent = False)
 
 ## ---> Construcción del modelo de transporte y escritura de los archivos de entrada.
 xmf6.nice_print("Function gwt.build(...) :  transport model creation")
-o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False) 
+o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, num, dis, silent = False) 
 
 ## ---> Ejecución de la simulación de flujo.
 xmf6.nice_print("Transport simulation execution")

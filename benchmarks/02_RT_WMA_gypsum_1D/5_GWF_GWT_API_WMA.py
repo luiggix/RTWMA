@@ -47,11 +47,6 @@ paths["wma_lambdas_filename"] = os.path.join(paths["io_wma"],
                                              "input", "gypsum_eq", 
                                              "WMA_lambdas_gypsum_eq.dat")
 
-## ---> Archivo para almacenar las proporciones de mezcla 
-paths["wma_discr_gypsum_eq"] = os.path.join(paths["io_wma"], 
-                                            "input", "gypsum_eq", 
-                                            "WMA_discr_gypsum_eq.dat")
-
 ## ---> Archivo requerido por "TR_1D_oper.exe"
 paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirectory.txt")
 
@@ -157,11 +152,29 @@ phys["SSM"] = [(phys["well"]["pname"],
 
 xmf6.nice_print("Physical parameters", phys)
 
+## ---> Diccionario para los parámetros numéricos
+num = {
+    "adv_scheme" : "TVD",
+    "ims_flow" : {
+        "complexity" : "SIMPLE",
+        "outer_dvclose" : 1e-6,
+        "inner_dvclose" : 1e-6,
+    },
+    "ims_tran" : {
+        "complexity" : "SIMPLE",
+        "linear_acceleration" : "BICGSTAB",
+        "outer_dvclose" : 1e-8,
+        "inner_dvclose" : 1e-8,
+    },
+}
+
+xmf6.nice_print("Numerical parameters", num)
+
 # --- SIMULACIÓN DE FLUJO ---
 
 ## ---> Escritura de los archivos de entrada para la simulación de flujo.
 xmf6.nice_print("Writing input files for GWF")
-o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, dis, silent = False)
+o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, num, dis, silent = False)
 
 ## ---> Ejecución de la simulación de flujo.
 xmf6.nice_print("Executing GWF")
@@ -200,7 +213,7 @@ xmf6.nice_print("Head", flow_data)
 
 ## ---> Escritura de los archivos de entrada para el transporte.
 xmf6.nice_print("Writting input files for GWT")
-o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, dis, silent = False)
+o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, num, dis, silent = False)
 
 ## ---> Ejecución de la simulación de transporte a través de la API
 xmf6.nice_print("Initializing and running the API (GWT)")

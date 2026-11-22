@@ -60,7 +60,6 @@ tdis = {
 }
 xmf6.nice_print("Time discretization (flow)", tdis)
 
-
 ## ---> Condición inicial para el transporte
 x_pulse = 10.5
 i_pulse = int(x_pulse / delr)
@@ -111,6 +110,24 @@ phys["SSM"] = [(phys["well"]["pname"],
 
 xmf6.nice_print("Physical parameters", phys)
 
+## ---> Diccionario para los parámetros numéricos
+num = {
+    "adv_scheme" : "TVD",
+    "ims_flow" : {
+        "complexity" : "SIMPLE",
+        "outer_dvclose" : 1e-6,
+        "inner_dvclose" : 1e-6,
+    },
+    "ims_tran" : {
+        "complexity" : "SIMPLE",
+        "linear_acceleration" : "BICGSTAB",
+        "outer_dvclose" : 1e-8,
+        "inner_dvclose" : 1e-8,
+    },
+}
+
+xmf6.nice_print("Numerical parameters", num)
+
 # --- COMPONENTES ---
 
 ## ---> Simulación y discretización temporal. 
@@ -134,11 +151,11 @@ o_tdis = flopy.mf6.ModflowTdis(
 
 ## ---> Construcción del modelo de flujo
 xmf6.nice_print("Function gwf.build(...) :  flow model creation")
-o_gwf = gwf.build(paths, o_sim, phys, dis, silent = False) 
+o_gwf = gwf.build(paths, o_sim, phys, num, dis, silent = False) 
 
 ## ---> Construcción del modelo de transporte
 xmf6.nice_print("Function gwt.build(...) :  transport model creation")
-o_gwt = gwt.build(paths, o_sim, phys, dis, silent = False) 
+o_gwt = gwt.build(paths, o_sim, phys, num, dis, silent = False) 
 
 ## ---> Agregamos el objeto del intercambio entre los modelos.
 xmf6.nice_print("GWF-GWT exchange creation")

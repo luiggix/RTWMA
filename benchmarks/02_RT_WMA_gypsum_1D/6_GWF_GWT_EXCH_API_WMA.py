@@ -47,11 +47,6 @@ paths["wma_lambdas_filename"] = os.path.join(paths["io_wma"],
                                              "input", "gypsum_eq", 
                                              "WMA_lambdas_gypsum_eq.dat")
 
-## ---> Archivo para almacenar las proporciones de mezcla 
-paths["wma_discr_gypsum_eq"] = os.path.join(paths["io_wma"], 
-                                            "input", "gypsum_eq", 
-                                            "WMA_discr_gypsum_eq.dat")
-
 ## ---> Archivo requerido por "TR_1D_oper.exe"
 paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirectory.txt")
 
@@ -156,6 +151,24 @@ phys["SSM"] = [(phys["well"]["pname"],
 
 xmf6.nice_print("Physical parameters", phys)
 
+## ---> Diccionario para los parámetros numéricos
+num = {
+    "adv_scheme" : "TVD",
+    "ims_flow" : {
+        "complexity" : "SIMPLE",
+        "outer_dvclose" : 1e-6,
+        "inner_dvclose" : 1e-6,
+    },
+    "ims_tran" : {
+        "complexity" : "SIMPLE",
+        "linear_acceleration" : "BICGSTAB",
+        "outer_dvclose" : 1e-8,
+        "inner_dvclose" : 1e-8,
+    },
+}
+
+xmf6.nice_print("Numerical parameters", num)
+
 # --- SIMULACIÓN GWF-GWT exchange ---
 
 ## ---> Creación del objeto de la simulación.
@@ -178,11 +191,11 @@ o_tdis = flopy.mf6.ModflowTdis(
     
 ## ---> Definición de paquetes para la simulación de flujo  
 xmf6.nice_print("-> Function gwf_exch.build(...) :  flow model creation")
-o_gwf = gwf_exch.build(paths, o_sim, phys, dis, silent = False) 
+o_gwf = gwf_exch.build(paths, o_sim, phys, num, dis, silent = False) 
 
 ## ---> Definición de paquetes para la simulación de transporte.
 xmf6.nice_print("-> Function gwt_exch.build(...) :  transport model creation")
-o_gwt = gwt_exch.build(paths, o_sim, phys, dis, silent = False) 
+o_gwt = gwt_exch.build(paths, o_sim, phys, num, dis, silent = False) 
 
 ## ---> Agregamos el objeto del intercambio entre los modelos.
 xmf6.nice_print("-> GWF-GWT exchange creation")

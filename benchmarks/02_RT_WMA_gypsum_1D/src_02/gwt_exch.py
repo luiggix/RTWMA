@@ -1,7 +1,7 @@
 import os
 import flopy
 
-def build(paths, o_sim, phys, dis, silent = False):
+def build(paths, o_sim, phys, num, dis, silent = False):
     # --- COMPONENTES ---
     
     ## ---> Creación del objeto del modelo de transporte
@@ -11,16 +11,17 @@ def build(paths, o_sim, phys, dis, silent = False):
         save_flows = True
     )
     
-    ## ---> Definición del modelo de solución. Se realiza en este punto porque primero
-    ## se requiere definir el objeto de flujo 'o_gwt' para conocer el nombre y
-    ## posteriormente hacer el "registro" del modelo de solución en el objeto 'o_sim'.
+    ## ---> Definición del modelo de solución. 
+    ## Se realiza en este punto porque primero se requiere definir el 
+    ## objeto de flujo 'o_gwt' para conocer el nombre y posteriormente 
+    ## hacer el "registro" del modelo de solución en el objeto 'o_sim'.
     o_ims_t = flopy.mf6.ModflowIms(
         o_sim,
         filename=f"{o_gwt.name}.ims",
-        complexity="SIMPLE",
-        linear_acceleration="BICGSTAB",   # requerido: la matriz de GWT es asimetrica
-        outer_dvclose=1e-8,
-        inner_dvclose=1e-8,
+        complexity = num["ims_tran"]["complexity"],
+        linear_acceleration = num["ims_tran"]["linear_acceleration"],
+        outer_dvclose = num["ims_tran"]["outer_dvclose"],
+        inner_dvclose = num["ims_tran"]["inner_dvclose"],
     )
     o_sim.register_ims_package(o_ims_t, [o_gwt.name])
     
@@ -48,7 +49,7 @@ def build(paths, o_sim, phys, dis, silent = False):
     ## ---> Agregamos el paquete ADV para seleccionar el esquema de advección
     o_adv = flopy.mf6.ModflowGwtadv(
         o_gwt, 
-        scheme = "TVD" #"CENTRAL"# "UPSTREAM" #"TVD" #
+        scheme = num["adv_scheme"],
     )
     
     ## ---> Agregamos el paquete DSP para seleccionar el modelo de dispersión

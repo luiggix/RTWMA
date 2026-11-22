@@ -1,7 +1,7 @@
 import os
 import flopy
 
-def build(paths, o_sim, phys, dis, silent = False):
+def build(paths, o_sim, phys, num, dis, silent = False):
     # --- COMPONENTES ---
     
     ## ---> Creación del objeto del modelo de flujo
@@ -18,9 +18,10 @@ def build(paths, o_sim, phys, dis, silent = False):
     o_ims_f = flopy.mf6.ModflowIms(
         o_sim,
         filename=f"{o_gwf.name}.ims",
-        complexity="SIMPLE",
-        outer_dvclose=1e-6,
-        inner_dvclose=1e-6,
+        complexity = num["ims_flow"]["complexity"],
+        outer_dvclose = num["ims_flow"]["outer_dvclose"],
+        inner_dvclose = num["ims_flow"]["outer_dvclose"],
+
     )
     o_sim.register_ims_package(o_ims_f, [o_gwf.name])
     

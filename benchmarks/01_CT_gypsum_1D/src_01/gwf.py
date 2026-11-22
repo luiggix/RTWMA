@@ -1,7 +1,7 @@
 import os
 import flopy
 
-def build(paths, tdis, phys, dis, silent = False):
+def build(paths, tdis, phys, num, dis, silent = False):
     # --- COMPONENTES ---
 
     ## ---> Creación del objeto de la simulación de flujo
@@ -23,9 +23,9 @@ def build(paths, tdis, phys, dis, silent = False):
     ## ---> Creación del objeto de la solución del sistema lineal
     o_ims = flopy.mf6.ModflowIms(
         o_sim,
-        complexity="SIMPLE",
-        outer_dvclose=1e-6,
-        inner_dvclose=1e-6,
+        complexity = num["ims_flow"]["complexity"],
+        outer_dvclose = num["ims_flow"]["outer_dvclose"],
+        inner_dvclose = num["ims_flow"]["outer_dvclose"],
     )
     
     ## ---> Creación del objeto del modelo de flujo
@@ -54,9 +54,9 @@ def build(paths, tdis, phys, dis, silent = False):
     o_npf = flopy.mf6.ModflowGwfnpf(
         o_gwf,
         k = phys["hydraulic_conductivity"], 
-        icelltype=0, 
+        icelltype = 0, 
         save_specific_discharge = True,
-        save_saturation=True
+        save_saturation = True
     )
     
     ## ---> Agregamos el paquete IC para las condiciones iniciales

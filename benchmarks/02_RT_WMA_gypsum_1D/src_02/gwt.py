@@ -1,7 +1,7 @@
 import os
 import flopy
 
-def build(paths, tdis, phys, dis, silent = False):
+def build(paths, tdis, phys, num, dis, silent = False):
     # --- COMPONENTES ---
 
     ## ---> Creación del objeto de la simulación de flujo
@@ -13,7 +13,6 @@ def build(paths, tdis, phys, dis, silent = False):
     )
     
     ## ---> Creación del objeto de la discretización del tiempo
-    # OJO: aquí cambio el número de pasos de simulación.
     o_tdis = flopy.mf6.ModflowTdis(
         o_sim,
         time_units = tdis["units"],
@@ -22,13 +21,13 @@ def build(paths, tdis, phys, dis, silent = False):
     )
     
     ## ---> Creación del objeto de la solución del sistema lineal
-    # En este caso se requiere de un "solver" para sistemas no simétricos
+    ## En este caso se requiere de un "solver" para sistemas no simétricos
     o_ims = flopy.mf6.ModflowIms(
         o_sim,
-        complexity="SIMPLE",
-        linear_acceleration="BICGSTAB",
-        outer_dvclose=1e-8,
-        inner_dvclose=1e-8,
+        complexity = num["ims_tran"]["complexity"],
+        linear_acceleration = num["ims_tran"]["linear_acceleration"],
+        outer_dvclose = num["ims_tran"]["outer_dvclose"],
+        inner_dvclose = num["ims_tran"]["inner_dvclose"],
     )
     
     ## ---> Creación del objeto del modelo de transporte
@@ -62,7 +61,7 @@ def build(paths, tdis, phys, dis, silent = False):
     ## ---> Agregamos el paquete ADV para seleccionar el esquema de advección
     o_adv = flopy.mf6.ModflowGwtadv(
         o_gwt, 
-        scheme = "TVD" #"CENTRAL"# "UPSTREAM" #"TVD" #
+        scheme = num["adv_scheme"]
     )
     
     ## ---> Agregamos el paquete DSP para seleccionar el modelo de dispersión
