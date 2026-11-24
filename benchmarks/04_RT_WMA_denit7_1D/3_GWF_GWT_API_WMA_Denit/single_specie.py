@@ -42,7 +42,7 @@ paths = dict(
     tran_ws = "io_mf6/gwt",
 
     # Directorio de datos de salida
-    vis_ana = os.path.join(env["ROOT_DIR"], "vis_ana"),
+    dataviz = os.path.join(env["ROOT_DIR"], "dataviz"),
 
     # Archivo con las concentraciones iniciales de las componentes
     u_init = "u_init.dat",
@@ -60,10 +60,10 @@ paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirec
 paths["gypsum_eq"] = os.path.join(paths["io_wma"], 'gypsum_eq.out')
 
 ## ---> Copia de los resultados del transporte reactivo para comparación
-paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], "gypsum_eq_dfc.out")
+paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], "gypsum_eq_dfc.out")
 
 ## ---> Archivo con datos para comparación
-paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], 'comparativa_02.xlsx')
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 
@@ -103,7 +103,6 @@ tdis_t = {
                                   # (5, 500, 1.0) = 5 dias, 100 pasos por dia 
 }
 xmf6.nice_print("Time discretization: transport", tdis_t)
-
 
 #
 #
@@ -168,78 +167,61 @@ xmf6.nice_print("Numerical parameters", num)
 nombres_especies = dict(zip([str(i) for i in range(1, nspec+1)], species["names"]))
 xmf6.nice_print("Selecciona una componente", nombres_especies)
 m = int(input(" m = ")) - 1
-print(m)
-phys["well"] = phys[f"well_c{m}"]
+print(m+1)
 
-o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, num, dis, silent = False)
-
+# --- PARA LA COMPONENTE SELECCIONADA ---
 #
-# --- Ejecución de la simulación ---
+# Simulación de flujo
+#
+phys["well"] = phys[f"well_c{m}"]
+o_sim_f, o_gwf = gwf.build(paths, tdis_f, phys, num, dis, silent = False)
 o_sim_f.run_simulation(silent=True)
 
 #
-# - SIMULACIÓN DE TRANSPORTE CON GWT PARA CADA COMPONENTE
+# Simulación de transporte
 #
-# --- Construcción de la simulación de transporte
 
 phys["initial_concentration"] = phys['spec_ini_concentration'][m][0]
 phys["SSM"] = [(phys["well"]["pname"], 
                "AUX", 
                phys["well"]["auxiliary"][0]),]
-
 o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, num, dis, silent = True)
-#
-# --- Ejecución de la simulación de transporte ---
 print(f"-GWT: C{m+1}: {species["names"][m]}", end= " |")
 o_sim_t.run_simulation(silent=True)
 
-# Cargamos los modelos de transporte
-o_sim = flopy.mf6.MFSimulation.load(sim_ws="io_mf6/gwt", verbosity_level=0)
-
-# Obtenemos los objetos de los modelos
-o_gwt = o_sim.get_model("transport")
-
+#
+# ANALISIS y VISUALIZACIÓN
+#
 
 # Recuperamos las coordenadas del dominio
 grid = o_gwt.modelgrid
 x = grid.xcellcenters[0] # centros de los volúmenes
-nlay = grid.nlay
-nrow = grid.nrow
-ncol = grid.ncol
-
-#xmf6.nice_print("Discretización espacial", 
-#                dict(nlay = nlay, nrow = nrow, ncol = ncol, xcoord = [x]))
 
 # Arreglo para la condición inicial
 c_ini = np.full((nlay, nrow, ncol), phys['spec_ini_concentration'][m][0]) # En todo el dominio
 
-#xmf6.nice_print("Condiciones iniciales", 
-#                dict(c_ini = c_ini))
-
 # Objetos para recuperar la concentración c1
 c_obj = o_gwt.output.concentration()
 
+# Pasos de tiempo
 times = np.asarray(c_obj.get_times())
 
-#xmf6.nice_print("Pasos de tiempo", 
-#                dict(tiempos_c = [times]))
-
+# Condición inicial
 c = np.empty((len(times)+1, len(x)), dtype=float)
 c[0] = c_ini[0,0] # Condición inicial
 c[1:] = c_obj.get_alldata()[:, 0, 0, :] # Todos los resultados
 
 fig, ax = plt.subplots(1, 1)
 
-ax.plot(x, c[0], lw=2.5, ls = "-", color='C1', label = "C inicial")
+ax.plot(x, c[0], lw=1.5, ls = "-", marker = ".", color='C1', label = "C inicial")
 
-for nt, t in enumerate(times):
-    ax.plot(x, c[nt], lw=.5, color='silver')
+for ci in c[::20]:
+    ax.plot(x, ci, lw=.5, color='silver')
 
-ax.plot(x, c[-1], lw=2.5, ls = "-", color='C2',  label = "C final")
+ax.plot(x, c[-1], lw=1.5, ls = "-", marker = ".", color='C2',  label = "C final")
 
-#title = f"c = {species["names"][m]}"
 ax.set_title(f"specie = {species["names"][m]}")
-ax.set_yscale("log")
+ax.set_yscale("linear")
 
 ax.grid()
 

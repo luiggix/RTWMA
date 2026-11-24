@@ -101,7 +101,7 @@ Los carpetas **01_...** en adelante contienen cada una de ellas un ejemplo. Dent
 |---|---|
 |**io_mf6**| Archivos de entrada y salida de MODFLOW 6. |
 |**io_wma**| Directorio de trabajo para la simulación de transporte reactivo. Contiene entre otras cosas bases de datos químicas, archivos de entrada y de salida.|
-|**vis_ana**| Archivos de resultados para un análisis posterior y visualización.|
+|**dataviz**| Archivos de resultados para un análisis posterior y visualización.|
 |**src_??**| Códigos en Python (`.py`) que permiten separar la implementación en módulos para una mejor organización. El nombre se completa con el número del ejemplo en cuestión (p ej. **src_01**).|
 
 

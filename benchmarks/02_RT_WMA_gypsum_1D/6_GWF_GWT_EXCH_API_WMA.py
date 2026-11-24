@@ -39,7 +39,7 @@ paths = dict(
     tran_name = "transport",
     
     # Directorio de datos de salida
-    vis_ana = os.path.join(env["ROOT_DIR"], "vis_ana")
+    dataviz = os.path.join(env["ROOT_DIR"], "dataviz")
 )
 
 ## ---> Archivo para almacenar las proporciones de mezcla 
@@ -54,10 +54,10 @@ paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirec
 paths["gypsum_eq"] = os.path.join(paths["io_wma"], 'gypsum_eq.out')
 
 ## ---> Copia de los resultados del transporte reactivo para comparación
-paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], "gypsum_eq_gwt_exch_api.out")
+paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], "gypsum_eq_gwt_exch_api.out")
 
 ## ---> Archivo con datos para comparación
-paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], 'comparativa_02.xlsx')
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 

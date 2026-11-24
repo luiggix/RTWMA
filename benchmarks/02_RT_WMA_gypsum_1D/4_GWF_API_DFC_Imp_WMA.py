@@ -37,7 +37,7 @@ paths = dict(
     flow_ws = "io_mf6/gwf_api_dfc_wma",
     
     # Directorio de datos de salida
-    vis_ana = os.path.join(env["ROOT_DIR"], "vis_ana")
+    dataviz = os.path.join(env["ROOT_DIR"], "dataviz")
 )
 
 ## ---> Archivo para almacenar las proporciones de mezcla 
@@ -52,10 +52,10 @@ paths["wma_workingDirectory_file"] = os.path.join(paths["io_wma"], "workingDirec
 paths["gypsum_eq"] = os.path.join(paths["io_wma"], 'gypsum_eq.out')
 
 ## ---> Copia de los resultados del transporte reactivo para comparación
-paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], "gypsum_eq_gwf_api_dfc.out")
+paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], "gypsum_eq_gwf_api_dfc.out")
 
 ## ---> Archivo con datos para comparación
-paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["vis_ana"], 'comparativa_02.xlsx')
+paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
 
