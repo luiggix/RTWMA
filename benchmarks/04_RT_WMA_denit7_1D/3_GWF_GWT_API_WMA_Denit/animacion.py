@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from denit import utils
+from src_02 import utils
 plt.style.use('ggplot')
 
 nspec = 8
 
 #
 # Leer información de "u_init.dat"
-with open("remix/u_init.dat", "r") as f:
+with open("io_wma/u_init.dat", "r") as f:
     spec_info = f.readlines()
 key_string = "Aqueous variable activity species:"
 isp = utils.find_index(spec_info, key_string, 1)

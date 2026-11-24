@@ -80,6 +80,12 @@ def build(paths, tdis, phys, num, dis, silent = False):
         auxiliary = phys["well"]["auxiliary"],
         pname = phys["well"]["pname"],
     )
+
+    ## ---> Agregamos el paquete STO para definir el caso estacionario
+    o_sto = flopy.mf6.ModflowGwfsto(
+        o_gwf,
+        steady_state=True,
+    )
     
     ## ---> Agregamos el paquete OC para almacenar la salida
     oc_gwf = flopy.mf6.ModflowGwfoc(
