@@ -45,7 +45,7 @@ def run(o_sim, paths, IMS = "SLN_1"):
 
     ## ---> Obtenemos la solución obtenida por MF6 
     ## (ojo: necesitamos hacer una copia del arreglo)
-    U = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", "TRANSPORT")))
+    U = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", "TRANSPORT1")))
 
     ## ---> Obtenemos la matriz del sistema (ojo: usamos la función build_mat()
     ## para reconstruir la matriz en formato denso, pues está en CRS.
