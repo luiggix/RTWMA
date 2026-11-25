@@ -5,8 +5,28 @@ import xmf6
 
 # --- EJECUCIÓN CON LA API ---
 
-def run(o_sim, paths, IMS = "SLN_1"):
-    
+def run(o_sim, paths, IMS = "SLN_1", tran_name = "TRANSPORT"):
+    """
+    Prepara la API para ejecutar el modelo de transporte y extraer información de memoria.
+
+    Parameters
+    ----------
+    o_sim : flopy.mf6.MFSimulation
+        Objeto principal de la simulación.
+    paths : dict
+        Diccionario con las rutas y archivos usados en la simulación.
+    IMS : str
+        Indica el sistema lineal que se va a usar para la extracción de la información.
+    tran_name : str
+        Indica el nombre del modelo de transporte.
+        
+    Returns
+    -------
+    (ndarray, ndarray, ndarray)
+        A : Matriz del sistema
+        RHS : Lado derecho del sistema
+        U : Concentración calculada en un paso de tiempo.
+    """
     ## ---> Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
     print("-> Shared library:", paths["mf6_dll"])
@@ -38,8 +58,9 @@ def run(o_sim, paths, IMS = "SLN_1"):
     mf6.prepare_solve()
         
     ## ---> Ciclo del algoritmo numérico de solución
+    ## TODO: Probablemente solo se requiere de una iteración
     kiter = 0
-    while kiter < max_iter:        
+    while kiter < max_iter:    
         # Construye el sistema del problema y lo resuelve
         has_converged = mf6.solve(1)
             
@@ -65,7 +86,7 @@ def run(o_sim, paths, IMS = "SLN_1"):
     
     ## ---> Obtenemos la solución obtenida por MF6 
     ## (ojo: necesitamos hacer una copia del arreglo)
-    U = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", "TRANSPORT")))
+    U = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", tran_name)))
 
     ## ---> Obtenemos la matriz del sistema (ojo: usamos la función build_mat()
     ## para reconstruir la matriz en formato denso, pues está en CRS.

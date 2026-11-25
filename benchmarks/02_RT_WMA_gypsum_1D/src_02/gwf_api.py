@@ -6,7 +6,22 @@ import xmf6
 # --- EJECUCIÓN CON LA API ---
 
 def run(o_sim, paths):
+    """
+    Prepara la API para ejecutar el modelo de flujo y extraer información de memoria.
+
+    Parameters
+    ----------
+    o_sim : flopy.mf6.MFSimulation
+        Objeto principal de la simulación.
+    paths : dict
+        Diccionario con las rutas y archivos usados en la simulación.
     
+    Returns
+    -------
+    (ndarray, ndarray)
+        head : Carga hidráulica  
+        q : Descarga específica.
+    """
     ## ---> Rutas a la biblioteca compartida y al archivo de configuración
     mf6_config_file = os.path.join(o_sim.sim_path, 'mfsim.nam')
     print("-> Shared library:", paths["mf6_dll"])

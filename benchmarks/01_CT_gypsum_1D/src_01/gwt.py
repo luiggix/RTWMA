@@ -7,7 +7,8 @@ def build(o_sim, paths, phys, num, exch = False):
 
     Parameters
     ----------
-    o_sim : Objeto principal de la simulación a la que se agregará el
+    o_sim : flopy.mf6.MFSimulation
+        Objeto principal de la simulación a la que se agregará el
         modelo de transporte. 
     paths : dict
         Diccionario con las rutas y archivos usados en la simulación.

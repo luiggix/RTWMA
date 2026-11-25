@@ -7,18 +7,17 @@ import matplotlib.pyplot as plt
 #from time import perf_counter
 import flopy
 import xmf6
+from src_02 import lambdas, wma, vis
+from src_01 import sim, gwf
 
-## ---> Módulos para las diferentes etapas del cálculo numérico
-from src_02 import gwf, lambdas, wma, vis
+## --- DEFINICIÓN DE DATOS ---
 
-## ---> Las variables de entorno de leen del archivo 'env.json'
+## ---> Variables de entorno
 with open('../env.json', 'r', encoding='utf-8') as file:
     env = json.load(file)
 env["ROOT_DIR"] = os.getcwd() # Agregamos el dir raíz
 
 xmf6.nice_print("Environment variables", env)
-
-# --- DEFINICIÓN DE RUTAS Y ARCHIVOS ---
 
 ## ---> Diccionario con información de rutas y archivos
 paths = dict(
@@ -58,8 +57,6 @@ paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], "gypsu
 paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
-
-# --- DATOS PARA LA SIMULACIÓN ---
 
 ## ---> Discretización espacial
 L = 30 # Longitud del dominio
@@ -107,8 +104,6 @@ c2_ini[0, 0, i_pulse] = 1.647e-7  # Pulso en x_11
 ## ---> Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, i_pulse] = c1_ini[0, 0, i_pulse] - c2_ini[0, 0, i_pulse]  # Pulso en x_11
-xmf6.nice_print("Array info: U")
-xmf6.info_array(U_ini)
 
 ## ---> Concentración en la inyección
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
@@ -143,6 +138,8 @@ xmf6.nice_print("Physical parameters", phys)
 
 ## ---> Diccionario para los parámetros numéricos
 num = {
+    "dis" : dis,
+    "tdis" : tdis,
     "adv_scheme" : "TVD",
     "ims_flow" : {
         "complexity" : "SIMPLE",
@@ -159,17 +156,31 @@ num = {
 
 xmf6.nice_print("Numerical parameters", num)
 
-# --- SIMULACIÓN DE FLUJO ---
+## --- MODELO DE FLUJO ---
 
-## ---> Escritura de los archivos de entrada para la simulación de flujo.
-xmf6.nice_print("Writing input files for GWF.")
-o_sim, o_gwf = gwf.build(paths, tdis, phys, num, dis, silent = False) 
+xmf6.nice_print("Flow simulation starting")
+
+## ---> Inicialización de la simulación para flujo
+o_sim = sim.init(paths, num, model = "flow")
+
+## ---> Construcción del modelo de flujo
+o_gwf = gwf.build(o_sim, paths, phys, num)
+
+## ---> Escritura de los archivos de entrada del modelo de flujo
+o_sim.write_simulation(silent = False)
 
 ## ---> Ejecución de la simulación de flujo.
-xmf6.nice_print("Executing GWF.")
 o_sim.run_simulation(silent = False)
 
-# --- ANÁLSIS DE RESULTADOS DEL FLUJO ---
+## ---> Escritura de los archivos de entrada para la simulación de flujo.
+#xmf6.nice_print("Writing input files for GWF.")
+#o_sim, o_gwf = gwf.build(paths, tdis, phys, num, dis, silent = False) 
+
+## ---> Ejecución de la simulación de flujo.
+#xmf6.nice_print("Executing GWF.")
+#o_sim.run_simulation(silent = False)
+
+# --- ANÁLISIS DE RESULTADOS DEL FLUJO ---
     
 ## ---> Objeto para acceder a los resultados de la carga hidráulica.
 o_head = o_gwf.output.head()

@@ -6,19 +6,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 #from time import perf_counter
 import flopy
-import xmf6 # contiene funciones para interactuar con la API
+import xmf6 
 
 ## ---> Módulos para las diferentes etapas del cálculo numérico
-from src_02 import gwf_exch, gwt_exch, gwf_gwt_exch_api, lambdas, wma, vis
+from src_02 import gwf_gwt_exch_api, lambdas, wma, vis
+from src_01 import sim, gwf, gwt
 
-## ---> Las variables de entorno de leen del archivo 'env.json'
+## --- DEFINICIÓN DE DATOS ---
+
+## ---> Variables de entorno
 with open('../env.json', 'r', encoding='utf-8') as file:
     env = json.load(file)
 env["ROOT_DIR"] = os.getcwd() # Agregamos el dir raíz
 
 xmf6.nice_print("Environment variables", env)
-    
-# --- DEFINICIÓN DE LAS RUTAS Y NOMBRES ---
 
 ## ---> Diccionario con información de rutas y archivos
 paths = dict(
@@ -60,8 +61,6 @@ paths["gypsum_eq_copy"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], "gypsu
 paths["excel_data"] = os.path.join(env["ROOT_DIR"], paths["dataviz"], 'comparativa_02.xlsx')
 
 xmf6.nice_print("Paths, filenames and more ...", paths)
-
-# --- DATOS PARA LA SIMULACIÓN ---
 
 ## ---> Discretización espacial
 L = 30 # Longitud del dominio
@@ -116,8 +115,6 @@ c2_ini[0, 0, i_pulse] = 1.647e-7  # Pulso en x_11
 ## ---> Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, i_pulse] = c1_ini[0, 0, i_pulse] - c2_ini[0, 0, i_pulse]  # Pulso en x_11
-xmf6.nice_print("Array info: U")
-xmf6.info_array(U_ini)
 
 ## ---> Concentración en la inyección
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
@@ -153,6 +150,8 @@ xmf6.nice_print("Physical parameters", phys)
 
 ## ---> Diccionario para los parámetros numéricos
 num = {
+    "dis" : dis,
+    "tdis" : tdis_f,
     "adv_scheme" : "TVD",
     "ims_flow" : {
         "complexity" : "SIMPLE",
@@ -169,35 +168,18 @@ num = {
 
 xmf6.nice_print("Numerical parameters", num)
 
-# --- SIMULACIÓN GWF-GWT exchange ---
+# --- INCIALIZACIÓN DE LA SIMULACIÓN CON INTERCAMBIO ---
 
-## ---> Creación del objeto de la simulación.
-## OJO: Los objetos 'o_sim' y 'o_tdis' se comparten por ambos modelos.
-xmf6.nice_print("GWF-GWT exchange model")
-o_sim = flopy.mf6.MFSimulation(
-    sim_name = paths["sim_name"], 
-    sim_ws = paths["sim_ws"], 
-    exe_name = paths["mf6_exe"], 
-    version="mf6"
-)
-    
-## ---> Creación del objeto de la discretización del tiempo
-o_tdis = flopy.mf6.ModflowTdis(
-    o_sim,
-    time_units = tdis_f["units"],
-    nper = tdis_f["nper"],
-    perioddata = tdis_f["perioddata"],
-)
-    
-## ---> Definición de paquetes para la simulación de flujo  
-xmf6.nice_print("-> Function gwf_exch.build(...) :  flow model creation")
-o_gwf = gwf_exch.build(paths, o_sim, phys, num, dis, silent = False) 
+## ---> Inicialización de la simulación general
+o_sim = sim.init(paths, num)
 
-## ---> Definición de paquetes para la simulación de transporte.
-xmf6.nice_print("-> Function gwt_exch.build(...) :  transport model creation")
-o_gwt = gwt_exch.build(paths, o_sim, phys, num, dis, silent = False) 
+## ---> Construcción del modelo de flujo
+o_gwf = gwf.build(o_sim, paths, phys, num)
 
-## ---> Agregamos el objeto del intercambio entre los modelos.
+## ---> Construcción del modelo de transporte
+o_gwt = gwt.build(o_sim, paths, phys, num, exch = True)
+
+## ---> Creación del objeto del intercambio entre los modelos.
 xmf6.nice_print("-> GWF-GWT exchange creation")
 o_gwfgwt = flopy.mf6.ModflowGwfgwt(
     o_sim, 
