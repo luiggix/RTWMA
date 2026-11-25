@@ -4,8 +4,10 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import flopy
-from src_01 import gwf, gwt
 import xmf6
+from src_01 import sim, gwf, gwt
+
+## --- DEFINICIÓN DE DATOS ---
 
 ## ---> Variables de entorno
 with open('../env.json', 'r', encoding='utf-8') as file:
@@ -69,7 +71,6 @@ xmf6.nice_print("Time discretization (transport)", tdis_t)
 ## ---> Condición inicial para el transporte
 x_pulse = 10.5
 i_pulse = int(x_pulse / delr)
-print("x_p = ", i_pulse)
 
 ## ---> Arreglo para la condición inicial de c1
 c1_ini = np.full((nlay,nrow,ncol), 1.0000329371) # En todo el dominio
@@ -82,8 +83,6 @@ c2_ini[0, 0, i_pulse] = 1.647e-7  # Pulso en x_11
 ## ---> Arreglo para la condición inicial de U
 U_ini = c1_ini - c2_ini # En todo el dominio
 U_ini[0, 0, i_pulse] = c1_ini[0, 0, i_pulse] - c2_ini[0, 0, i_pulse]  # Pulso en x_11
-xmf6.nice_print("Array info: U")
-xmf6.info_array(U_ini)
 
 U_s = c1_ini[0, 0, 0] - c2_ini[0, 0, 0]
 
@@ -117,6 +116,8 @@ xmf6.nice_print("Physical parameters", phys)
 
 ## ---> Diccionario para los parámetros numéricos
 num = {
+    "dis" : dis,
+    "tdis" : tdis_f,
     "adv_scheme" : "TVD",
     "ims_flow" : {
         "complexity" : "SIMPLE",
@@ -130,21 +131,39 @@ num = {
         "inner_dvclose" : 1e-8,
     },
 }
-
 xmf6.nice_print("Numerical parameters", num)
 
-## ---> Construcción del modelo de flujo y escritura de los archivos de entrada.
-xmf6.nice_print("Function gwf.build(...) :  flow model creation")
-o_sim, o_gwf = gwf.build(paths, tdis_f, phys, num, dis, silent = False) 
+## --- MODELO DE FLUJO ---
+
+xmf6.nice_print("Flow simulation starting")
+
+## ---> Inicialización de la simulación para flujo
+o_sim_f = sim.init(paths, num, model = "flow")
+
+## ---> Construcción del modelo de flujo
+o_gwf = gwf.build(o_sim_f, paths, phys, num)
+
+## ---> Escritura de los archivos de entrada del modelo de flujo
+o_sim_f.write_simulation(silent = False)
 
 ## ---> Ejecución de la simulación de flujo.
-xmf6.nice_print("Flow simulation execution")
-o_sim.run_simulation(silent = False)
+o_sim_f.run_simulation(silent = False)
 
-## ---> Construcción del modelo de transporte y escritura de los archivos de entrada.
-xmf6.nice_print("Function gwt.build(...) :  transport model creation")
-o_sim_t, o_gwt = gwt.build(paths, tdis_t, phys, num, dis, silent = False) 
+## --- MODELO DE TRANSPORTE ---
 
-## ---> Ejecución de la simulación de flujo.
-xmf6.nice_print("Transport simulation execution")
+xmf6.nice_print("Transport simulation starting")
+
+## ---> Actualización de la discretización del tiempo
+num["tdis"] =  tdis_t
+
+## ---> Inicialización de la simulación para transporte
+o_sim_t = sim.init(paths, num, model = "tran")
+
+## ---> Construcción del modelo de transpore
+o_gwt = gwt.build(o_sim_t, paths, phys, num)
+
+## ---> Escritura de los archivos de entrada del modelo de transporte
+o_sim_t.write_simulation(silent = False)
+
+## ---> Ejecución de la simulación de transporte.
 o_sim_t.run_simulation(silent = False)
