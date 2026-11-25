@@ -1,53 +1,57 @@
 import os
 import flopy
 
-def build(paths, tdis, phys, num, dis, silent = False):
-    # --- COMPONENTES ---
+def build(o_sim, paths, phys, num):
+    """
+    Construye el modelo de flujo.
 
-    ## ---> Creación del objeto de la simulación de flujo
-    o_sim = flopy.mf6.MFSimulation(
-        sim_name = paths["flow_name"], 
-        sim_ws = paths["flow_ws"], 
-        exe_name = paths["mf6_exe"], 
-        version="mf6"
-    )
-    
-    ## ---> Creación del objeto de la discretización del tiempo
-    o_tdis = flopy.mf6.ModflowTdis(
-        o_sim,
-        time_units = tdis["units"],
-        nper = tdis["nper"],
-        perioddata = tdis["perioddata"],
-    )
-    
-    ## ---> Creación del objeto de la solución del sistema lineal
-    o_ims = flopy.mf6.ModflowIms(
-        o_sim,
-        complexity = num["ims_flow"]["complexity"],
-        outer_dvclose = num["ims_flow"]["outer_dvclose"],
-        inner_dvclose = num["ims_flow"]["outer_dvclose"],
-    )
-    
+    Parameters
+    ----------
+    o_sim : Objeto principal de la simulación a la que se agregará el
+        modelo de flujo. 
+    paths : dict
+        Diccionario con las rutas y archivos usados en la simulación.
+    phys : dict
+        Diccionario con los parámetros físicos de la simulación.
+    num : dict
+        Diccionario con los parámetros numéricos de la simulación.
+
+    Returns
+    -------
+    flopy.mf6.ModflowGwf
+        Objeto "o_gwf" que representa el modelo de flujo.
+    """
     ## ---> Creación del objeto del modelo de flujo
     o_gwf = flopy.mf6.ModflowGwf(
         o_sim, 
         modelname = paths["flow_name"], 
         save_flows = True
     )
+
+    ## ---> Creación y registro del objeto de la solución del sistema lineal
+    o_ims_f = flopy.mf6.ModflowIms(
+        o_sim,
+        filename=f"{o_gwf.name}.ims",
+        complexity = num["ims_flow"]["complexity"],
+        outer_dvclose = num["ims_flow"]["outer_dvclose"],
+        inner_dvclose = num["ims_flow"]["outer_dvclose"],
+
+    )
+    o_sim.register_ims_package(o_ims_f, [o_gwf.name])
     
     # --- PAQUETES ---
     
     ## ---> Agregamos el paquete DIS para la discretización espacial estructurada
     o_dis = flopy.mf6.ModflowGwfdis(
         o_gwf,
-        length_units = dis["length_units"],
-        nlay = dis["nlay"], 
-        nrow = dis["nrow"], 
-        ncol = dis["ncol"],
-        delr = dis["delr"], 
-        delc = dis["delc"], 
-        top  = dis["top"], 
-        botm = dis["botm"],
+        length_units = num["dis"]["length_units"],
+        nlay = num["dis"]["nlay"], 
+        nrow = num["dis"]["nrow"], 
+        ncol = num["dis"]["ncol"],
+        delr = num["dis"]["delr"], 
+        delc = num["dis"]["delc"], 
+        top  = num["dis"]["top"], 
+        botm = num["dis"]["botm"],
     )
     
     ## ---> Agregamos el paquete NPF para las prop. del flujo
@@ -94,8 +98,5 @@ def build(paths, tdis, phys, num, dis, silent = False):
         budget_filerecord=f"{paths["flow_name"]}.bud",
         saverecord=[("HEAD", "ALL"), ("BUDGET", "ALL")],
     )
-
-    ## ---> Escritura de los archivos de entrada para la simulación.
-    o_sim.write_simulation(silent = silent)
-    
-    return o_sim, o_gwf
+  
+    return o_gwf
